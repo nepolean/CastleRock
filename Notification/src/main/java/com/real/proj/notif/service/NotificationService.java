@@ -8,9 +8,11 @@ import javax.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Service;
 
 import static com.real.proj.notif.util.ValidationHelper.*;
 
+@Service
 public class NotificationService {
   
   @Autowired
@@ -45,6 +47,11 @@ public class NotificationService {
       e.printStackTrace();
       throw new Exception("Error while sending the mail");
     }
+  }
+
+  public static void sendSMS(String mobile, String message) {
+    // TODO Consider using Twilio
+    
   }
 
 }

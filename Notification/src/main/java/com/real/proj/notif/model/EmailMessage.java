@@ -2,12 +2,26 @@ package com.real.proj.notif.model;
 
 import java.util.List;
 
-public class EmailMessage {
-  
+import javax.validation.constraints.NotNull;
+
+public class EmailMessage implements java.io.Serializable {
+
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
+
+  @NotNull
   private String to;
   private String subject;
   private List<String> ccList;
+  @NotNull
   private String message;
+  
+  
+  public EmailMessage() {
+    
+  }
   
   public EmailMessage(String to, String subject, List<String> ccList, String message) {
     super();
