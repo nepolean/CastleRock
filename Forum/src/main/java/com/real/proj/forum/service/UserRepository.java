@@ -7,7 +7,6 @@ import org.springframework.data.repository.Repository;
 import com.real.proj.forum.model.User;
 import java.lang.Long;
 
-@EnableMongoRepositories
 public interface UserRepository extends MongoRepository<User, String> {
 
   User findByEmail(String userMail);

@@ -1,2 +1,0 @@
-** autowired variable must be static
-** look for corrupted jars in the maven repository

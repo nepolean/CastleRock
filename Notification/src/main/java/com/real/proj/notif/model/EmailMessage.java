@@ -11,11 +11,11 @@ public class EmailMessage implements java.io.Serializable {
    */
   private static final long serialVersionUID = 1L;
 
-  @NotNull
+  @NotNull(message = "The to cannot be empty")
   private String to;
   private String subject;
   private List<String> ccList;
-  @NotNull
+  @NotNull (message = "The message cannot be empty")
   private String message;
   
   

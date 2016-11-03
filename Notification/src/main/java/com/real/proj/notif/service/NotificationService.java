@@ -16,9 +16,13 @@ import static com.real.proj.notif.util.ValidationHelper.*;
 public class NotificationService {
   
   @Autowired
-  private static JavaMailSender mailSender;
+  private JavaMailSender mailSender;
+  
+  public NotificationService() {
+    
+  }
 
-  public static void sendEmail(String to, List<String> ccList, String subject, String message) 
+  public  void sendEmail(String to, List<String> ccList, String subject, String message) 
     throws Exception {
     
     if (isEmpty(to) || isEmpty(message)) 
@@ -49,7 +53,7 @@ public class NotificationService {
     }
   }
 
-  public static void sendSMS(String mobile, String message) {
+  public void sendSMS(String mobile, String message) {
     // TODO Consider using Twilio
     
   }

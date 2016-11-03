@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.apache.commons.logging.Log;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
@@ -26,19 +27,21 @@ import com.real.proj.notif.model.SMSMessage;
 import com.real.proj.notif.service.NotificationService;
 
 @RestController
-@ComponentScan
 public class NotificationController {
   
   private static final Logger logger = LogManager.getLogger("NotificationController");
   
-  @RequestMapping(name="/notify/email", method=RequestMethod.POST)
-  public ResponseEntity sendEmail(@Valid @RequestBody EmailMessage email) {    
+  @Autowired
+  NotificationService notfiicationService;
+  
+  @RequestMapping(name="/notify/email", method=RequestMethod.POST, produces=MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity sendEmail(@Valid @RequestBody EmailMessage email) {  
     try {      
       String to = email.getTo();
       List<String> ccList = email.getCcList();
       String subject = email.getSubject();
       String message = email.getMessage();      
-      NotificationService.sendEmail(to, ccList, subject, message);
+      notfiicationService.sendEmail(to, ccList, subject, message);
       return ResponseEntity.ok().build();
     } catch (Exception e) {
       // TODO retry after some time? 
@@ -48,16 +51,5 @@ public class NotificationController {
   }
   
 
-  @RequestMapping(name="/notify/sms", method=RequestMethod.POST)
-  public ResponseEntity sendSMS(@Valid @RequestBody SMSMessage sms) {
-    try {
-      String mobile = sms.getMobileNo();
-      String message = sms.getMessage();
-      NotificationService.sendSMS(mobile, message);
-      return ResponseEntity.ok("");
-    }catch(Exception ex) {
-      logger.error("Error while sending sms to " + sms.getMobileNo());
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-    }
-  }
+
 }

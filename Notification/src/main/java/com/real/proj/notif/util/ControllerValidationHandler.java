@@ -23,10 +23,11 @@ public class ControllerValidationHandler {
   
   public ResponseEntity<ValidationError> processValidationError(MethodArgumentNotValidException ex) {
     BindingResult binding = ex.getBindingResult();
-    List<FieldError> fieldErrors = binding.getFieldErrors();
-    binding.g
-    ValidationError _err = new ValidationError("There is an error in the input arguments");
-    _err.setFieldErrors(fieldErrors);
+    ValidationError _err = new ValidationError(ex.getMessage());
+    if (binding.hasGlobalErrors())
+      _err.setGlobalErrors(binding.getGlobalErrors());
+    if (binding.hasFieldErrors())
+      _err.setFieldErrors(binding.getFieldErrors());
     ResponseEntity<ValidationError> resp = ResponseEntity.badRequest().body(_err);
     return resp;
   }
