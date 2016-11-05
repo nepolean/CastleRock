@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.real.proj.controller.exception.handler.SimpleError;
 import com.real.proj.notif.model.EmailMessage;
 import com.real.proj.notif.model.SMSMessage;
 import com.real.proj.notif.service.NotificationService;
@@ -29,27 +30,39 @@ import com.real.proj.notif.service.NotificationService;
 @RestController
 public class NotificationController {
   
-  private static final Logger logger = LogManager.getLogger("NotificationController");
+  private static final Logger logger = LogManager.getLogger(NotificationController.class);
   
   @Autowired
-  NotificationService notfiicationService;
+  NotificationService notificationService;
   
-  @RequestMapping(name="/notify/email", method=RequestMethod.POST, produces=MediaType.APPLICATION_JSON_VALUE)
+  @RequestMapping(path="/notify/email", method=RequestMethod.POST, produces=MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity sendEmail(@Valid @RequestBody EmailMessage email) {  
     try {      
       String to = email.getTo();
       List<String> ccList = email.getCcList();
       String subject = email.getSubject();
       String message = email.getMessage();      
-      notfiicationService.sendEmail(to, ccList, subject, message);
+      notificationService.sendEmail(to, ccList, subject, message);
       return ResponseEntity.ok().build();
     } catch (Exception e) {
       // TODO retry after some time? 
       logger.error("Error while sending an email to " + email.getTo());
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new SimpleError("This is an internal error. Please try again after some time"));
     }    
   }
   
 
+  @RequestMapping(path="/notify/sms", method=RequestMethod.POST, produces=MediaType.APPLICATION_JSON_VALUE, consumes=MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity sendSMS(@Valid @RequestBody SMSMessage sms) {
+	
+  	try {
+  		notificationService.sendSMS(sms.getMobileNo(), sms.getMessage());
+  		return ResponseEntity.ok("success");
+  	} catch(Exception ex) {
+  		logger.error("Error while sending SMS to " + sms.getMobileNo());
+  		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new SimpleError("This is an internal error. Please try again after some time"));
+  	}
+  	
+  }
 
 }

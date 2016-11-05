@@ -1,4 +1,4 @@
-package com.real.proj.notif.util;
+package com.real.proj.controller.exception.handler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,21 +15,11 @@ public class ValidationError {
   private int count;
   
   public ValidationError() {
-    message = "Input data is not valid";
+    message = "Validation Errors";
   }
   
-  public ValidationError(String message) {
-    this.setMessage(message);
-  }
-  
-  public void setFieldErrors(List<FieldError> fieldErrors) {
-    if (null != fieldErrors) {
-      count = fieldErrors.size();
-      for (FieldError error : fieldErrors) {
-        FieldLevelErrorMessage fieldErrorMsg = new FieldLevelErrorMessage(error.getField(), error.getDefaultMessage());
-        getFieldErrors().add(fieldErrorMsg);
-      }
-    }
+  public void setCount(int count) {
+  	this.count = count;
   }
   
   public int getCount() {
@@ -41,24 +31,32 @@ public class ValidationError {
   }
 
   public List<FieldLevelErrorMessage> getFieldErrors() {
-    return (errors == null) ? new ArrayList<FieldLevelErrorMessage>() : errors;
+  	if (errors == null)
+  		errors = new ArrayList<FieldLevelErrorMessage>();
+    return errors;
   }
 
 
   public void setMessage(String message) {
-    this.message = message;
+    //this.message = message;
   }
 
   public void setGlobalErrors(List<ObjectError> globalErrors) {
     if (null == globalErrors)
       return;
-    for (ObjectError error : globalErrors) {
-      
+ }
+
+  public void setFieldErrors(List<FieldError> fieldErrors) {
+    if (null != fieldErrors) {
+      count = fieldErrors.size();
+      for (FieldError error : fieldErrors) {
+        FieldLevelErrorMessage fieldErrorMsg = new FieldLevelErrorMessage(error.getField(), error.getDefaultMessage());
+        getFieldErrors().add(fieldErrorMsg);
+      }
     }
-      
-  }
+  }  
   
-  static class FieldLevelErrorMessage {
+  public static class FieldLevelErrorMessage {
     String fieldName;
     String errorMessage;
     
@@ -68,8 +66,8 @@ public class ValidationError {
     
     public FieldLevelErrorMessage(String fieldName, String errorMessage) {
       super();
-      this.fieldName = fieldName;
-      this.errorMessage = errorMessage;
+      this.fieldName = fieldName == null ? "" : fieldName;
+      this.errorMessage = errorMessage == null ? "" : errorMessage;
     }
 
     public String getFieldName() {

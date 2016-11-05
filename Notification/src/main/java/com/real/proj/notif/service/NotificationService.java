@@ -5,6 +5,8 @@ import java.util.List;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -14,6 +16,8 @@ import static com.real.proj.notif.util.ValidationHelper.*;
 
 @Service
 public class NotificationService {
+	
+	private static Logger logger = LogManager.getLogger(NotificationService.class);
   
   @Autowired
   private JavaMailSender mailSender;
@@ -24,10 +28,8 @@ public class NotificationService {
 
   public  void sendEmail(String to, List<String> ccList, String subject, String message) 
     throws Exception {
-    
-    if (isEmpty(to) || isEmpty(message)) 
-      throw new IllegalArgumentException("Invalid address and/or message");
-      
+    if (logger.isDebugEnabled())
+    	logger.debug("send email to " + to);
     MimeMessage mail = mailSender.createMimeMessage();
     try {
       MimeMessageHelper helper = new MimeMessageHelper(mail, true);
@@ -41,14 +43,14 @@ public class NotificationService {
       }
       helper.setText(message);
     } catch(MessagingException ex) {
-      ex.printStackTrace(System.err);
+    	logger.error("Error while constructing the email message for " + to, ex);
       throw new Exception("Error while constructing the mail message");
     }
     
     try {
       mailSender.send(mail);
-    } catch (Exception e) {
-      e.printStackTrace();
+    } catch (Exception ex) {
+    	logger.error("Error while sending the email message for " + to, ex);
       throw new Exception("Error while sending the mail");
     }
   }
