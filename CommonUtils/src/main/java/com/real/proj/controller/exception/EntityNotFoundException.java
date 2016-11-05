@@ -1,57 +1,54 @@
 package com.real.proj.controller.exception;
 
-public class EntityNotFoundException extends Exception{
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	
-	String id = "";
-	String message = "";
-	String type = "";
-	
-	public EntityNotFoundException() {
-		
-	}
+public class EntityNotFoundException extends Exception {
 
-	public EntityNotFoundException(String id, String message, String type) {
-		super();
-		this.id = id;
-		this.message = message;
-		this.type = type;
-	}
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
 
-	public String getId() {
-		return id;
-	}
+  String id = "";
+  String message = "";
+  String type = "";
 
-	public void setId(String id) {
-		this.id = id;
-	}
+  public EntityNotFoundException() {
 
-	public String getMessage() {
-		return message;
-	}
+  }
 
-	public void setMessage(String message) {
-		this.message = message;
-	}
-	
-	
-	
-	public String getType() {
-		return type;
-	}
+  public EntityNotFoundException(String id, String message, String type) {
+    super();
+    this.id = id;
+    this.message = message;
+    this.type = type;
+  }
 
-	public void setType(String type) {
-		this.type = type;
-	}
+  public String getId() {
+    return id;
+  }
 
-	public String toString() {
-		String msg = type + "with id," + this.getId() + " , not found";
-		return msg;
-	}
-	
+  public void setId(String id) {
+    this.id = id;
+  }
+
+  public String getMessage() {
+    return message;
+  }
+
+  public void setMessage(String message) {
+    this.message = message;
+  }
+
+  public String getType() {
+    return type;
+  }
+
+  public void setType(String type) {
+    this.type = type;
+  }
+
+  public String toString() {
+    String msg = type + "with id," + this.getId() + " , not found";
+    return msg;
+  }
 
 }
