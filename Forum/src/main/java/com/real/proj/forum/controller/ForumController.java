@@ -33,8 +33,8 @@ public class ForumController {
   public Forum createForum(@RequestBody String subject, Principal loggedInUser) throws EntityNotFoundException {
     try {
       return this.forumService.createForum(subject, loggedInUser.getName());
-    } catch (Exception arg3) {
-      this.handleException(arg3);
+    } catch (Exception ex) {
+      this.handleException(ex);
       return null;
     }
   }
@@ -43,19 +43,16 @@ public class ForumController {
   public Forum getForum(@Valid @PathVariable String forumId, Principal loggedInUser, WebRequest request)
       throws EntityNotFoundException, SecurityPermissionException {
     Forum f = null;
-
     try {
       f = this.forumService.getForum(forumId);
-    } catch (Exception arg5) {
-      this.handleException(arg5);
+    } catch (Exception ex) {
+      this.handleException(ex);
     }
-
     if (!this.hasRequiredPermission(loggedInUser, request, f)) {
       logger.error("User, " + loggedInUser.getName() + " , is not permitted to view the forum");
       throw new SecurityPermissionException();
-    } else {
-      return f;
     }
+    return f;
   }
 
   @RequestMapping(path = { "/forum/{forumId}/subscribe" }, method = { RequestMethod.POST }, produces = {
@@ -63,8 +60,8 @@ public class ForumController {
   public Forum subscribeMe(@PathVariable String forumId, Principal loggedInUser) throws EntityNotFoundException {
     try {
       return this.forumService.subscribeUser(forumId, loggedInUser.getName());
-    } catch (Exception arg3) {
-      this.handleException(arg3);
+    } catch (Exception ex) {
+      this.handleException(ex);
       return null;
     }
   }
@@ -74,18 +71,16 @@ public class ForumController {
   public void subscribeUser(@PathVariable String forumId, @PathVariable String userId, Principal loggedInUser,
       WebRequest request) throws EntityNotFoundException, SecurityPermissionException {
     Forum f = null;
-
     try {
       f = this.forumService.getForum(forumId);
-    } catch (Exception arg7) {
-      this.handleException(arg7);
+    } catch (Exception ex) {
+      this.handleException(ex);
     }
-
     if (request.isUserInRole("sa") && f.getOwner().getEmail().equals(userId)) {
       try {
         this.forumService.addSubscriber(forumId, userId);
-      } catch (Exception arg6) {
-        this.handleException(arg6);
+      } catch (Exception ex) {
+        this.handleException(ex);
       }
 
     } else {
@@ -97,13 +92,34 @@ public class ForumController {
   public Iterable<Forum> forumsBelongingTo(Principal loggedInUser) throws EntityNotFoundException {
     try {
       return this.forumService.getForums(loggedInUser.getName());
-    } catch (Exception arg2) {
-      this.handleException(arg2);
+    } catch (Exception ex) {
+      this.handleException(ex);
       return null;
     }
   }
 
-  public void postTextMessage(Long forumId, String message, Principal loggedInUser) {
+  @RequestMapping(path = { "/forum/{forumId}/post" }, method = { RequestMethod.POST })
+  public void postTextMessage(@PathVariable String forumId, @RequestBody String message, Principal loggedInUser,
+      WebRequest request) throws EntityNotFoundException, SecurityPermissionException {
+    if (logger.isDebugEnabled())
+      logger.debug("posting new message to " + forumId);
+    // security check
+    Forum f = null;
+    try {
+      f = forumService.getForum(forumId);
+    } catch (Exception ex) {
+      handleException(ex);
+    }
+    if (!this.hasRequiredPermission(loggedInUser, request, f)) {
+      if (logger.isDebugEnabled())
+        logger.debug("User does not have permission to post to this forum " + loggedInUser.getName());
+      throw new SecurityPermissionException();
+    }
+    try {
+      forumService.postMessage(message, forumId, loggedInUser.getName());
+    } catch (Exception ex) {
+      handleException(ex);
+    }
   }
 
   public void uploadFile(Long forumId, Principal loggedInUser) {
@@ -116,12 +132,11 @@ public class ForumController {
     return request.isUserInRole("sa") || this.userBelongsToForum(f, loggedInUser.getName());
   }
 
-  private boolean userBelongsToForum(Forum f, String name) {
-    Iterator arg3 = f.getSubscribers().iterator();
-
-    while (arg3.hasNext()) {
-      User usr = (User) arg3.next();
-      if (usr.getEmail().equals(name)) {
+  private boolean userBelongsToForum(Forum f, String user) {
+    Iterator<User> subscribers = f.getSubscribers().iterator();
+    while (subscribers.hasNext()) {
+      User usr = (User) subscribers.next();
+      if (usr.getEmail().equals(user)) {
         return true;
       }
     }

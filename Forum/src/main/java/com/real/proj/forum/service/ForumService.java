@@ -11,6 +11,7 @@ import com.real.proj.controller.exception.DBException;
 import com.real.proj.controller.exception.EntityNotFoundException;
 import com.real.proj.forum.model.Forum;
 import com.real.proj.forum.model.Message;
+import com.real.proj.forum.model.MessageType;
 import com.real.proj.forum.model.User;
 
 @Service
@@ -88,20 +89,23 @@ public class ForumService {
     }
   }
 
-  public Forum postMessage(String forumId, Message msg) throws Exception {
+  public Forum postMessage(String message, String forumId, String userId) throws Exception {
     if (logger.isDebugEnabled()) {
-      logger.debug("forumId : " + forumId + " , Messasge " + msg);
+      logger.debug("forumId : " + forumId + " , Messasge " + message);
     }
 
-    if (forumId != null && msg != null) {
+    if (forumId != null && message != null) {
       Forum f = this.getForum(forumId);
-
+      User author = userService.getUser(userId);
+      Message post = new Message(MessageType.TEXT);
+      post.setMessage(message);
+      post.setAuthor(author);
       try {
-        f.postMessage(msg);
+        f.postMessage(post);
         f = (Forum) this.forumRepository.save(f);
         return f;
-      } catch (Exception arg4) {
-        logger.error("Error while posting the message", arg4);
+      } catch (Exception ex) {
+        logger.error("Error while posting the message", ex);
         throw new DBException("Error while posting the message");
       }
     } else {
@@ -113,11 +117,10 @@ public class ForumService {
     Forum f;
     try {
       f = (Forum) this.forumRepository.findOne(forumId);
-    } catch (Exception arg3) {
+    } catch (Exception ex) {
       if (logger.isDebugEnabled()) {
-        logger.debug("Error getting forum", arg3);
+        logger.debug("Error getting forum", ex);
       }
-
       throw new DBException("Error while getting forum details");
     }
 
@@ -138,8 +141,8 @@ public class ForumService {
 
   public Forum getMessagesForForum(String forumId, int start, int count) throws Exception {
     Forum f = (Forum) this.forumRepository.findOne(forumId);
-    List messages = MessageService.getMessages(f, start, count);
-    f.setMessages(messages);
+    // List messages = MessageService.getMessages(f, start, count);
+    f.getMessages();
     return f;
   }
 

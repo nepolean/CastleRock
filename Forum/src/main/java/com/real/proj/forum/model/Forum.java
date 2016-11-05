@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
 public class Forum {
-  
+
   @Id
   String id;
   User owner;
@@ -18,17 +18,16 @@ public class Forum {
   List<User> subscribers;
   List<Message> messages;
   boolean isClosed;
-  
+
   public Forum() {
-    
+
   }
-  
+
   public Forum(String subject) {
     this.subject = subject;
     createdDate = new Date();
   }
 
-  
   public String getSubject() {
     return subject;
   }
@@ -41,22 +40,16 @@ public class Forum {
     return owner;
   }
 
-
   public void setOwner(User owner) {
     this.owner = owner;
   }
 
-
   public void addSubscribers(List<User> subscribers) {
     getSubscribers().addAll(subscribers);
   }
-  
+
   public void addSubscriber(User subscriber) {
     getSubscribers().add(subscriber);
-  }
-  
-  public void postMessage(Message msg) {
-    getMessages().add(msg);
   }
 
   public List<Message> getMessages() {
@@ -64,18 +57,16 @@ public class Forum {
       messages = new ArrayList<Message>();
     return messages;
   }
-  
+
   public List<User> getSubscribers() {
     if (subscribers == null)
       subscribers = new ArrayList<User>();
     return subscribers;
   }
 
-
   public String getId() {
     return id;
   }
-
 
   public void setMessages(List<Message> messages) {
     this.messages = messages;
@@ -103,6 +94,10 @@ public class Forum {
 
   public void setSubscribers(List<User> subscribers) {
     this.subscribers = subscribers;
+  }
+
+  public void postMessage(Message post) {
+    this.getMessages().add(post);
   }
 
 }
