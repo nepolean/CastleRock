@@ -9,6 +9,7 @@ import javax.validation.Valid;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,7 +31,8 @@ public class ForumController {
   private ForumService forumService;
 
   @RequestMapping(path = { "/forum/create" }, method = { RequestMethod.POST }, produces = { "application/json" })
-  public Forum createForum(@RequestBody String subject, Principal loggedInUser) throws EntityNotFoundException {
+  public Forum createForum(@Validated @RequestBody String subject, Principal loggedInUser)
+      throws EntityNotFoundException {
     try {
       return this.forumService.createForum(subject, loggedInUser.getName());
     } catch (Exception ex) {
@@ -49,7 +51,8 @@ public class ForumController {
       this.handleException(ex);
     }
     if (!this.hasRequiredPermission(loggedInUser, request, f)) {
-      logger.error("User, " + loggedInUser.getName() + " , is not permitted to view the forum");
+      if (logger.isErrorEnabled())
+        logger.error("User, " + loggedInUser.getName() + " , is not permitted to view the forum");
       throw new SecurityPermissionException();
     }
     return f;
@@ -76,7 +79,7 @@ public class ForumController {
     } catch (Exception ex) {
       this.handleException(ex);
     }
-    if (request.isUserInRole("sa") && f.getOwner().getEmail().equals(userId)) {
+    if (request.isUserInRole("sa") || f.getOwner().getEmail().equals(userId)) {
       try {
         this.forumService.addSubscriber(forumId, userId);
       } catch (Exception ex) {

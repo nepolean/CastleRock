@@ -39,8 +39,9 @@ public class ForumService {
 
       try {
         f = (Forum) this.forumRepository.save(f);
-      } catch (Exception arg6) {
-        logger.error("Error while creating the forum", arg6);
+      } catch (Exception ex) {
+        if (logger.isErrorEnabled())
+          logger.error("Error while creating the forum", ex);
         throw new DBException();
       }
 
@@ -48,13 +49,13 @@ public class ForumService {
 
       try {
         this.userService.save(user);
-      } catch (Exception arg5) {
-        ;
+      } catch (Exception ex) {
+        // TODO handle this case
       }
-
       return f;
     } else {
-      logger.error("Arguments are empty " + subject + " , " + userName);
+      if (logger.isErrorEnabled())
+        logger.error("Arguments are empty " + subject + " , " + userName);
       throw new IllegalArgumentException("Arguments are empty");
     }
   }

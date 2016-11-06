@@ -3,16 +3,20 @@ package com.real.proj.forum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
+import com.real.proj.controller.exception.handler.SimpleError;
 import com.real.proj.forum.model.User;
 import com.real.proj.forum.service.UserRepository;
 
 @SpringBootApplication
-@ComponentScan
+@ComponentScan(basePackages = { "com.real.proj.controller.exception", "com.real.proj.controller.exception.handler",
+    "com.real.proj.forum.controller", "com.real.proj.forum.service" })
 @EnableMongoRepositories
+@EnableAutoConfiguration
 public class ForumServiceApp implements CommandLineRunner {
 
   @Autowired
@@ -31,13 +35,15 @@ public class ForumServiceApp implements CommandLineRunner {
   }
 
   public void run(String... args) throws Exception {
+    SimpleError err = new SimpleError("");
+
     System.out.println("User Service " + userRepository);
     User user = userRepository.findByEmail("user");
     if (null == user) {
       User dummyUser = new User();
       dummyUser.setFirstName("Dummy");
       dummyUser.setLastName("Dummy");
-      dummyUser.setEmail("dummy@gmail.com");
+      dummyUser.setEmail("user");
       dummyUser.setMobileNo("99999999");
       System.out.println("User service " + userRepository);
       userRepository.save(dummyUser);
