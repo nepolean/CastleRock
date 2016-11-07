@@ -45,11 +45,13 @@ public class ForumService {
         throw new DBException();
       }
 
-      user.addSubscription(f.getId());
-
       try {
-        this.userService.save(user);
+        user = this.userService.subscribe(userName, f.getId());
+        if (logger.isInfoEnabled())
+          logger.info("added subscription to the user" + user);
+        logger.info(user.getSubscriptions());
       } catch (Exception ex) {
+        ex.printStackTrace();
         // TODO handle this case
       }
       return f;
@@ -63,14 +65,12 @@ public class ForumService {
   private User getUser(String userName) throws Exception {
     User user = this.userService.getUser(userName);
     if (user == null) {
-      if (logger.isDebugEnabled()) {
+      if (logger.isErrorEnabled()) {
         logger.error("User not found in db " + userName);
       }
-
       throw new EntityNotFoundException(userName, "Entity NotFound", "User");
-    } else {
-      return user;
     }
+    return user;
   }
 
   public Forum addSubscriber(String forumId, User subscriber) throws Exception {
@@ -83,11 +83,19 @@ public class ForumService {
     try {
       f.addSubscriber(subscriber);
       f = (Forum) this.forumRepository.save(f);
-      return f;
-    } catch (Exception arg4) {
-      logger.error("Error while adding subscriber", arg4);
+    } catch (Exception ex) {
+      if (logger.isErrorEnabled())
+        logger.error("Error while adding subscriber", ex);
       throw new DBException("Error while adding subscriber");
     }
+    try {
+      this.userService.subscribe(subscriber.getEmail(), f.getId());
+    } catch (Exception ex) {
+      if (logger.isErrorEnabled())
+        logger.error("Error while adding subscription to the user");
+      // TODO shouldn't we add the subscription to the user subscriber list?
+    }
+    return f;
   }
 
   public Forum postMessage(String message, String forumId, String userId) throws Exception {
@@ -191,8 +199,8 @@ public class ForumService {
     }
   }
 
-  public void addSubscriber(String forumId, String userId) throws Exception {
+  public Forum addSubscriber(String forumId, String userId) throws Exception {
     User user = this.userService.getUser(userId);
-    this.addSubscriber(forumId, user);
+    return this.addSubscriber(forumId, user);
   }
 }

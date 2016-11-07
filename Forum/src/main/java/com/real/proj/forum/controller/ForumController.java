@@ -3,12 +3,12 @@ package com.real.proj.forum.controller;
 import java.security.Principal;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
 import javax.validation.Valid;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,8 +27,8 @@ import com.real.proj.forum.service.ForumService;
 @RestController
 public class ForumController {
   private static final Logger logger = LogManager.getLogger(ForumController.class);
-  @Autowired
-  private ForumService forumService;
+  // @Autowired
+  private ForumService forumService = new ForumService();
 
   @RequestMapping(path = { "/forum/create" }, method = { RequestMethod.POST }, produces = { "application/json" })
   public Forum createForum(@Validated @RequestBody String subject, Principal loggedInUser)
@@ -148,12 +148,16 @@ public class ForumController {
   }
 
   private void handleException(Exception ex) throws EntityNotFoundException {
+    String uuid = UUID.randomUUID().toString();
+    logger.warn(uuid);
+    if (logger.isErrorEnabled())
+      logger.error("Error ", ex);
     if (ex instanceof EntityNotFoundException) {
       throw (EntityNotFoundException) ex;
     } else if (ex instanceof DBException) {
-      throw (DBException) ex;
+      throw new DBException(uuid);
     } else {
-      throw new RuntimeException();
+      throw new RuntimeException(uuid);
     }
   }
 }

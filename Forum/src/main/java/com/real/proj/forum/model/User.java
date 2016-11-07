@@ -54,7 +54,9 @@ public class User {
   }
 
   public List<String> getSubscriptions() {
-    return this.subscriptions == null ? (this.subscriptions = new ArrayList()) : this.subscriptions;
+    if (subscriptions == null)
+      subscriptions = new ArrayList<String>();
+    return subscriptions;
   }
 
   public List<Forum> getSubscriptions(PageRequest pageRequest) {
