@@ -51,6 +51,13 @@ public class ControllerValidationHandler {
     return new SimpleError(ex.toString());
   }
 
+  @ExceptionHandler({ java.lang.IllegalStateException.class })
+  @ResponseStatus(HttpStatus.PRECONDITION_FAILED)
+  @ResponseBody
+  public SimpleError handleIllegalState(IllegalStateException ex) {
+    return new SimpleError(ex.toString());
+  }
+
   @ExceptionHandler({ java.lang.RuntimeException.class })
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   @ResponseBody

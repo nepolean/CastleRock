@@ -11,10 +11,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,20 +27,25 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.real.proj.forum.model.Forum;
 import com.real.proj.forum.model.User;
-import com.real.proj.forum.service.ForumService;
+import com.real.proj.forum.service.IForumService;
 import com.real.proj.forum.service.UserRepository;
+import com.real.proj.forum.service.UserService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @ComponentScan(basePackages = { "com.real.proj.controller.exception", "com.real.proj.controller.exception.handler",
     "com.real.proj.forum.controller", "com.real.proj.forum.service" })
+@EnableMongoRepositories
+@EnableAutoConfiguration
 public class ForumControllerTest {
 
   @Autowired
+  private UserService userService;
+  @Autowired
   private UserRepository userRepository;
   @Autowired
-  private ForumService forumService;
+  private IForumService forumService;
   @Autowired
   private TestRestTemplate restClient;
   @LocalServerPort
@@ -54,6 +61,7 @@ public class ForumControllerTest {
     base = new URL("http://localhost:" + port);
     createDummyUser();
     createDummyForum();
+    userService.getUser("user");
   }
 
   private void createDummyUser() {

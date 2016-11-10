@@ -6,12 +6,12 @@ import org.springframework.stereotype.Service;
 import com.real.proj.forum.model.User;
 
 @Service
-public class UserServiceImpl {
+public class UserService {
 
   @Autowired
   private UserRepository userRepository;
 
-  public UserServiceImpl() {
+  public UserService() {
 
   }
 

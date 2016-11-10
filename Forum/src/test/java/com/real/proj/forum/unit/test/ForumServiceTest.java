@@ -3,6 +3,7 @@ package com.real.proj.forum.unit.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.real.proj.forum.model.Forum;
 import com.real.proj.forum.model.User;
 import com.real.proj.forum.service.ForumRepository;
-import com.real.proj.forum.service.ForumService;
+import com.real.proj.forum.service.IForumService;
 import com.real.proj.forum.service.UserRepository;
 
 @RunWith(SpringRunner.class)
@@ -29,7 +30,7 @@ import com.real.proj.forum.service.UserRepository;
 public class ForumServiceTest {
 
   @Autowired
-  ForumService forumService;
+  IForumService forumService;
   @Autowired
   UserRepository userRepository;
   @Autowired
@@ -101,12 +102,52 @@ public class ForumServiceTest {
   }
 
   @Test
+  public void onlyOwnerCanSubscribe()
+
+  @Test
   public void testAddSubscriber() throws Exception {
     assertNotNull(forumService);
     Forum f = forumService.createForum("TestForum", default_user);
     Forum updatedForum = forumService.addSubscriber(f.getId(), this.users.get(1).getEmail());
     assertNotNull(updatedForum);
     assertEquals(updatedForum.getSubscribers().size(), 2);
+  }
+
+  @Test
+  public void testCloseForum() throws Exception {
+    assertNotNull(forumService);
+    Forum f = forumService.createForum("TestForum", default_user);
+    forumService.closeForum(f.getId());
+    f = forumService.getForum(f.getId());
+    assert (f.isClosed() == true);
+  }
+
+  @Test
+  public void cannotPostToClosedForum() throws Exception {
+    Forum f = forumService.createForum("TestForum", default_user);
+    forumService.closeForum(f.getId());
+    f = forumService.getForum(f.getId());
+    try {
+      forumService.postMessage("Some Message", f.getId(), default_user);
+      fail("should not allow to post to a closed forum");
+    } catch (Exception ex) {
+
+    }
+
+  }
+
+  @Test
+  public void cannotSubscribeToClosedForum() throws Exception {
+    Forum f = forumService.createForum("TestForum", default_user);
+    forumService.closeForum(f.getId());
+    f = forumService.getForum(f.getId());
+    try {
+      forumService.subscribeUser(f.getId(), default_user);
+      fail("should not allow to subscribe to a closed forum");
+    } catch (Exception ex) {
+
+    }
+
   }
 
   @After

@@ -16,8 +16,10 @@ public class Forum {
   String subject;
   Date createdDate;
   List<User> subscribers;
+  List<SubscriptionRequest> subscriptionRequests;
   List<Message> messages;
   boolean isClosed;
+  boolean isAutoSubscriptionEnabled;
 
   public Forum() {
 
@@ -50,6 +52,16 @@ public class Forum {
 
   public void addSubscriber(User subscriber) {
     getSubscribers().add(subscriber);
+  }
+
+  public void addSubscriptionRequest(SubscriptionRequest request) {
+    getSubscriptionRequests().add(request);
+  }
+
+  public List<SubscriptionRequest> getSubscriptionRequests() {
+    if (this.subscriptionRequests == null)
+      this.subscriptionRequests = new ArrayList<SubscriptionRequest>();
+    return this.subscriptionRequests;
   }
 
   public List<Message> getMessages() {
@@ -98,6 +110,14 @@ public class Forum {
 
   public void postMessage(Message post) {
     this.getMessages().add(post);
+  }
+
+  public boolean isAutoSubscriptionEnabled() {
+    return isAutoSubscriptionEnabled;
+  }
+
+  public void setAutoSubscriptionEnabled(boolean isAutoSubscriptionEnabled) {
+    this.isAutoSubscriptionEnabled = isAutoSubscriptionEnabled;
   }
 
 }
