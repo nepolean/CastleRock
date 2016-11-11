@@ -1,5 +1,6 @@
 package com.real.proj.forum.service;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.real.proj.controller.exception.DBException;
+import com.real.proj.controller.exception.DBException.Operation;
 import com.real.proj.controller.exception.EntityNotFoundException;
 import com.real.proj.controller.exception.SecurityPermissionException;
 import com.real.proj.forum.model.Forum;
@@ -23,8 +25,13 @@ public class ForumService implements IForumService {
   private static final Logger logger = LogManager.getLogger(ForumService.class);
   @Autowired
   private ForumRepository forumRepository;
-  @Autowired
   private UserService userService;
+
+  @Autowired
+  public void setUserService(UserService userService) {
+    this.userService = userService;
+    System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" + userService);
+  }
 
   /*
    * (non-Javadoc)
@@ -47,8 +54,8 @@ public class ForumService implements IForumService {
       f = (Forum) this.forumRepository.save(f);
     } catch (Exception ex) {
       if (logger.isErrorEnabled())
-        logger.error("Error while adding subscriber", ex);
-      throw new DBException("Error while adding subscriber");
+        logger.error("Error while adding subscriber " + subscriber.getEmail(), ex);
+      throw new DBException("Subscriber", DBException.Operation.adding);
     }
     try {
       this.userService.subscribe(subscriber.getEmail(), f.getId());
@@ -84,7 +91,7 @@ public class ForumService implements IForumService {
       } catch (Exception ex) {
         if (logger.isErrorEnabled())
           logger.error("Error while creating the forum", ex);
-        throw new DBException();
+        throw new DBException("Forum", Operation.creating);
       }
 
       try {
@@ -114,6 +121,7 @@ public class ForumService implements IForumService {
   public String subscribeMe(String forumId, String loggedInUser) throws Exception {
     Forum f = this.getForum(forumId);
     User user = this.getUser(loggedInUser);
+    this.assertForumNotClosed(f);
     String message = "";
     if (f.isAutoSubscriptionEnabled()) {
       f.addSubscriber(user);
@@ -128,7 +136,7 @@ public class ForumService implements IForumService {
     } catch (Exception ex) {
       if (logger.isErrorEnabled())
         logger.error("Error while updating forum", ex);
-      throw new DBException("Error while updating forum");
+      throw new DBException("Subscriber", DBException.Operation.creating);
     }
 
     try {
@@ -148,7 +156,7 @@ public class ForumService implements IForumService {
    * com.real.proj.forum.service.INotificationService#getForum(java.lang.String)
    */
   @Override
-  public Forum getRequestedForum(String requestedBy, String forumId) throws Exception {
+  public Forum getRequestedForum(String forumId, String requestedBy) throws Exception {
     Forum f = this.getForum(forumId);
     this.assertAuthorized(requestedBy, f);
     return f;
@@ -160,9 +168,9 @@ public class ForumService implements IForumService {
       f = (Forum) this.forumRepository.findOne(forumId);
     } catch (Exception ex) {
       if (logger.isErrorEnabled()) {
-        logger.debug("Error getting forum", ex);
+        logger.debug("Error getting forum " + forumId, ex);
       }
-      throw new DBException("Error while getting forum details");
+      throw new DBException("Forum", Operation.retrieving);
     }
 
     if (f == null) {
@@ -181,11 +189,13 @@ public class ForumService implements IForumService {
    * String)
    */
   @Override
-  public Iterable<Forum> getForums(String userName) throws Exception {
+  public List<Forum> getForums(String userName) throws Exception {
     User loggedUser = this.getUser(userName);
     List<String> subscriptions = loggedUser.getSubscriptions();
-    Iterable<Forum> forums = this.forumRepository.findAll(subscriptions);
-    return forums;
+    Iterable<Forum> myForums = this.forumRepository.findAll(subscriptions);
+    List<Forum> result = new ArrayList<Forum>();
+    myForums.forEach(result::add);
+    return result;
   }
 
   /*
@@ -230,7 +240,7 @@ public class ForumService implements IForumService {
         return f;
       } catch (Exception ex) {
         logger.error("Error while posting the message", ex);
-        throw new DBException("Error while posting the message");
+        throw new DBException("Post", Operation.creating);
       }
     } else {
       throw new IllegalArgumentException("Invalid arguments");
@@ -277,15 +287,23 @@ public class ForumService implements IForumService {
       forumRepository.save(f);
     } catch (Exception ex) {
       if (logger.isErrorEnabled()) {
-        logger.error("Error while closing the forum", ex);
+        logger.error("Error while closing the forum with id " + forumId, ex);
       }
-      throw new DBException("Error while closing the forum " + forumId);
+      throw new DBException("Forum", DBException.Operation.updating);
     }
 
   }
 
   private User getUser(String userName) throws Exception {
-    User user = this.userService.getUser(userName);
+    User user = null;
+    try {
+      System.out.println(userService);
+      user = this.userService.getUser(userName);
+    } catch (Exception ex) {
+      if (logger.isErrorEnabled())
+        logger.error("Error while retrieving user " + userName, ex);
+      throw new DBException("User", Operation.retrieving);
+    }
     if (user == null) {
       if (logger.isErrorEnabled()) {
         logger.error("User not found in db " + userName);
@@ -305,7 +323,7 @@ public class ForumService implements IForumService {
 
   private void assertOwnership(Forum f, String loggedInUser) throws Exception {
     User owner = this.getUser(loggedInUser);
-    if (!owner.getEmail().equals(loggedInUser)) {
+    if (!f.getOwner().getEmail().equals(loggedInUser)) {
       if (logger.isErrorEnabled())
         logger.error("User, " + loggedInUser + " is not authorized");
       throw new SecurityPermissionException();

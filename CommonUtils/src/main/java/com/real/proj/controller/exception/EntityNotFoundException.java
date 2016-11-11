@@ -47,7 +47,7 @@ public class EntityNotFoundException extends Exception {
   }
 
   public String toString() {
-    String msg = type + "with id," + this.getId() + " , not found";
+    String msg = type + " with id," + this.getId() + ", not found";
     return msg;
   }
 

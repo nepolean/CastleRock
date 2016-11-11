@@ -38,6 +38,10 @@ public class ForumServiceApp implements CommandLineRunner {
     SimpleError err = new SimpleError("");
 
     System.out.println("User Service " + userRepository);
+    createFewUsers();
+  }
+
+  private void createFewUsers() {
     User user = userRepository.findByEmail("user");
     if (null == user) {
       User dummyUser = new User();
@@ -49,6 +53,16 @@ public class ForumServiceApp implements CommandLineRunner {
       userRepository.save(dummyUser);
       System.out.println("Dummy Saved");
     }
+    user = userRepository.findByEmail("user1");
+    if (null == user) {
+      User dummyUser = new User();
+      dummyUser.setFirstName("Dummy");
+      dummyUser.setLastName("Dummy");
+      dummyUser.setEmail("user1");
+      dummyUser.setMobileNo("99999999");
+      System.out.println("User service " + userRepository);
+      userRepository.save(dummyUser);
+      System.out.println("Dummy Saved");
+    }
   }
-
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import com.real.proj.controller.exception.DBException;
 import com.real.proj.controller.exception.EntityNotFoundException;
 import com.real.proj.controller.exception.SecurityPermissionException;
 
@@ -49,6 +50,13 @@ public class ControllerValidationHandler {
   @ResponseBody
   public SimpleError handleEntityNotFound(EntityNotFoundException ex) {
     return new SimpleError(ex.toString());
+  }
+
+  @ExceptionHandler({ com.real.proj.controller.exception.DBException.class })
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  @ResponseBody
+  public SimpleError handleEntityNotFound(DBException ex) {
+    return new SimpleError(ex.getMessage());
   }
 
   @ExceptionHandler({ java.lang.IllegalStateException.class })

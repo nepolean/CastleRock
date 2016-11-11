@@ -15,9 +15,10 @@ public class UserService {
 
   }
 
-  public void setUserRepository(UserRepository userRepository) {
-    this.userRepository = userRepository;
-  }
+  /*
+   * public void setUserRepository(UserRepository userRepository) {
+   * this.userRepository = userRepository; }
+   */
 
   public User getUser(String userMail) {
     return userRepository.findByEmail(userMail);

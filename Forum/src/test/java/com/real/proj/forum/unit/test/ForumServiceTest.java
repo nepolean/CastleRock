@@ -60,11 +60,11 @@ public class ForumServiceTest {
     users.add(userRepository.save(u1));
 
     User u2 = new User();
-    u1.setEmail("user2@email.com");
+    u2.setEmail("user2@email.com");
     users.add(userRepository.save(u2));
 
     User u3 = new User();
-    u1.setEmail("user3@email.com");
+    u3.setEmail("user3@email.com");
     users.add(userRepository.save(u3));
 
   }
@@ -83,16 +83,17 @@ public class ForumServiceTest {
   public void testGetForums() throws Exception {
     assertNotNull(forumService);
     forumService.createForum("TestForum", default_user);
-    Iterable<Forum> forums = forumService.getForums(default_user);
+    forumService.createForum("TestForum", this.users.get(1).getEmail());
+    List<Forum> forums = forumService.getForums(default_user);
     assertNotNull(forums);
-    assertTrue(forums.iterator().hasNext());
+    assert (forums.size() == 1);
   }
 
   @Test
   public void testPostMessage() throws Exception {
     assertNotNull(forumService);
     forumService.createForum("TestForum", default_user);
-    Iterable<Forum> forums = forumService.getForums(default_user);
+    List<Forum> forums = forumService.getForums(default_user);
     assertNotNull(forums);
     assertTrue(forums.iterator().hasNext());
     Forum first = forums.iterator().next();
@@ -102,31 +103,59 @@ public class ForumServiceTest {
   }
 
   @Test
-  public void onlyOwnerCanSubscribe()
-
-  @Test
   public void testAddSubscriber() throws Exception {
     assertNotNull(forumService);
     Forum f = forumService.createForum("TestForum", default_user);
-    Forum updatedForum = forumService.addSubscriber(f.getId(), this.users.get(1).getEmail());
+    Forum updatedForum = forumService.addUserToForum(f.getId(), default_user, this.users.get(1).getEmail());
     assertNotNull(updatedForum);
     assertEquals(updatedForum.getSubscribers().size(), 2);
+  }
+
+  @Test
+  public void onlyOwnerCanSubscribe() throws Exception {
+    assertNotNull(forumService);
+    Forum f = forumService.createForum("TestForum", default_user);
+    try {
+      forumService.addUserToForum(f.getId(), this.users.get(1).getEmail(), this.users.get(2).getEmail());
+      fail("only a owner can subscriber other users");
+    } catch (Exception ex) {
+    }
+  }
+
+  @Test
+  public void automaticallySubscribeIfIndicated() throws Exception {
+    assertNotNull(forumService);
+    Forum f = forumService.createForum("TestForum", default_user);
+    f.setAutoSubscriptionEnabled(true);
+    f = forumRepository.save(f);
+    String result = forumService.subscribeMe(f.getId(), this.users.get(1).getEmail());
+    assert (result.matches("Your subscription has been accepted"));
+  }
+
+  @Test
+  public void shouldCreateASubscriptionRequest() throws Exception {
+    assertNotNull(forumService);
+    Forum f = forumService.createForum("TestForum", default_user);
+    f.setAutoSubscriptionEnabled(false);
+    f = forumRepository.save(f);
+    String result = forumService.subscribeMe(f.getId(), this.users.get(1).getEmail());
+    assert (result.startsWith("A subscription request has been created."));
   }
 
   @Test
   public void testCloseForum() throws Exception {
     assertNotNull(forumService);
     Forum f = forumService.createForum("TestForum", default_user);
-    forumService.closeForum(f.getId());
-    f = forumService.getForum(f.getId());
+    forumService.closeForum(f.getId(), default_user);
+    f = forumService.getRequestedForum(f.getId(), default_user);
     assert (f.isClosed() == true);
   }
 
   @Test
   public void cannotPostToClosedForum() throws Exception {
     Forum f = forumService.createForum("TestForum", default_user);
-    forumService.closeForum(f.getId());
-    f = forumService.getForum(f.getId());
+    forumService.closeForum(f.getId(), default_user);
+    f = forumService.getRequestedForum(f.getId(), default_user);
     try {
       forumService.postMessage("Some Message", f.getId(), default_user);
       fail("should not allow to post to a closed forum");
@@ -139,10 +168,10 @@ public class ForumServiceTest {
   @Test
   public void cannotSubscribeToClosedForum() throws Exception {
     Forum f = forumService.createForum("TestForum", default_user);
-    forumService.closeForum(f.getId());
-    f = forumService.getForum(f.getId());
+    forumService.closeForum(f.getId(), default_user);
+    f = forumService.getRequestedForum(f.getId(), default_user);
     try {
-      forumService.subscribeUser(f.getId(), default_user);
+      forumService.subscribeMe(f.getId(), default_user);
       fail("should not allow to subscribe to a closed forum");
     } catch (Exception ex) {
 

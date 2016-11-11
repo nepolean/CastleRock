@@ -1,12 +1,14 @@
 package com.real.proj.forum.controller;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.UUID;
 
 import javax.validation.Valid;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,14 +22,13 @@ import com.real.proj.controller.exception.DBException;
 import com.real.proj.controller.exception.EntityNotFoundException;
 import com.real.proj.controller.exception.SecurityPermissionException;
 import com.real.proj.forum.model.Forum;
-import com.real.proj.forum.service.ForumService;
 import com.real.proj.forum.service.IForumService;
 
 @RestController
 public class ForumController {
   private static final Logger logger = LogManager.getLogger(ForumController.class);
-  // @Autowired
-  private IForumService forumService = new ForumService();
+  @Autowired
+  private IForumService forumService;
 
   @RequestMapping(path = { "/forum/create" }, method = { RequestMethod.POST }, produces = { "application/json" })
   public Forum createForum(@Validated @RequestBody String subject, Principal loggedInUser) throws Exception {
@@ -44,13 +45,14 @@ public class ForumController {
       throws Exception {
     Forum f = null;
     try {
-      f = this.forumService.getRequestedForum(loggedInUser.getName(), forumId);
+      f = this.forumService.getRequestedForum(forumId, loggedInUser.getName());
     } catch (Exception ex) {
       this.handleException(ex);
     }
     return f;
   }
 
+  // TODO: Result must be handled correctly
   @RequestMapping(path = { "/forum/{forumId}/subscribe" }, method = { RequestMethod.POST }, produces = {
       "application/json" })
   public String subscribeMe(@Valid @PathVariable String forumId, Principal loggedInUser) throws Exception {
@@ -76,7 +78,7 @@ public class ForumController {
   }
 
   @RequestMapping(path = { "/forum" }, method = { RequestMethod.GET }, produces = { "application/json" })
-  public Iterable<Forum> forumsBelongingTo(Principal loggedInUser) throws Exception {
+  public List<Forum> forumsBelongingTo(Principal loggedInUser) throws Exception {
     try {
       return this.forumService.getForums(loggedInUser.getName());
     } catch (Exception ex) {
@@ -121,7 +123,7 @@ public class ForumController {
     } else if (ex instanceof SecurityPermissionException) {
       throw ex;
     } else if (ex instanceof DBException) {
-      throw new DBException(uuid);
+      ((DBException) ex).withUUID(uuid);
     } else if (ex instanceof IllegalStateException) {
       throw (IllegalStateException) ex;
     } else {

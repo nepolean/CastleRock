@@ -34,7 +34,12 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-test</artifactId>
         <scope>test</scope>
-    </dependency>      
+    </dependency>
+    <dependency>
+    	<groupId>RealService</groupId>
+    	<artifactId>CommonUtils</artifactId>
+    	<version>1.0.0</version>
+    </dependency>
   </dependencies>
   <build>
 	  <plugins>
