@@ -1,12 +1,13 @@
 package com.real.proj.forum.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
-public class Message {
+public class Message implements Serializable {
   @Id
   String id;
   String message;

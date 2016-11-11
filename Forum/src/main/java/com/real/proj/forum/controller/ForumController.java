@@ -10,6 +10,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -66,13 +67,15 @@ public class ForumController {
 
   @RequestMapping(path = { "/forum/{forumId}/subscribe/{userId}" }, method = { RequestMethod.POST }, produces = {
       "application/json" })
-  public void subscribeUser(@Valid @PathVariable String forumId, @Valid @PathVariable String userId,
+  public ResponseEntity<String> subscribeUser(@Valid @PathVariable String forumId, @Valid @PathVariable String userId,
       Principal loggedInUser, WebRequest request) throws Exception {
 
     try {
       this.forumService.addUserToForum(forumId, loggedInUser.getName(), userId);
+      return ResponseEntity.ok("successful");
     } catch (Exception ex) {
       this.handleException(ex);
+      return null; // will never get here
     }
 
   }
@@ -80,7 +83,8 @@ public class ForumController {
   @RequestMapping(path = { "/forum" }, method = { RequestMethod.GET }, produces = { "application/json" })
   public List<Forum> forumsBelongingTo(Principal loggedInUser) throws Exception {
     try {
-      return this.forumService.getForums(loggedInUser.getName());
+      List<Forum> response = this.forumService.getForums(loggedInUser.getName());
+      return response;
     } catch (Exception ex) {
       this.handleException(ex);
       return null;
@@ -88,15 +92,17 @@ public class ForumController {
   }
 
   @RequestMapping(path = { "/forum/{forumId}/post" }, method = { RequestMethod.POST })
-  public void postTextMessage(@Valid @PathVariable String forumId, @Valid @RequestBody String message,
+  public ResponseEntity<String> postTextMessage(@Valid @PathVariable String forumId, @Valid @RequestBody String message,
       Principal loggedInUser, WebRequest request) throws Exception {
     if (logger.isDebugEnabled())
       logger.debug("posting new message to " + forumId);
     Forum f = null;
     try {
       f = forumService.postMessage(message, forumId, loggedInUser.getName());
+      return ResponseEntity.ok("successful");
     } catch (Exception ex) {
       handleException(ex);
+      return null;
     }
 
   }

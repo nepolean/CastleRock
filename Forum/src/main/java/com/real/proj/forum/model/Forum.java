@@ -8,7 +8,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
-public class Forum {
+public class Forum implements java.io.Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   @Id
   String id;

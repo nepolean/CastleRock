@@ -30,7 +30,6 @@ public class ForumService implements IForumService {
   @Autowired
   public void setUserService(UserService userService) {
     this.userService = userService;
-    System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" + userService);
   }
 
   /*
@@ -93,12 +92,10 @@ public class ForumService implements IForumService {
           logger.error("Error while creating the forum", ex);
         throw new DBException("Forum", Operation.creating);
       }
-
       try {
         user = this.userService.subscribe(userName, f.getId());
         if (logger.isInfoEnabled())
           logger.info("added subscription to the user" + user);
-        logger.info(user.getSubscriptions());
       } catch (Exception ex) {
         ex.printStackTrace();
         // TODO handle this case
@@ -191,10 +188,11 @@ public class ForumService implements IForumService {
   @Override
   public List<Forum> getForums(String userName) throws Exception {
     User loggedUser = this.getUser(userName);
-    List<String> subscriptions = loggedUser.getSubscriptions();
-    Iterable<Forum> myForums = this.forumRepository.findAll(subscriptions);
+    // List<String> subscriptions = loggedUser.getSubscriptions();
+    List<Forum> myForums = this.forumRepository.findBySubscribers_Email(userName);
     List<Forum> result = new ArrayList<Forum>();
-    myForums.forEach(result::add);
+    for (Forum f : myForums)
+      result.add(f);
     return result;
   }
 
@@ -297,7 +295,6 @@ public class ForumService implements IForumService {
   private User getUser(String userName) throws Exception {
     User user = null;
     try {
-      System.out.println(userService);
       user = this.userService.getUser(userName);
     } catch (Exception ex) {
       if (logger.isErrorEnabled())
@@ -322,7 +319,6 @@ public class ForumService implements IForumService {
   }
 
   private void assertOwnership(Forum f, String loggedInUser) throws Exception {
-    User owner = this.getUser(loggedInUser);
     if (!f.getOwner().getEmail().equals(loggedInUser)) {
       if (logger.isErrorEnabled())
         logger.error("User, " + loggedInUser + " is not authorized");

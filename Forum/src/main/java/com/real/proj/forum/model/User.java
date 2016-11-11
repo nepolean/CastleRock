@@ -1,21 +1,23 @@
 package com.real.proj.forum.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
-public class User {
+public class User implements Serializable {
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
   @Id
   String Id;
   String firstName;
   String lastName;
   String email;
   String mobileNo;
-  List<String> subscriptions;
+  // List<String> subscriptions;
 
   public String getFirstName() {
     return this.firstName;
@@ -49,17 +51,14 @@ public class User {
     this.mobileNo = mobileNo;
   }
 
-  public void addSubscription(String forumId) {
-    this.getSubscriptions().add(forumId);
-  }
-
-  public List<String> getSubscriptions() {
-    if (subscriptions == null)
-      subscriptions = new ArrayList<String>();
-    return subscriptions;
-  }
-
-  public List<Forum> getSubscriptions(PageRequest pageRequest) {
-    return null;
-  }
+  /*
+   * public void addSubscription(String forumId) {
+   * this.getSubscriptions().add(forumId); }
+   * 
+   * public List<String> getSubscriptions() { if (subscriptions == null)
+   * subscriptions = new ArrayList<String>(); return subscriptions; }
+   * 
+   * public List<Forum> getSubscriptions(PageRequest pageRequest) { return null;
+   * }
+   */
 }

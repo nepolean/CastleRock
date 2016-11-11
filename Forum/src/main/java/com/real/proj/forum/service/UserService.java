@@ -30,7 +30,7 @@ public class UserService {
 
   public User subscribe(String userName, String forumId) {
     User user = this.getUser(userName);
-    user.addSubscription(forumId);
+    // user.addSubscription(forumId);
     user = userRepository.save(user);
     return user;
   }
