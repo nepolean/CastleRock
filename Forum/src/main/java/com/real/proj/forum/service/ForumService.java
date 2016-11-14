@@ -1,6 +1,5 @@
 package com.real.proj.forum.service;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -18,6 +17,7 @@ import com.real.proj.forum.model.Message;
 import com.real.proj.forum.model.MessageType;
 import com.real.proj.forum.model.SubscriptionRequest;
 import com.real.proj.forum.model.User;
+import com.real.proj.message.SimpleMessage;
 
 @Service
 public class ForumService implements IForumService {
@@ -115,7 +115,7 @@ public class ForumService implements IForumService {
    * com.real.proj.forum.service.IForumService#subscribeMe(java.lang.String,
    * java.lang.String)
    */
-  public String subscribeMe(String forumId, String loggedInUser) throws Exception {
+  public SimpleMessage subscribeMe(String forumId, String loggedInUser) throws Exception {
     Forum f = this.getForum(forumId);
     User user = this.getUser(loggedInUser);
     this.assertForumNotClosed(f);
@@ -135,15 +135,14 @@ public class ForumService implements IForumService {
         logger.error("Error while updating forum", ex);
       throw new DBException("Subscriber", DBException.Operation.creating);
     }
-
     try {
       NotificationHelper.notifyUser(f.getOwner());
     } catch (Exception ex) {
       if (logger.isErrorEnabled())
-        logger.error("Error while notifying user ", ex);
+        logger.error("Error while notifying the user ", ex);
     }
 
-    return message;
+    return new SimpleMessage(message);
   }
 
   /*
@@ -186,14 +185,9 @@ public class ForumService implements IForumService {
    * String)
    */
   @Override
-  public List<Forum> getForums(String userName) throws Exception {
-    User loggedUser = this.getUser(userName);
-    // List<String> subscriptions = loggedUser.getSubscriptions();
+  public List<Forum> getForums(String userName) {
     List<Forum> myForums = this.forumRepository.findBySubscribers_Email(userName);
-    List<Forum> result = new ArrayList<Forum>();
-    for (Forum f : myForums)
-      result.add(f);
-    return result;
+    return myForums;
   }
 
   /*

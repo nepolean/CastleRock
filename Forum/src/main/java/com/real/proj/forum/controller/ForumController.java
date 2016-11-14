@@ -24,6 +24,7 @@ import com.real.proj.controller.exception.EntityNotFoundException;
 import com.real.proj.controller.exception.SecurityPermissionException;
 import com.real.proj.forum.model.Forum;
 import com.real.proj.forum.service.IForumService;
+import com.real.proj.message.SimpleMessage;
 
 @RestController
 public class ForumController {
@@ -56,7 +57,7 @@ public class ForumController {
   // TODO: Result must be handled correctly
   @RequestMapping(path = { "/forum/{forumId}/subscribe" }, method = { RequestMethod.POST }, produces = {
       "application/json" })
-  public String subscribeMe(@Valid @PathVariable String forumId, Principal loggedInUser) throws Exception {
+  public SimpleMessage subscribeMe(@Valid @PathVariable String forumId, Principal loggedInUser) throws Exception {
     try {
       return this.forumService.subscribeMe(forumId, loggedInUser.getName());
     } catch (Exception ex) {

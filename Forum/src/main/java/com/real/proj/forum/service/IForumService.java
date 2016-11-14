@@ -3,6 +3,7 @@ package com.real.proj.forum.service;
 import java.util.List;
 
 import com.real.proj.forum.model.Forum;
+import com.real.proj.message.SimpleMessage;
 
 public interface IForumService {
 
@@ -20,6 +21,6 @@ public interface IForumService {
 
   Forum addUserToForum(String forumId, String loggedInUser, String targetUser) throws Exception;
 
-  String subscribeMe(String forumId, String name) throws Exception;
+  SimpleMessage subscribeMe(String forumId, String name) throws Exception;
 
 }

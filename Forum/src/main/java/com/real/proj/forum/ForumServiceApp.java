@@ -8,12 +8,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
-import com.real.proj.controller.exception.handler.SimpleError;
 import com.real.proj.forum.model.User;
 import com.real.proj.forum.service.UserRepository;
 
 @SpringBootApplication
-@ComponentScan(basePackages = { "com.real.proj.controller.exception", "com.real.proj.controller.exception.handler",
+@ComponentScan(basePackages = { "com.real.proj.controller.exception",
+    "com.real.proj.controller.exception.handler",
     "com.real.proj.forum.controller", "com.real.proj.forum.service" })
 @EnableMongoRepositories
 @EnableAutoConfiguration
@@ -35,9 +35,6 @@ public class ForumServiceApp implements CommandLineRunner {
   }
 
   public void run(String... args) throws Exception {
-    SimpleError err = new SimpleError("");
-
-    System.out.println("User Service " + userRepository);
     createFewUsers();
   }
 

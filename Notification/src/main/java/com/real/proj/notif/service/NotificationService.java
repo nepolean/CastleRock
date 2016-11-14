@@ -1,5 +1,8 @@
 package com.real.proj.notif.service;
 
+import static com.real.proj.notif.util.ValidationHelper.isEmpty;
+import static com.real.proj.notif.util.ValidationHelper.sanitize;
+
 import java.util.List;
 
 import javax.mail.MessagingException;
@@ -11,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-
-import static com.real.proj.notif.util.ValidationHelper.*;
 
 @Service
 public class NotificationService {

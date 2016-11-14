@@ -5,7 +5,7 @@
   <groupId>RealService</groupId>
   <artifactId>CommonUtils</artifactId>
   <version>1.0.0</version>
-
+  <packaging>jar</packaging>
   <name>CommonUtils</name>
   <url>http://maven.apache.org</url>
 
@@ -35,14 +35,7 @@
         <scope>test</scope>
     </dependency>      
   </dependencies>
-  <build>
-    <plugins>
-          <plugin>
-              <groupId>org.springframework.boot</groupId>
-              <artifactId>spring-boot-maven-plugin</artifactId>
-          </plugin>
-      </plugins>
-  </build>
+
   <repositories>
       <repository>
           <id>spring-releases</id>

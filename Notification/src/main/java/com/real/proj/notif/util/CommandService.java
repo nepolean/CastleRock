@@ -1,9 +1,7 @@
 package com.real.proj.notif.util;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.PrintWriter;
 
 import org.apache.log4j.LogManager;

@@ -8,6 +8,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
 public class Message implements Serializable {
+
+  private static final long serialVersionUID = 1L;
+
   @Id
   String id;
   String message;

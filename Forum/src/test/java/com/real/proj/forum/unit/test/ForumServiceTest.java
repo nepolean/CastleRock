@@ -23,6 +23,7 @@ import com.real.proj.forum.model.User;
 import com.real.proj.forum.service.ForumRepository;
 import com.real.proj.forum.service.IForumService;
 import com.real.proj.forum.service.UserRepository;
+import com.real.proj.message.SimpleMessage;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -128,8 +129,8 @@ public class ForumServiceTest {
     Forum f = forumService.createForum("TestForum", default_user);
     f.setAutoSubscriptionEnabled(true);
     f = forumRepository.save(f);
-    String result = forumService.subscribeMe(f.getId(), this.users.get(1).getEmail());
-    assert (result.matches("Your subscription has been accepted"));
+    SimpleMessage result = forumService.subscribeMe(f.getId(), this.users.get(1).getEmail());
+    assert (result.getMessage().matches("Your subscription has been accepted"));
   }
 
   @Test
@@ -138,8 +139,8 @@ public class ForumServiceTest {
     Forum f = forumService.createForum("TestForum", default_user);
     f.setAutoSubscriptionEnabled(false);
     f = forumRepository.save(f);
-    String result = forumService.subscribeMe(f.getId(), this.users.get(1).getEmail());
-    assert (result.startsWith("A subscription request has been created."));
+    SimpleMessage result = forumService.subscribeMe(f.getId(), this.users.get(1).getEmail());
+    assert (result.getMessage().startsWith("A subscription request has been created."));
   }
 
   @Test
