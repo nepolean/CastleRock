@@ -27,12 +27,12 @@ import com.real.proj.forum.model.User;
 import com.real.proj.forum.service.ForumRepository;
 import com.real.proj.forum.service.IForumService;
 import com.real.proj.forum.service.UserRepository;
+import com.real.proj.message.SimpleMessage;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-@ComponentScan(basePackages = { "com.real.proj.controller.exception",
-    "com.real.proj.controller.exception.handler",
+@ComponentScan(basePackages = { "com.real.proj.controller.exception", "com.real.proj.controller.exception.handler",
     "com.real.proj.forum.controller", "com.real.proj.forum.service" })
 @EnableMongoRepositories
 @EnableAutoConfiguration
@@ -64,10 +64,9 @@ public class ForumControllerTest {
 
   @Test
   public void createUserForumSuccessfully() throws Exception {
-    TestRestTemplate restClient = this.withAuthentication();
+    TestRestTemplate restClient = this.withAuthentication(defaultUser, defaultPwd);
     URI uriToPost = new URI(base.toString() + "/forum/create");
-    ResponseEntity<Forum> response = restClient.postForEntity(uriToPost,
-            "TestForum", Forum.class);
+    ResponseEntity<Forum> response = restClient.postForEntity(uriToPost, "TestForum", Forum.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     Forum myForum = response.getBody();
     assertNotNull(myForum);
@@ -78,9 +77,8 @@ public class ForumControllerTest {
   public void getUserForumsSuccessfully() throws Exception {
     createTestForum(defaultUser);
     URI uriToProbe = new URI(this.base.toString() + "/forum");
-    TestRestTemplate restClient = withAuthentication();
-    ResponseEntity<Forum[]> response = restClient.getForEntity(uriToProbe,
-            Forum[].class);
+    TestRestTemplate restClient = withAuthentication(defaultUser, defaultPwd);
+    ResponseEntity<Forum[]> response = restClient.getForEntity(uriToProbe, Forum[].class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     Forum[] userForums = response.getBody();
     assertNotNull(userForums);
@@ -90,11 +88,9 @@ public class ForumControllerTest {
   @Test
   public void postMessageSuccessfully() throws Exception {
     Forum f = this.createTestForum(defaultUser);
-    URI uriToPost = new URI(
-            this.base.toString() + "/forum/" + f.getId() + "/post");
-    TestRestTemplate restClient = withAuthentication();
-    ResponseEntity<String> response = restClient.postForEntity(uriToPost,
-            "Hello Test!", String.class);
+    URI uriToPost = new URI(this.base.toString() + "/forum/" + f.getId() + "/post");
+    TestRestTemplate restClient = withAuthentication(defaultUser, defaultPwd);
+    ResponseEntity<String> response = restClient.postForEntity(uriToPost, "Hello Test!", String.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
   }
 
@@ -102,14 +98,39 @@ public class ForumControllerTest {
   public void subscribeAUserToForum() throws Exception {
     User someUser = this.createDummyUser("User1");
     Forum myForum = this.createTestForum(defaultUser);
-    URI uriToPost = new URI(this.base.toString() + "/forum/" + myForum.getId()
-            + "/subscribe/" + someUser.getEmail());
-    TestRestTemplate restClient = withAuthentication();
-    ResponseEntity<String> response = restClient.postForEntity(uriToPost, null,
-            String.class);
+    URI uriToPost = new URI(this.base.toString() + "/forum/" + myForum.getId() + "/subscribe/" + someUser.getEmail());
+    TestRestTemplate restClient = withAuthentication(defaultUser, defaultPwd);
+    ResponseEntity<String> response = restClient.postForEntity(uriToPost, null, String.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     String output = response.getBody();
-    System.out.println(output);
+  }
+
+  @Test
+  public void unsubscribeLoggedInUser() throws Exception {
+    User someOtherUser = this.createDummyUser("User1");
+    Forum myForum = this.createTestForum(defaultUser);
+    myForum.addSubscriber(someOtherUser);
+    forumRepository.save(myForum);
+    URI uriToPost = new URI(this.base.toString() + "/forum/" + myForum.getId() + "/unsubscribe");
+    TestRestTemplate restClient = withAuthentication("User1", "");
+    // TODO: Uncomment these after security integration is done
+    // ResponseEntity<SimpleMessage> response =
+    // restClient.postForEntity(uriToPost, someOtherUser.getEmail(),
+    // SimpleMessage.class);
+    // assertEquals(HttpStatus.OK, response.getStatusCode());
+  }
+
+  @Test
+  public void unsubscribeOtherUser() throws Exception {
+    User someOtherUser = this.createDummyUser("User1");
+    Forum myForum = this.createTestForum(defaultUser);
+    myForum.addSubscriber(someOtherUser);
+    forumRepository.save(myForum);
+    URI uriToPost = new URI(
+        this.base.toString() + "/forum/" + myForum.getId() + "/unsubscribe/" + someOtherUser.getEmail());
+    TestRestTemplate restClient = withAuthentication(defaultUser, defaultPwd);
+    ResponseEntity<SimpleMessage> response = restClient.postForEntity(uriToPost, null, SimpleMessage.class);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
   }
 
   @After
@@ -129,8 +150,8 @@ public class ForumControllerTest {
     return this.forumService.createForum("TestForum", owner);
   }
 
-  private TestRestTemplate withAuthentication() {
-    return restClient.withBasicAuth(defaultUser, defaultPwd);
+  private TestRestTemplate withAuthentication(String user, String pwd) {
+    return restClient.withBasicAuth(user, pwd);
   }
 
 }

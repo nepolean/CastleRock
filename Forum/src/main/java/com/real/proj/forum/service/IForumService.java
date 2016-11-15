@@ -9,7 +9,7 @@ public interface IForumService {
 
   Forum createForum(String subject, String userName) throws Exception;
 
-  List<Forum> getForums(String userName) throws Exception;
+  List<Forum> getForums(String userId) throws Exception;
 
   Forum getMessagesForForum(String forumId, int start, int count) throws Exception;
 
@@ -22,5 +22,9 @@ public interface IForumService {
   Forum addUserToForum(String forumId, String loggedInUser, String targetUser) throws Exception;
 
   SimpleMessage subscribeMe(String forumId, String name) throws Exception;
+
+  SimpleMessage unsubscribeMe(String forumId, String name) throws Exception;
+
+  SimpleMessage removeUserFromForum(String forumId, String subscriber, String owner) throws Exception;
 
 }

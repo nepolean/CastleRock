@@ -286,6 +286,28 @@ public class ForumService implements IForumService {
 
   }
 
+  @Override
+  public SimpleMessage unsubscribeMe(String forumId, String userId) throws Exception {
+    Forum f = getForum(forumId);
+    if (f.getOwner().getEmail().equals(userId))
+      throw new Exception("Owner cannot unsubsribe himself");
+    f.getSubscribers().remove(userId);
+    forumRepository.save(f);
+    return new SimpleMessage("You are unsubscribed from the forum");
+  }
+
+  @Override
+  public SimpleMessage removeUserFromForum(String forumId, String subscriberId, String ownerId) throws Exception {
+    Forum f = this.getForum(forumId);
+    User owner = this.getUser(ownerId);
+    User subscriber = this.getUser(subscriberId);
+    if (!f.getOwner().getEmail().equals(ownerId)) {
+      throw new SecurityPermissionException();
+    }
+    f.getSubscribers().remove(subscriber);
+    return new SimpleMessage("The user is removed from the forum");
+  }
+
   private User getUser(String userName) throws Exception {
     User user = null;
     try {
@@ -340,4 +362,5 @@ public class ForumService implements IForumService {
 
     return false;
   }
+
 }

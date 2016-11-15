@@ -180,6 +180,43 @@ public class ForumServiceTest {
 
   }
 
+  @Test
+  public void unsubscribeMeTest() throws Exception {
+    Forum f = forumService.createForum("TestForum", default_user);
+    forumService.addUserToForum(f.getId(), default_user, users.get(1).getEmail());
+    SimpleMessage result = forumService.unsubscribeMe(f.getId(), users.get(1).getEmail());
+  }
+
+  @Test
+  public void ownerCannotUnsubscribeHimself() throws Exception {
+    Forum f = forumService.createForum("TestForum", default_user);
+    try {
+      SimpleMessage result = forumService.unsubscribeMe(f.getId(), default_user);
+      fail("owner cannot unsubscribe himself");
+    } catch (Exception ex) {
+
+    }
+  }
+
+  @Test
+  public void unsubscribeUser() throws Exception {
+    Forum f = forumService.createForum("TestForuM", default_user);
+    forumService.addUserToForum(f.getId(), default_user, this.users.get(1).getEmail());
+    forumService.removeUserFromForum(f.getId(), this.users.get(1).getEmail(), default_user);
+  }
+
+  @Test
+  public void onlyUserCanUnsubscribe() throws Exception {
+    Forum f = forumService.createForum("TestForum", default_user);
+    forumService.addUserToForum(f.getId(), default_user, this.users.get(1).getEmail());
+    try {
+      forumService.removeUserFromForum(f.getId(), this.users.get(1).getEmail(), this.users.get(2).getEmail());
+      fail("Ownly owner can unsubscribe a user");
+    } catch (Exception ex) {
+
+    }
+  }
+
   @After
   public void cleanUp() {
     userRepository.deleteAll();

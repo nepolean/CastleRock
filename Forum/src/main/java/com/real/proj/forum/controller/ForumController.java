@@ -120,6 +120,17 @@ public class ForumController {
   public void uploadFile(Long forumId, Principal loggedInUser) {
   }
 
+  @RequestMapping(value = "/forum/{forumId}/unsubscribe", produces = MediaType.APPLICATION_JSON_VALUE)
+  public SimpleMessage unsubscribeMe(@Valid @PathVariable String forumId, Principal loggedInUser) throws Exception {
+    return forumService.unsubscribeMe(forumId, loggedInUser.getName());
+  }
+
+  @RequestMapping(value = "/forum/{forumId}/unsubscribe/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+  public SimpleMessage unsubscribeUser(@Valid @PathVariable String forumId, @Valid @PathVariable String userId,
+      Principal loggedInUser) throws Exception {
+    return forumService.removeUserFromForum(forumId, userId, loggedInUser.getName());
+  }
+
   private void handleException(Exception ex) throws Exception {
     String uuid = UUID.randomUUID().toString();
     logger.warn(uuid);
