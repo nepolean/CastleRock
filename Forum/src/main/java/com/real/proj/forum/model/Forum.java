@@ -7,6 +7,8 @@ import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.real.proj.user.model.User;
+
 @Document
 public class Forum implements java.io.Serializable {
 

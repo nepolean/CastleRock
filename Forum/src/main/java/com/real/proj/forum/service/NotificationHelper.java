@@ -2,7 +2,7 @@ package com.real.proj.forum.service;
 
 import org.springframework.scheduling.annotation.Async;
 
-import com.real.proj.forum.model.User;
+import com.real.proj.user.model.User;
 
 public class NotificationHelper {
 

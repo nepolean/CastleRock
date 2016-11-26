@@ -3,10 +3,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>RealService</groupId>
-  <artifactId>CommonUtils</artifactId>
-  <version>1.0.0</version>
+  <artifactId>AMC</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
-  <name>CommonUtils</name>
+
+  <name>AMC</name>
   <url>http://maven.apache.org</url>
 
   <properties>
@@ -24,21 +25,34 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
+    
     <dependency>
         <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-mail</artifactId>
+        <artifactId>spring-boot-starter-data-mongodb</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-data-mongodb</artifactId>
-    </dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>       
     <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-test</artifactId>
         <scope>test</scope>
-    </dependency>      
+    </dependency>
+    <dependency>
+      <groupId>RealService</groupId>
+      <artifactId>CommonUtils</artifactId>
+      <version>1.0.0</version>
+    </dependency>
   </dependencies>
-
+  <build>
+    <plugins>
+          <plugin>
+              <groupId>org.springframework.boot</groupId>
+              <artifactId>spring-boot-maven-plugin</artifactId>
+          </plugin>
+      </plugins>
+  </build>
   <repositories>
       <repository>
           <id>spring-releases</id>
@@ -51,4 +65,5 @@
           <url>https://repo.spring.io/libs-release</url>
       </pluginRepository>
   </pluginRepositories>      
+
 </project>

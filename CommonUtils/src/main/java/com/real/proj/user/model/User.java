@@ -1,4 +1,4 @@
-package com.real.proj.forum.model;
+package com.real.proj.user.model;
 
 import java.io.Serializable;
 

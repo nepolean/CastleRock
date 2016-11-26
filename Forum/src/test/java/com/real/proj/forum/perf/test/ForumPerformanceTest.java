@@ -12,11 +12,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.real.proj.forum.model.Forum;
-import com.real.proj.forum.model.User;
 import com.real.proj.forum.service.ForumRepository;
 import com.real.proj.forum.service.IForumService;
-import com.real.proj.forum.service.UserRepository;
-import com.real.proj.forum.service.UserService;
+import com.real.proj.user.model.User;
+import com.real.proj.user.service.UserRepository;
+import com.real.proj.user.service.UserService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

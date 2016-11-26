@@ -1,9 +1,9 @@
-package com.real.proj.forum.service;
+package com.real.proj.user.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.real.proj.forum.model.User;
+import com.real.proj.user.model.User;
 
 @Service
 public class UserService {

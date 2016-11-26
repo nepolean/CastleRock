@@ -16,8 +16,9 @@ import com.real.proj.forum.model.Forum;
 import com.real.proj.forum.model.Message;
 import com.real.proj.forum.model.MessageType;
 import com.real.proj.forum.model.SubscriptionRequest;
-import com.real.proj.forum.model.User;
 import com.real.proj.message.SimpleMessage;
+import com.real.proj.user.model.User;
+import com.real.proj.user.service.UserService;
 
 @Service
 public class ForumService implements IForumService {

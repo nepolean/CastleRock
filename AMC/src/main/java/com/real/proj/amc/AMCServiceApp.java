@@ -1,5 +1,7 @@
-package com.real.proj.forum;
+package com.real.proj.amc;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -12,12 +14,14 @@ import com.real.proj.user.model.User;
 import com.real.proj.user.service.UserRepository;
 
 @SpringBootApplication
-@ComponentScan(basePackages = { "com.real.proj.controller.exception",
-    "com.real.proj.controller.exception.handler",
-    "com.real.proj.forum.controller", "com.real.proj.forum.service" })
+@ComponentScan(basePackages = { "com.real.proj.controller.exception", "com.real.proj.controller.exception.handler",
+    "com.real.proj.asset.controller", "com.real.proj.asset.service", "com.real.proj.user.model",
+    "com.real.proj.user.service" })
 @EnableMongoRepositories
 @EnableAutoConfiguration
-public class ForumServiceApp implements CommandLineRunner {
+public class AMCServiceApp implements CommandLineRunner {
+
+  private static final Logger logger = LogManager.getLogger(AMCServiceApp.class);
 
   @Autowired
   private UserRepository userRepository;
@@ -26,12 +30,15 @@ public class ForumServiceApp implements CommandLineRunner {
     this.userRepository = userRepository;
   }
 
-  public ForumServiceApp() {
+  public AMCServiceApp() {
 
   }
 
   public static void main(String[] args) {
-    SpringApplication.run(ForumServiceApp.class, args);
+    logger.info("The AMC Service is starting..");
+    SpringApplication.run(AMCServiceApp.class, args);
+    logger.info("The AMC Service started successfully..");
+
   }
 
   public void run(String... args) throws Exception {
