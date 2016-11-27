@@ -15,9 +15,9 @@ import com.real.proj.user.service.UserRepository;
 
 @SpringBootApplication
 @ComponentScan(basePackages = { "com.real.proj.controller.exception", "com.real.proj.controller.exception.handler",
-    "com.real.proj.asset.controller", "com.real.proj.asset.service", "com.real.proj.user.model",
+    "com.real.proj.amc.controller", "com.real.proj.amc.service", "com.real.proj.user.model",
     "com.real.proj.user.service" })
-@EnableMongoRepositories
+@EnableMongoRepositories({ "com.real.proj.user.service", "com.real.proj.amc.service" })
 @EnableAutoConfiguration
 public class AMCServiceApp implements CommandLineRunner {
 

@@ -4,20 +4,24 @@ import static org.junit.Assert.assertNotNull;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.real.proj.amc.model.Apartment;
+import com.real.proj.amc.model.Apartment.Details;
 import com.real.proj.amc.model.Asset;
+import com.real.proj.amc.model.Location;
 import com.real.proj.amc.service.AssetRepository;
 import com.real.proj.amc.service.AssetService;
 import com.real.proj.user.model.User;
@@ -25,7 +29,12 @@ import com.real.proj.user.service.UserRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
+@ActiveProfiles("default")
+@EnableMongoRepositories("com.real.proj.amc.service")
+@ComponentScan
+@EnableAutoConfiguration
+@ComponentScan(basePackages = { "com.real.proj.controller.exception", "com.real.proj.controller.exception.handler",
+    "com.real.proj.amc.controller", "com.real.proj.amc.service" })
 public class AssetServiceTest {
 
   @Autowired
@@ -44,7 +53,7 @@ public class AssetServiceTest {
   public void setup() throws MalformedURLException {
     // base = new URL("http://localhost:" + port);
     userRepository.deleteAll();
-    assetRepository.deleteAll();
+    // assetRepository.deleteAll();
     createDummyUsers();
   }
 
@@ -72,18 +81,36 @@ public class AssetServiceTest {
   public void testCreateAsset() throws Exception {
     User authorizedUser = users.get(0);
     User assetOwner = users.get(1);
-    Map<String, String> description = new HashMap<String, String>();
-    description.put("type", "Apartment");
-    description.put("Description", "2BHK");
-    Asset myAsset = new Asset("New Apartment", assetOwner.getEmail(), description, authorizedUser);
-    Asset newAsset = assetService.createAsset(myAsset, default_user);
-    assertNotNull(newAsset);
+    Asset myAsset = newAsset(authorizedUser, assetOwner);
+    assertNotNull(myAsset);
+  }
+
+  @Test
+  public void testGetMyAssets() throws Exception {
+    User authorizedUser = users.get(0);
+    User assetOwner = users.get(1);
+    Asset myAsset = newAsset(authorizedUser, authorizedUser);
+    List<Asset> myAssets = this.assetService.getMyAssets(authorizedUser.getEmail());
+    assertNotNull(myAssets);
+    assert (myAssets.size() > 0);
   }
 
   @After
   public void cleanUp() {
     userRepository.deleteAll();
-    assetRepository.deleteAll();
+    // assetRepository.deleteAll();
+  }
+
+  private Asset newAsset(User authorizedUser, User assetOwner) {
+    Location loc = new Location("#123", "Andreson Street", "Benson Colony", "Near Railway Station", "Bengaluru", "KA",
+        "INDIA", "560002", 100.0, 100.0);
+    Asset myAsset = new Apartment(new Details(100, 1000.0));
+    myAsset.setOwnedBy(assetOwner.getEmail());
+    myAsset.setCreatedBy(authorizedUser);
+    myAsset.setLocation(loc);
+
+    return assetService.createAsset(myAsset, default_user);
+
   }
 
 }

@@ -1,11 +1,16 @@
 package com.real.proj.amc.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.real.proj.amc.model.Apartment;
 import com.real.proj.amc.model.Asset;
 import com.real.proj.user.model.User;
 import com.real.proj.user.service.UserService;
 
+@Service
 public class AssetService {
 
   private AssetRepository assetRepository;
@@ -23,4 +28,15 @@ public class AssetService {
     return assetRepository.save(asset);
   }
 
+  public Asset createApartment(String loggedInUser) {
+    User authorizedUser = userService.getUser(loggedInUser);
+    Asset newAsset = new Apartment(new Apartment.Details(100, 1000.0));
+    newAsset.setCreatedBy(authorizedUser);
+    Asset saved = assetRepository.save(newAsset);
+    return saved;
+  }
+
+  public List<Asset> getMyAssets(String name) {
+    return this.assetRepository.findByOwner(name);
+  }
 }

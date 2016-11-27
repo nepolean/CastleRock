@@ -1,11 +1,13 @@
 package com.real.proj.amc.controller;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,10 +32,21 @@ public class AssetController {
     this.assetService = assetService;
   }
 
-  @RequestMapping(path = { "/asset/create" }, method = { RequestMethod.POST }, produces = { "application/json" })
+  @RequestMapping(path = { "/asset/create" }, method = { RequestMethod.POST }, produces = {
+      "application/json" }, consumes = { "application/json" })
   public Asset createProperty(@Validated @RequestBody Asset asset, Principal loggedInUser) throws Exception {
     try {
       return this.assetService.createAsset(asset, loggedInUser.getName());
+    } catch (Exception ex) {
+      this.handleException(ex);
+      return null;
+    }
+  }
+
+  @RequestMapping(path = { "/assets" }, method = { RequestMethod.GET }, produces = { MediaType.APPLICATION_JSON_VALUE })
+  public List<Asset> getMyAssets(Principal loggedInUser) throws Exception {
+    try {
+      return this.assetService.getMyAssets(loggedInUser.getName());
     } catch (Exception ex) {
       this.handleException(ex);
       return null;
