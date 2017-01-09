@@ -4,7 +4,9 @@ import static org.junit.Assert.assertNotNull;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
@@ -21,7 +23,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.real.proj.amc.model.Apartment;
 import com.real.proj.amc.model.Apartment.Details;
 import com.real.proj.amc.model.Asset;
+import com.real.proj.amc.model.AssetMaster;
 import com.real.proj.amc.model.Location;
+import com.real.proj.amc.service.AssetMasterService;
 import com.real.proj.amc.service.AssetRepository;
 import com.real.proj.amc.service.AssetService;
 import com.real.proj.user.model.User;
@@ -43,6 +47,10 @@ public class AssetServiceTest {
   AssetRepository assetRepository;
   @Autowired
   AssetService assetService;
+
+  // TODO: DELETE IF THE EXPERIMENT FAILS
+  @Autowired
+  AssetMasterService assetMasterService;
 
   private String default_user = "user";
   private String default_pwd = "user";
@@ -105,11 +113,22 @@ public class AssetServiceTest {
     Location loc = new Location("#123", "Andreson Street", "Benson Colony", "Near Railway Station", "Bengaluru", "KA",
         "INDIA", "560002", 100.0, 100.0);
     Asset myAsset = new Apartment(new Details(100, 1000.0));
-    myAsset.setOwnedBy(assetOwner.getEmail());
+    myAsset.setOwnedBy(assetOwner);
     myAsset.setCreatedBy(authorizedUser);
     myAsset.setLocation(loc);
 
     return assetService.createAsset(myAsset, default_user);
+
+  }
+
+  // TODO: DELETE THIS METHOD
+  @Test
+  public void testAssetMaster() {
+    Map<String, Object> details = new HashMap<String, Object>();
+    details.put("ONE", 1);
+    details.put("TWO", 2);
+    AssetMaster am = new AssetMaster("MYASSET1", new Location(), details);
+    am = this.assetMasterService.createAssetMaster(am);
 
   }
 

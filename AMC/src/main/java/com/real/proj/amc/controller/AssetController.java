@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.real.proj.amc.model.Apartment;
 import com.real.proj.amc.model.Asset;
+import com.real.proj.amc.model.Flat;
 import com.real.proj.amc.service.AssetService;
 import com.real.proj.controller.exception.DBException;
 import com.real.proj.controller.exception.EntityNotFoundException;
@@ -43,6 +45,11 @@ public class AssetController {
     }
   }
 
+  @RequestMapping(path = "/asset/aptmt/metadata", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+  public Apartment getApartmentMetadata() {
+    return new Apartment();
+  }
+
   @RequestMapping(path = { "/assets" }, method = { RequestMethod.GET }, produces = { MediaType.APPLICATION_JSON_VALUE })
   public List<Asset> getMyAssets(Principal loggedInUser) throws Exception {
     try {
@@ -51,6 +58,11 @@ public class AssetController {
       this.handleException(ex);
       return null;
     }
+  }
+  
+  @RequestMapping (path="/meta-data/flat", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+  public Flat createFlat() {
+    return new Flat();
   }
 
   private void handleException(Exception ex) throws Exception {

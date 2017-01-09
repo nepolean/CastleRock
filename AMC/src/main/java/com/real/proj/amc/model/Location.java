@@ -15,7 +15,22 @@ public class Location implements Serializable {
   String country;
   String zipcode;
   double lattitude;
-  double logitude;
+  double longitude;
+
+  public Location() {
+    plotNumber = "";
+    streetName = "";
+    area = "";
+    landMark = "";
+    city = "";
+    state = "";
+    state = "";
+    country = "";
+    zipcode = "";
+    lattitude = 0.0;
+    longitude = 0.0;
+
+  }
 
   public Location(String plotNumber, String streetName, String area, String landMark, String city, String state,
       String country, String zipcode, double lattitude, double logitude) {
@@ -29,7 +44,7 @@ public class Location implements Serializable {
     this.country = country;
     this.zipcode = zipcode;
     this.lattitude = lattitude;
-    this.logitude = logitude;
+    this.longitude = logitude;
   }
 
   public String getPlotNumber() {
@@ -105,11 +120,11 @@ public class Location implements Serializable {
   }
 
   public double getLogitude() {
-    return logitude;
+    return longitude;
   }
 
   public void setLogitude(double logitude) {
-    this.logitude = logitude;
+    this.longitude = logitude;
   }
 
 }

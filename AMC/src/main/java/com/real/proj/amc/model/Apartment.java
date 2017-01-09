@@ -8,16 +8,46 @@ public class Apartment extends Asset implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  String type;
   Details details;
 
-  public static class Details {
-    int noOfFlats;
-    double area;
+  private Apartment() {
+    super();
+    type = AssetType.APARTMENT;
+    this.setDetails(new Details(0, 0, 0.0, UOM.SFT));
+  }
 
-    public Details(int noOfFlats, double area) {
+  public Apartment(Details details) {
+    this.details = details;
+    type = AssetType.APARTMENT;
+  }
+
+  public Details getDetails() {
+    return details;
+  }
+
+  public void setDetails(Details details) {
+    this.details = details;
+  }
+
+  public AssetType getType() {
+    return type;
+  }
+
+  public String toJson() {
+    return JSON.serialize(this);
+  }
+
+  public static class Details {
+    private int noOfFlats;
+    private double area;
+    private UOM uom;
+    private int noOfBlocks;
+
+    public Details(int noOfBlocks, int noOfFlats, double area, UOM uom) {
+      this.noOfBlocks = noOfBlocks;
       this.noOfFlats = noOfFlats;
       this.area = area;
+      this.uom = uom;
     }
 
     public int getNoOfFlats() {
@@ -36,26 +66,13 @@ public class Apartment extends Asset implements Serializable {
       this.area = area;
     }
 
-  }
+    public UOM getUom() {
+      return uom;
+    }
 
-  public Apartment(Details details) {
-    this.type = "APARTMENT";
-    this.details = details;
-  }
+    public void setUom(UOM uom) {
+      this.uom = uom;
+    }
 
-  public Details getDetails() {
-    return details;
-  }
-
-  public void setDetails(Details details) {
-    this.details = details;
-  }
-
-  public String getType() {
-    return type;
-  }
-
-  public String toJson() {
-    return JSON.serialize(this);
   }
 }
