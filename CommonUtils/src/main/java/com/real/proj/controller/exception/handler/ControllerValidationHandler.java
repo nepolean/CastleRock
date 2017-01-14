@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import com.real.proj.controller.exception.DBException;
 import com.real.proj.controller.exception.EntityNotFoundException;
 import com.real.proj.controller.exception.SecurityPermissionException;
+import com.real.proj.controller.exception.handler.SimpleError.Category;
 
 @ControllerAdvice
 public class ControllerValidationHandler {
@@ -43,35 +44,36 @@ public class ControllerValidationHandler {
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ResponseBody
   public SimpleError handleEmptyBodyForJson(HttpMessageNotReadableException ex) {
-    return new SimpleError(HttpStatus.BAD_REQUEST.value(), "The request body is empty or is not formatted correctly");
+    return new SimpleError(HttpStatus.BAD_REQUEST.value(), "The request body is empty or is not formatted correctly",
+        SimpleError.Category.USER);
   }
 
   @ExceptionHandler({ HttpRequestMethodNotSupportedException.class })
   @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
   @ResponseBody
   public SimpleError handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex) {
-    return new SimpleError(HttpStatus.METHOD_NOT_ALLOWED.value(), ex.getMessage());
+    return new SimpleError(HttpStatus.METHOD_NOT_ALLOWED.value(), ex.getMessage(), SimpleError.Category.USER);
   }
 
   @ExceptionHandler({ com.real.proj.controller.exception.EntityNotFoundException.class })
   @ResponseStatus(HttpStatus.NOT_FOUND)
   @ResponseBody
   public SimpleError handleEntityNotFound(EntityNotFoundException ex) {
-    return new SimpleError(HttpStatus.NOT_FOUND.value(), ex.toString());
+    return new SimpleError(HttpStatus.NOT_FOUND.value(), ex.toString(), Category.SYSTEM);
   }
 
   @ExceptionHandler({ com.real.proj.controller.exception.DBException.class })
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   @ResponseBody
   public SimpleError handleDBExcepiton(DBException ex) {
-    return new SimpleError(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
+    return new SimpleError(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage(), Category.SYSTEM);
   }
 
   @ExceptionHandler({ java.lang.IllegalStateException.class })
   @ResponseStatus(HttpStatus.PRECONDITION_FAILED)
   @ResponseBody
   public SimpleError handleIllegalState(IllegalStateException ex) {
-    return new SimpleError(HttpStatus.PRECONDITION_FAILED.value(), ex.toString());
+    return new SimpleError(HttpStatus.PRECONDITION_FAILED.value(), ex.toString(), Category.SYSTEM);
   }
 
   @ExceptionHandler({ java.lang.RuntimeException.class })
@@ -79,14 +81,15 @@ public class ControllerValidationHandler {
   @ResponseBody
   public SimpleError handleInternalFailures(RuntimeException ex) {
     return new SimpleError(HttpStatus.INTERNAL_SERVER_ERROR.value(),
-        "Unexpected error. Please contact the admin with the following key:" + ex.getMessage());
+        "Unexpected error. Please contact the admin with the following key:" + ex.getMessage(), Category.SYSTEM);
   }
 
   @ExceptionHandler({ com.real.proj.controller.exception.SecurityPermissionException.class })
   @ResponseStatus(HttpStatus.UNAUTHORIZED)
   @ResponseBody
   public SimpleError handlePermissionErrors(SecurityPermissionException ex) {
-    return new SimpleError(HttpStatus.UNAUTHORIZED.value(), "You are not authorized to perform this action");
+    return new SimpleError(HttpStatus.UNAUTHORIZED.value(), "You are not authorized to perform this action",
+        Category.USER);
   }
 
 }

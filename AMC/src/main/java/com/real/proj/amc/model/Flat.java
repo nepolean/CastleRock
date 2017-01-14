@@ -1,8 +1,7 @@
 package com.real.proj.amc.model;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 public class Flat extends Asset {
 
@@ -23,26 +22,31 @@ public class Flat extends Asset {
     int numberOfRooms;
     double area;
     UOM uom;
+
     public int getNumberOfRooms() {
       return numberOfRooms;
     }
+
     public void setNumberOfRooms(int numberOfRooms) {
       this.numberOfRooms = numberOfRooms;
     }
+
     public double getArea() {
       return area;
     }
+
     public void setArea(double area) {
       this.area = area;
     }
+
     public UOM getUom() {
       return uom;
     }
+
     public void setUom(UOM uom) {
       this.uom = uom;
     }
-    
-    
+
   }
 
   public Details getDetails() {
@@ -53,14 +57,12 @@ public class Flat extends Asset {
     this.details = details;
   }
 
-  public Set<MaintenanceService> getServices() {
+  public List<MaintenanceService> getServices() {
     return services;
   }
 
-  public void setServices(Set<MaintenanceService> services) {
+  public void setServices(List<MaintenanceService> services) {
     this.services = services;
   }
-  
-  
 
 }

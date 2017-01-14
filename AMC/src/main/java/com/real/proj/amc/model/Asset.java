@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.real.proj.user.model.User;
@@ -19,18 +18,15 @@ public class Asset implements java.io.Serializable {
   String id;
   protected AssetType type;
   Location location;
-  @DBRef
   Asset belongsTo;
-  @DBRef
   User owner;
   User createdBy;
   Date createdOn;
   Set<AmenityMaster> amenities;
   List<MaintenanceService> services;
-  SubscriptionStatus status;
+  Subscription subscription;
   Date lastModified;
-
-  private Set<SubscriptionPackage> subscribedPackages;
+  private Set<Package> subscribedPackages;
 
   public Asset() {
     this.createdOn = new Date();
@@ -41,7 +37,6 @@ public class Asset implements java.io.Serializable {
     this.owner = ownedBy;
     this.createdBy = createdBy;
     this.lastModified = new Date();
-    status = SubscriptionStatus.CREATED;
 
   }
 
@@ -110,23 +105,23 @@ public class Asset implements java.io.Serializable {
   }
 
   public SubscriptionStatus getStatus() {
-    return status;
+    return;
   }
 
   public void setStatus(SubscriptionStatus status) {
     this.status = status;
   }
-  
+
   /*********************** BUISINESS LOGIC *************************/
   public void subscribe() {
-    
-  }
-  
-  public void renew() {
-    
+
   }
 
-  public Set<SubscriptionPackage> getSubscribedPackages() {
+  public void renew() {
+
+  }
+
+  public List<Package> getSubscribedPackages() {
     return this.subscribedPackages;
   }
 

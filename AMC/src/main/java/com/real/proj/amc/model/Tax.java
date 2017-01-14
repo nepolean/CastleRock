@@ -11,8 +11,10 @@ public class Tax {
   private String name;
   private double taxPct;
 
+  
+  
   public double calcTax(double netAmount) {
-    return netAmount * taxPct/100;
+    return (netAmount * taxPct)/100;
   }
 
 }

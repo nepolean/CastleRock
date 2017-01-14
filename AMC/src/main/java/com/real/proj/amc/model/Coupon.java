@@ -7,16 +7,14 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
 public abstract class Coupon {
-  
+
   @Id
   private String id;
+  private String name;
   private Date validFrom;
   private Date validTo;
-  private double minAmount;
   private int discPct;
-  
 
-  public double applyDiscount(double totalAmount) throws InvalidCouponException {
-    
-  }
+  public abstract double applyDiscount(double totalAmount) throws InvalidCouponException;
+
 }

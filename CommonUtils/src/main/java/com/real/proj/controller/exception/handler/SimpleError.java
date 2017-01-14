@@ -1,13 +1,18 @@
 package com.real.proj.controller.exception.handler;
 
+import java.util.UUID;
+
 public class SimpleError {
 
-  int errorCode;
-  String message;
+  private int errorCode;
+  private String message;
+  private Category category;
 
-  public SimpleError(int errorCode, String message) {
+  public SimpleError(int errorCode, String message, Category category) {
     this.errorCode = errorCode;
-    this.message = message;
+    this.category = category;
+    this.message = format(message);
+
   }
 
   public int getErrorCode() {
@@ -17,4 +22,17 @@ public class SimpleError {
   public String getMessage() {
     return this.message;
   }
+
+  private String format(String message) {
+    if (category == Category.SYSTEM) {
+      UUID uuid = UUID.randomUUID();
+      message += " Contact support with the following reference no. " + uuid.toString();
+    }
+    return message;
+  }
+
+  static enum Category {
+    SYSTEM, USER;
+  }
+
 }
