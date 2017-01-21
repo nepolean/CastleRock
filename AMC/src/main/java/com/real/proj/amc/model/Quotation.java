@@ -1,7 +1,9 @@
 package com.real.proj.amc.model;
 
 import java.util.List;
-import java.util.Stack;
+import java.util.Set;
+
+import com.real.proj.user.model.User;
 
 public class Quotation {
 
@@ -10,49 +12,26 @@ public class Quotation {
   double discount;
   double finalAmount;
   List<String> comments;
+  Asset belongsTo;
+  User owner;
+  User createdBy;
 
-  public static void main(String[] args) {
-    String input = "<h1>Had<h1>Public</h1515></h1>";
-    Stack<Character> chars = new Stack<Character>();
-    Stack<String> tags = new Stack<String>();
-    Stack<String> text = new Stack<String>();
-    char[] ch = input.toCharArray();
-    for (char c : ch) {
-      if (c == '>') {
-        // System.out.println(chars.toString());
-        String currTag = convertToString(chars);
-        if (currTag != null && currTag.length() > 0) {
-          if (tags.size() > 0) {
-            String content = null;
-            String prevTag = null;
-            try{
-              prevTag = tags.pop();
-              content = text.pop();
-            } catch(Exception ex){}
-            if ()
-            
-          } else
-            tags.push(currTag);
-        }
-      } else if (c == '<') {
-        String str = convertToString(chars);
-        if (str != null && str.length() > 0)
-          text.push(str);
-      } else {
-        chars.push(c);
-      }
+  public void raiseQuote(Asset asset, Coupon coupon, Set<Tax> taxes) {
+    List<Package> packages = asset.getSubscribedPackages();
+    for (Package pkg : packages) {
+      totalAmount += pkg.getPricing(asset);
     }
+    try {
+      discount = coupon.applyDiscount(totalAmount);
+    } catch (InvalidCouponException e) {
+      comments.add(e.getMessage());
+    }
+    double netAmount = totalAmount - discount;
+    double taxAmount = 0.0;
+    for (Tax tax : taxes) {
+      taxAmount += tax.calcTax(netAmount);
+    }
+    finalAmount = netAmount + taxAmount;
   }
 
-  private static String convertToString(Stack<Character> chars) {
-    if (chars.size() == 0)
-      return null;
-    char[] tagA = new char[chars.size()];
-    for (int i = tagA.length - 1; i >= 0; i--) {
-      tagA[i] = chars.pop();
-    }
-    String tag = new String(tagA);
-    System.out.println(tag);
-    return tag;
-  }
 }

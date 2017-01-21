@@ -1,6 +1,8 @@
 package com.real.proj.amc.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.mongodb.util.JSON;
 
@@ -37,17 +39,24 @@ public class Apartment extends Asset implements Serializable {
     return JSON.serialize(this);
   }
 
+  public static class Block {
+    private int name;
+    private int noOfFlats;
+  }
+
   public static class Details {
     private int noOfFlats;
     private double area;
     private UOM uom;
     private int noOfBlocks;
+    private List<Block> blocks;
 
     public Details(int noOfBlocks, int noOfFlats, double area, UOM uom) {
       this.noOfBlocks = noOfBlocks;
       this.noOfFlats = noOfFlats;
       this.area = area;
       this.uom = uom;
+      blocks = new ArrayList<Block>(noOfBlocks);
     }
 
     public int getNoOfFlats() {

@@ -26,7 +26,8 @@ public class Asset implements java.io.Serializable {
   List<MaintenanceService> services;
   Subscription subscription;
   Date lastModified;
-  private Set<Package> subscribedPackages;
+  // private Set<Package> subscribedPackages;
+  private Rating rating;
 
   public Asset() {
     this.createdOn = new Date();
@@ -105,11 +106,9 @@ public class Asset implements java.io.Serializable {
   }
 
   public SubscriptionStatus getStatus() {
-    return;
-  }
-
-  public void setStatus(SubscriptionStatus status) {
-    this.status = status;
+    if (this.subscription == null)
+      return SubscriptionStatus.NONE;
+    return this.subscription.getStatus();
   }
 
   /*********************** BUISINESS LOGIC *************************/
@@ -122,7 +121,17 @@ public class Asset implements java.io.Serializable {
   }
 
   public List<Package> getSubscribedPackages() {
-    return this.subscribedPackages;
+    if (this.subscription == null)
+      return null;
+    return this.subscription.getsubscribedPackages();
+  }
+
+  public Rating getRating() {
+    return rating;
+  }
+
+  public void setRating(Rating rating) {
+    this.rating = rating;
   }
 
 }
