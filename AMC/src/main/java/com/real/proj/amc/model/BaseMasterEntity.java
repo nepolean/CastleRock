@@ -2,11 +2,17 @@ package com.real.proj.amc.model;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class BaseMasterEntity {
 
+  @JsonIgnore
   protected Date createdOn;
+  @JsonIgnore
   protected Date lastModified;
+  @JsonIgnore
   protected String createdBy;
+  @JsonIgnore
   protected String modifiedBy;
   protected boolean markForDeletion;
 

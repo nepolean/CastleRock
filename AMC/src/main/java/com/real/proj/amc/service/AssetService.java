@@ -31,14 +31,15 @@ public class AssetService implements IAgentAssetService {
 
   public Asset createApartment(String loggedInUser) {
     User authorizedUser = userService.getUser(loggedInUser);
-    Asset newAsset = new Apartment(new Apartment.Details(100, 1000.0, UOM.SFT));
+    Asset newAsset = new Apartment(new Apartment.Details(100, 2, 1000.0, UOM.SFT));
     newAsset.setCreatedBy(authorizedUser);
     Asset saved = assetRepository.save(newAsset);
     return saved;
   }
 
-  public List<Asset> getMyAssets(String name) {
-    return this.assetRepository.findByOwner(name);
+  public List<Asset> getMyAssets(String email) {
+    User owner = userService.getUser(email);
+    return this.assetRepository.findByOwner(owner);
   }
 
   @Override

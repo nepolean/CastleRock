@@ -6,7 +6,7 @@ public class Payment {
 
   double amount;
   Date paidOn;
-  PaymentMode modeOfPayment;
-  User paymentBelongsTo;
+  // PaymentMode modeOfPayment;
+  // User paymentBelongsTo;
 
 }

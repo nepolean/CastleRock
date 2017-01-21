@@ -2,18 +2,40 @@ package com.real.proj.amc.model;
 
 import java.util.Date;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Document
 public class Coupon extends BaseMasterEntity {
 
   @Id
   private String id;
+
+  @NotEmpty
   private String name;
+  @NotNull
+  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+  @JsonFormat(pattern = "yyyy-MM-dd")
   private Date validFrom;
+  @NotNull
+  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+  @JsonFormat(pattern = "yyyy-MM-dd")
   private Date validTo;
+  @Min(1)
+  @Max(100)
   private double discPct;
+
+  public Coupon() {
+
+  }
 
   public Coupon(String name, Date validFrom, Date validTo, double discPct) {
     super();

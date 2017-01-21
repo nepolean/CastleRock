@@ -5,6 +5,7 @@ import java.util.List;
 
 public class Flat extends Asset {
 
+  private static Flat flat = null;
   Details details;
 
   private Flat() {
@@ -63,6 +64,12 @@ public class Flat extends Asset {
 
   public void setServices(List<MaintenanceService> services) {
     this.services = services;
+  }
+
+  public static Flat getMetadata() {
+    if (flat == null)
+      flat = new Flat();
+    return flat;
   }
 
 }

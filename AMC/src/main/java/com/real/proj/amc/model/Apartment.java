@@ -1,16 +1,20 @@
 package com.real.proj.amc.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.annotation.Transient;
+
 import com.mongodb.util.JSON;
 
-public class Apartment extends Asset implements Serializable {
+public class Apartment extends Asset {
 
   private static final long serialVersionUID = 1L;
 
   Details details;
+
+  @Transient
+  static Apartment aptmt;
 
   private Apartment() {
     super();
@@ -37,6 +41,12 @@ public class Apartment extends Asset implements Serializable {
 
   public String toJson() {
     return JSON.serialize(this);
+  }
+
+  public static Apartment getMetadata() {
+    if (aptmt == null)
+      aptmt = new Apartment();
+    return aptmt;
   }
 
   public static class Block {

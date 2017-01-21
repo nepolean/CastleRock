@@ -39,7 +39,7 @@ public class AssetController {
 
   @RequestMapping(path = "/meta-data/aptmt", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
   public Apartment getApartmentMetadata() {
-    return new Apartment();
+    return Apartment.getMetadata();
   }
 
   @RequestMapping(path = { "/assets" }, method = { RequestMethod.GET }, produces = { MediaType.APPLICATION_JSON_VALUE })
@@ -50,7 +50,7 @@ public class AssetController {
 
   @RequestMapping(path = "/meta-data/flat", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
   public Flat createFlat() {
-    return new Flat();
+    return Flat.getMetadata();
   }
 
 }

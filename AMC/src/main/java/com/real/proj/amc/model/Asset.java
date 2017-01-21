@@ -12,13 +12,13 @@ import com.real.proj.user.model.User;
 @Document
 public class Asset implements java.io.Serializable {
 
-  private static final long serialVersionUID = 1L;
+  static final long serialVersionUID = 1L;
 
   @Id
   String id;
   protected AssetType type;
   Location location;
-  Asset belongsTo;
+  // Asset belongsTo;
   User owner;
   User createdBy;
   Date createdOn;
@@ -31,7 +31,7 @@ public class Asset implements java.io.Serializable {
 
   public Asset() {
     this.createdOn = new Date();
-    this.location = new Location();
+    // this.location = new Location();
   }
 
   public Asset(User ownedBy, User createdBy) {
@@ -41,14 +41,11 @@ public class Asset implements java.io.Serializable {
 
   }
 
-  public Asset getBelongsTo() {
-    return belongsTo;
-  }
-
-  public void setBelongsTo(Asset belongsTo) {
-    this.belongsTo = belongsTo;
-  }
-
+  /*
+   * public Asset getBelongsTo() { return belongsTo; }
+   * 
+   * public void setBelongsTo(Asset belongsTo) { this.belongsTo = belongsTo; }
+   */
   public User getOwnedBy() {
     return owner;
   }

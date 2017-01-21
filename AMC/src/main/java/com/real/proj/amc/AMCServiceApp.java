@@ -10,7 +10,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
-import com.real.proj.amc.service.GenericFCRUDService;
 import com.real.proj.user.model.User;
 import com.real.proj.user.service.UserRepository;
 
@@ -24,11 +23,9 @@ public class AMCServiceApp implements CommandLineRunner {
 
   private static final Logger logger = LogManager.getLogger(AMCServiceApp.class);
 
-  @Autowired
   private UserRepository userRepository;
-  @Autowired
-  private GenericFCRUDService crudService;
 
+  @Autowired
   public void setUserRepository(UserRepository userRepository) {
     this.userRepository = userRepository;
   }

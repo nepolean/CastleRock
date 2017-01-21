@@ -1,5 +1,7 @@
 package com.real.proj.controller.exception.handler;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,7 @@ import com.real.proj.controller.exception.handler.SimpleError.Category;
 public class ControllerValidationHandler {
 
   private MessageSource msgSource;
+  private Logger logger = LogManager.getLogger(ControllerValidationHandler.class);
 
   @Autowired
   public ControllerValidationHandler(MessageSource msgSource) {
@@ -44,8 +47,9 @@ public class ControllerValidationHandler {
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ResponseBody
   public SimpleError handleEmptyBodyForJson(HttpMessageNotReadableException ex) {
-    return new SimpleError(HttpStatus.BAD_REQUEST.value(), "The request body is empty or is not formatted correctly",
-        SimpleError.Category.USER);
+    print(ex);
+    return new SimpleError(HttpStatus.BAD_REQUEST.value(),
+        "The request body is empty or the field values are not formatted properly", SimpleError.Category.USER);
   }
 
   @ExceptionHandler({ HttpRequestMethodNotSupportedException.class })
@@ -59,6 +63,7 @@ public class ControllerValidationHandler {
   @ResponseStatus(HttpStatus.NOT_FOUND)
   @ResponseBody
   public SimpleError handleEntityNotFound(EntityNotFoundException ex) {
+    print(ex);
     return new SimpleError(HttpStatus.NOT_FOUND.value(), ex.toString(), Category.SYSTEM);
   }
 
@@ -66,6 +71,7 @@ public class ControllerValidationHandler {
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   @ResponseBody
   public SimpleError handleDBExcepiton(DBException ex) {
+    print(ex);
     return new SimpleError(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage(), Category.SYSTEM);
   }
 
@@ -73,6 +79,7 @@ public class ControllerValidationHandler {
   @ResponseStatus(HttpStatus.PRECONDITION_FAILED)
   @ResponseBody
   public SimpleError handleIllegalState(IllegalStateException ex) {
+    print(ex);
     return new SimpleError(HttpStatus.PRECONDITION_FAILED.value(), ex.toString(), Category.SYSTEM);
   }
 
@@ -80,6 +87,7 @@ public class ControllerValidationHandler {
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   @ResponseBody
   public SimpleError handleInternalFailures(RuntimeException ex) {
+    print(ex);
     return new SimpleError(HttpStatus.INTERNAL_SERVER_ERROR.value(),
         "Unexpected error. Please contact the admin with the following key:" + ex.getMessage(), Category.SYSTEM);
   }
@@ -90,6 +98,10 @@ public class ControllerValidationHandler {
   public SimpleError handlePermissionErrors(SecurityPermissionException ex) {
     return new SimpleError(HttpStatus.UNAUTHORIZED.value(), "You are not authorized to perform this action",
         Category.USER);
+  }
+
+  public void print(Throwable t) {
+    logger.error("Error", t);
   }
 
 }

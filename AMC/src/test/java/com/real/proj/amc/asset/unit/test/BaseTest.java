@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -36,6 +37,12 @@ public class BaseTest {
   public void setup() throws MalformedURLException {
     userRepository.deleteAll();
     createDummyUsers();
+    // userRepository.save(users);
+  }
+
+  @Test
+  public void dummy() {
+
   }
 
   private void createDummyUsers() {
