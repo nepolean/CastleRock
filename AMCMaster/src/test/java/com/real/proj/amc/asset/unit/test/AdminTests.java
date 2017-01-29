@@ -13,6 +13,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import com.real.proj.amc.model.Coupon;
 import com.real.proj.amc.model.Tax;
 import com.real.proj.amc.service.GenericFCRUDService;
+import com.real.proj.unit.test.BaseTest;
 import com.real.proj.user.model.User;
 
 @EnableAutoConfiguration

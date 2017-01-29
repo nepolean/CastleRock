@@ -19,7 +19,7 @@ public class Quotation {
   public void raiseQuote(Asset asset, Coupon coupon, Set<Tax> taxes) {
     List<Package> packages = asset.getSubscribedPackages();
     for (Package pkg : packages) {
-      totalAmount += pkg.getPricing(asset);
+      totalAmount += pkg.getPricing(asset.getRating());
     }
     try {
       discount = coupon.applyDiscount(totalAmount);

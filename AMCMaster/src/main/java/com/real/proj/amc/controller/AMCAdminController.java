@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.real.proj.amc.model.Coupon;
-import com.real.proj.amc.model.MaintenanceService;
 import com.real.proj.amc.service.GenericFCRUDService;
 
 @RestController
@@ -30,9 +29,10 @@ public class AMCAdminController {
     this.crudService = crudService;
   }
 
-  public void defineAService(@Validated @RequestBody MaintenanceService service, Principal loggedInUser) {
+  // public void defineAService(@Validated @RequestBody MaintenanceService
+  // service, Principal loggedInUser) {
 
-  }
+  // }
 
   public void defineAPackage(@RequestParam String packageName, Principal loggedInUser) {
 

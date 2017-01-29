@@ -4,14 +4,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.data.annotation.Id;
 
 public class Package {
 
   @Id
   private String id;
+  @NotBlank
   private String name;
+  @NotNull
   private List<MaintenanceService> services;
+  @NotNull
   private Map<Rating, Double> pricing;
   private boolean isActive;
 
@@ -46,8 +52,8 @@ public class Package {
     return pricing;
   }
 
-  public double getPricing(Asset asset) {
-    Rating rating = asset.getRating();
+  public double getPricing(Rating rating) {
+    // Rating rating = asset.getRating();
     return this.pricing.get(rating);
   }
 

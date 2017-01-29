@@ -1,5 +1,9 @@
 package com.real.proj.amc.model;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -8,11 +12,14 @@ public class Tax extends BaseMasterEntity {
 
   @Id
   private String id;
-  private String name;
+  @NotBlank
+  private String type;
+  @Min(1)
+  @Max(100)
   private double percentage;
 
   public Tax(String name, double percentage) {
-    this.name = name;
+    this.type = name;
     this.percentage = percentage;
   }
 
@@ -21,11 +28,11 @@ public class Tax extends BaseMasterEntity {
   }
 
   public String getName() {
-    return name;
+    return type;
   }
 
   public void setName(String name) {
-    this.name = name;
+    this.type = name;
   }
 
   public double getPercentage() {
@@ -42,7 +49,7 @@ public class Tax extends BaseMasterEntity {
 
   @Override
   public String toString() {
-    return "Tax [id=" + id + ", name=" + name + ", percentage=" + percentage + "]";
+    return "Tax [id=" + id + ", name=" + type + ", percentage=" + percentage + "]";
   }
 
 }

@@ -16,6 +16,7 @@ import com.real.proj.amc.model.Location;
 import com.real.proj.amc.model.UOM;
 import com.real.proj.amc.service.AssetRepository;
 import com.real.proj.amc.service.AssetService;
+import com.real.proj.unit.test.BaseTest;
 import com.real.proj.user.model.User;
 import com.real.proj.user.service.UserRepository;
 

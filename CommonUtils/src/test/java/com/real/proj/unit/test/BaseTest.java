@@ -1,4 +1,4 @@
-package com.real.proj.amc.asset.unit.test;
+package com.real.proj.unit.test;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;

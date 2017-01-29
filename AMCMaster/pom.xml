@@ -3,11 +3,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>RealService</groupId>
-  <artifactId>AMC</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <artifactId>AMCMaster</artifactId>
+  <version>1.0.0</version>
   <packaging>jar</packaging>
 
-  <name>AMC</name>
+  <name>AMCMaster</name>
   <url>http://maven.apache.org</url>
 
   <properties>
@@ -44,11 +44,6 @@
       <artifactId>CommonUtils</artifactId>
       <version>1.0.0</version>
     </dependency>
-    <dependency>
-    	<groupId>RealService</groupId>
-    	<artifactId>AMCMaster</artifactId>
-    	<version>1.0.0</version>
-    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -70,5 +65,6 @@
           <url>https://repo.spring.io/libs-release</url>
       </pluginRepository>
   </pluginRepositories>      
+
 
 </project>
