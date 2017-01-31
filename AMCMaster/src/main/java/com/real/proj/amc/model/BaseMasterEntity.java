@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class BaseMasterEntity {
 
+  Object id;
   @JsonIgnore
   protected Date createdOn;
   @JsonIgnore
@@ -58,5 +59,9 @@ public class BaseMasterEntity {
 
   public boolean isDeleted() {
     return this.markForDeletion;
+  }
+
+  public Object getId() {
+    return this.id;
   }
 }

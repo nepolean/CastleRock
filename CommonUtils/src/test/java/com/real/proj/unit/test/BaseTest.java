@@ -10,16 +10,18 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.real.proj.user.model.User;
 import com.real.proj.user.service.UserRepository;
 
-@RunWith(SpringRunner.class)
+@RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("default")
 @EnableAutoConfiguration
+@EnableMongoRepositories("com.real.proj.user.service")
 // @ComponentScan(basePackages = { "com.real.proj.controller.exception",
 // "com.real.proj.controller.exception.handler",
 // "com.real.proj.amc.controller", "com.real.proj.amc.service" })
@@ -34,7 +36,7 @@ public class BaseTest {
   protected List<User> users = new ArrayList<User>();
 
   @Before
-  public void setup() throws MalformedURLException {
+  public void setup() throws MalformedURLException, Exception {
     userRepository.deleteAll();
     createDummyUsers();
     // userRepository.save(users);

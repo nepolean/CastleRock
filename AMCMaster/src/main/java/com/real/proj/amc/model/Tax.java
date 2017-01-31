@@ -18,8 +18,8 @@ public class Tax extends BaseMasterEntity {
   @Max(100)
   private double percentage;
 
-  public Tax(String name, double percentage) {
-    this.type = name;
+  public Tax(String type, double percentage) {
+    this.type = type;
     this.percentage = percentage;
   }
 
@@ -27,11 +27,11 @@ public class Tax extends BaseMasterEntity {
     return id;
   }
 
-  public String getName() {
+  public String getType() {
     return type;
   }
 
-  public void setName(String name) {
+  public void setType(String name) {
     this.type = name;
   }
 

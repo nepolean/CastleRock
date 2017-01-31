@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.real.proj.amc.model.Coupon;
+import com.real.proj.amc.model.Tax;
 import com.real.proj.amc.service.GenericFCRUDService;
 
 @RestController
@@ -57,5 +58,16 @@ public class AMCAdminController {
   public ResponseEntity<Coupon> createCoupon(@RequestBody @Valid Coupon coupon) {
     Coupon cpn = this.crudService.create(coupon, "user");
     return new ResponseEntity<Coupon>(cpn, HttpStatus.OK);
+  }
+
+  @RequestMapping(path = "/admin/tax", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+  public Tax getTax() {
+    return this.crudService.findAll(Tax.class).get(0);
+  }
+
+  @RequestMapping(path = "/admin/tax", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Tax> createCoupon(@RequestBody @Valid Tax tax, Principal adminUser) {
+    Tax tx = this.crudService.create(tax, adminUser.getName());
+    return new ResponseEntity<Tax>(tx, HttpStatus.OK);
   }
 }
