@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.net.MalformedURLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.After;
@@ -14,60 +13,39 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.real.proj.forum.model.Forum;
 import com.real.proj.forum.service.ForumRepository;
+import com.real.proj.forum.service.ForumService;
 import com.real.proj.forum.service.IForumService;
 import com.real.proj.message.SimpleMessage;
-import com.real.proj.user.model.User;
-import com.real.proj.user.service.UserRepository;
+import com.real.proj.unit.test.BaseTest;
+import com.real.proj.user.service.UserService;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = { ForumService.class,
+    UserService.class })
 @ActiveProfiles("test")
-public class ForumServiceTest {
+@EnableAutoConfiguration
+@EnableMongoRepositories("com.real.proj.forum.service")
+public class ForumServiceTest extends BaseTest {
 
   @Autowired
   IForumService forumService;
-  @Autowired
-  UserRepository userRepository;
+  // @Autowired
+  // UserRepository userRepository;
   @Autowired
   ForumRepository forumRepository;
 
-  private String default_user = "user";
-  private String default_pwd = "user";
-
-  private List<User> users = new ArrayList<User>();
-
   @Before
-  public void setup() throws MalformedURLException {
-    // base = new URL("http://localhost:" + port);
-    userRepository.deleteAll();
+  public void setup() throws MalformedURLException, Exception {
+    super.setup();
     forumRepository.deleteAll();
-    createDummyUsers();
-  }
-
-  private void createDummyUsers() {
-
-    User u = new User();
-    u.setEmail("user");
-    users.add(userRepository.save(u));
-
-    User u1 = new User();
-    u1.setEmail("user1@email.com");
-    users.add(userRepository.save(u1));
-
-    User u2 = new User();
-    u2.setEmail("user2@email.com");
-    users.add(userRepository.save(u2));
-
-    User u3 = new User();
-    u3.setEmail("user3@email.com");
-    users.add(userRepository.save(u3));
-
   }
 
   @Test
@@ -77,7 +55,7 @@ public class ForumServiceTest {
     assertNotNull(f);
     assertEquals("TestForum", f.getSubject());
     assert (f.getSubscribers().size() == 1);
-    assertEquals("user", f.getOwner().getEmail());
+    assertEquals(default_user, f.getOwner().getEmail());
   }
 
   @Test

@@ -6,8 +6,10 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-public class Package {
+@Document
+public class AMCPackage extends BaseMasterEntity {
 
   @Id
   private String id;
@@ -19,7 +21,7 @@ public class Package {
   // private Map<Rating, Double> pricing;
   private boolean isActive;
 
-  public Package(String name, List<MaintenanceService> services) {
+  public AMCPackage(String name, List<MaintenanceService> services) {
     this.name = name;
     this.services = services;
     // this.pricing = pricing;

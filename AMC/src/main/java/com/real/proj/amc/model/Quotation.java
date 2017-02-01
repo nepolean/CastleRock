@@ -17,8 +17,8 @@ public class Quotation {
   User createdBy;
 
   public void raiseQuote(Asset asset, Coupon coupon, Set<Tax> taxes) {
-    List<Package> packages = asset.getSubscribedPackages();
-    for (Package pkg : packages) {
+    List<AMCPackage> packages = asset.getSubscribedPackages();
+    for (AMCPackage pkg : packages) {
       totalAmount += pkg.getPricing(asset.getRating());
     }
     try {

@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Subscription {
 
-  List<Package> packages;
+  List<AMCPackage> packages;
   Date createdOn;
   Date subscribedOn;
   Quotation quotation;
@@ -16,7 +16,7 @@ public class Subscription {
     return status;
   }
 
-  public List<Package> getsubscribedPackages() {
+  public List<AMCPackage> getsubscribedPackages() {
     return packages;
   }
 

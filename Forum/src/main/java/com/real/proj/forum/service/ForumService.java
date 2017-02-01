@@ -33,13 +33,6 @@ public class ForumService implements IForumService {
     this.userService = userService;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * com.real.proj.forum.service.INotificationService#addSubscriber(java.lang.
-   * String, java.lang.String)
-   */
   @Override
   public Forum addUserToForum(String forumId, String loggedInUser, String targetUser) throws Exception {
     if (logger.isDebugEnabled()) {

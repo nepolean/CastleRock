@@ -3,7 +3,7 @@ package com.real.proj.amc.service;
 import java.util.Map;
 
 import com.real.proj.amc.model.Coupon;
-import com.real.proj.amc.model.Package;
+import com.real.proj.amc.model.AMCPackage;
 import com.real.proj.amc.model.Rating;
 import com.real.proj.amc.model.Tax;
 import com.real.proj.user.model.User;
@@ -16,15 +16,15 @@ public interface IAMCAdminService {
 
   public User createServiceProvider(User provider);
 
-  public Package createSubscriptionPackage(Package pkg);
+  public AMCPackage createSubscriptionPackage(AMCPackage pkg);
 
-  public Package disablePackage(Package pkg);
+  public AMCPackage disablePackage(AMCPackage pkg);
 
-  public Package enablePackage(Package pkg);
+  public AMCPackage enablePackage(AMCPackage pkg);
 
-  public Package modifyPrice(Package pkg, Rating rating, double price);
+  public AMCPackage modifyPrice(AMCPackage pkg, Rating rating, double price);
 
-  public Package addPrice(Package pkg, Map<Rating, Double> price);
+  public AMCPackage addPrice(AMCPackage pkg, Map<Rating, Double> price);
 
   public void rateAsset(String assetID, Rating rating);
 

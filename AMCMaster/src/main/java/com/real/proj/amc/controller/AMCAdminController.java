@@ -1,6 +1,7 @@
 package com.real.proj.amc.controller;
 
 import java.security.Principal;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.real.proj.amc.model.AMCPackage;
 import com.real.proj.amc.model.Coupon;
 import com.real.proj.amc.model.Tax;
 import com.real.proj.amc.service.GenericFCRUDService;
@@ -49,9 +51,11 @@ public class AMCAdminController {
 
   }
 
+  /******************* coupon *****************************/
+
   @RequestMapping(path = "/admin/coupon", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-  public Coupon getCoupon() {
-    return this.crudService.findAll(Coupon.class).get(0);
+  public ResponseEntity<List<Coupon>> getCoupon() {
+    return new ResponseEntity<List<Coupon>>(this.crudService.findAll(Coupon.class), HttpStatus.OK);
   }
 
   @RequestMapping(path = "/admin/coupon", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -60,9 +64,10 @@ public class AMCAdminController {
     return new ResponseEntity<Coupon>(cpn, HttpStatus.OK);
   }
 
+  /******************* tax *****************************/
   @RequestMapping(path = "/admin/tax", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-  public Tax getTax() {
-    return this.crudService.findAll(Tax.class).get(0);
+  public ResponseEntity<List<Tax>> getTax() {
+    return new ResponseEntity<List<Tax>>(this.crudService.findAll(Tax.class), HttpStatus.OK);
   }
 
   @RequestMapping(path = "/admin/tax", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -70,4 +75,19 @@ public class AMCAdminController {
     Tax tx = this.crudService.create(tax, adminUser.getName());
     return new ResponseEntity<Tax>(tx, HttpStatus.OK);
   }
+
+  /******************* package *****************************/
+
+  @RequestMapping(path = "/admin/package", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<List<AMCPackage>> getPackage() {
+    return new ResponseEntity<List<AMCPackage>>(this.crudService.findAll(AMCPackage.class), HttpStatus.OK);
+  }
+
+  @RequestMapping(path = "/admin/package", method = { RequestMethod.POST,
+      RequestMethod.PUT }, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<AMCPackage> createPackage(@RequestBody @Valid AMCPackage pkg, Principal adminUser) {
+    AMCPackage newPkg = this.crudService.create(pkg, adminUser.getName());
+    return new ResponseEntity<AMCPackage>(newPkg, HttpStatus.OK);
+  }
+
 }

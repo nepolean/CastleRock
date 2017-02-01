@@ -11,7 +11,7 @@ public class Flat extends Asset {
   private Flat() {
     type = AssetType.FLAT;
     services = new ArrayList<MaintenanceService>();
-    services.add(new MaintenanceService());
+    services.add(new ElectricalService());
     details = new Details();
   }
 

@@ -15,7 +15,6 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,22 +23,23 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.real.proj.forum.model.Forum;
 import com.real.proj.forum.service.ForumRepository;
+import com.real.proj.forum.service.ForumService;
 import com.real.proj.forum.service.IForumService;
 import com.real.proj.message.SimpleMessage;
+import com.real.proj.unit.test.BaseTest;
 import com.real.proj.user.model.User;
-import com.real.proj.user.service.UserRepository;
+import com.real.proj.user.service.UserService;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = { ForumService.class,
+    UserService.class })
 @ActiveProfiles("test")
-@ComponentScan(basePackages = { "com.real.proj.controller.exception", "com.real.proj.controller.exception.handler",
-    "com.real.proj.forum.controller", "com.real.proj.forum.service" })
-@EnableMongoRepositories
+@EnableMongoRepositories("com.real.proj.forum.service")
 @EnableAutoConfiguration
-public class ForumControllerTest {
+public class ForumControllerTest extends BaseTest {
 
-  @Autowired
-  private UserRepository userRepository;
+  // @Autowired
+  // public UserRepository userRepository;
   @Autowired
   private ForumRepository forumRepository;
 
@@ -137,13 +137,6 @@ public class ForumControllerTest {
   public void cleanUp() {
     userRepository.deleteAll();
     forumRepository.deleteAll();
-  }
-
-  private User createDummyUser(String userId) {
-    User someUser = new User();
-    someUser.setEmail(userId);
-    someUser = userRepository.save(someUser);
-    return someUser;
   }
 
   private Forum createTestForum(String owner) throws Exception {

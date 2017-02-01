@@ -22,18 +22,16 @@ import com.real.proj.user.service.UserRepository;
 @ActiveProfiles("default")
 @EnableAutoConfiguration
 @EnableMongoRepositories("com.real.proj.user.service")
-// @ComponentScan(basePackages = { "com.real.proj.controller.exception",
-// "com.real.proj.controller.exception.handler",
-// "com.real.proj.amc.controller", "com.real.proj.amc.service" })
 public class BaseTest {
 
   @Autowired
   protected UserRepository userRepository;
 
-  protected String default_user = "user";
-  protected String default_pwd = "user";
-
   protected List<User> users = new ArrayList<User>();
+
+  protected String default_user = "user";
+
+  private String default_pwd = "user";
 
   @Before
   public void setup() throws MalformedURLException, Exception {
@@ -65,6 +63,13 @@ public class BaseTest {
     u3.setEmail("user3@email.com");
     users.add(userRepository.save(u3));
 
+  }
+
+  protected User createDummyUser(String userId) {
+    User someUser = new User();
+    someUser.setEmail(userId);
+    someUser = userRepository.save(someUser);
+    return someUser;
   }
 
 }

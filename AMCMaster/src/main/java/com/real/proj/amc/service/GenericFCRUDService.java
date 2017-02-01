@@ -48,4 +48,9 @@ public class GenericFCRUDService {
     return this.template.findById(id, clazz);
   }
 
+  public <E> void removeAll(List<E> objects) {
+    for (E obj : objects)
+      this.template.remove(obj);
+  }
+
 }

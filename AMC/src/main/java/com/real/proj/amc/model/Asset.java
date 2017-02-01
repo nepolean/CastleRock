@@ -117,7 +117,7 @@ public class Asset implements java.io.Serializable {
 
   }
 
-  public List<Package> getSubscribedPackages() {
+  public List<AMCPackage> getSubscribedPackages() {
     if (this.subscription == null)
       return null;
     return this.subscription.getsubscribedPackages();

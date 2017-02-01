@@ -66,8 +66,7 @@ public class ForumController {
       Principal loggedInUser, WebRequest request) throws Exception {
     if (logger.isDebugEnabled())
       logger.debug("posting new message to " + forumId);
-    Forum f = null;
-    f = forumService.postMessage(message, forumId, loggedInUser.getName());
+    Forum f = forumService.postMessage(message, forumId, loggedInUser.getName());
     return ResponseEntity.ok("successful");
   }
 

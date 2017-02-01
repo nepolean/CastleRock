@@ -8,14 +8,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
+import com.real.proj.forum.service.ForumService;
 import com.real.proj.user.model.User;
 import com.real.proj.user.service.UserRepository;
+import com.real.proj.user.service.UserService;
 
-@SpringBootApplication
-@ComponentScan(basePackages = { "com.real.proj.controller.exception",
-    "com.real.proj.controller.exception.handler",
-    "com.real.proj.forum.controller", "com.real.proj.forum.service" })
-@EnableMongoRepositories
+@SpringBootApplication(scanBasePackageClasses = { UserService.class, ForumService.class })
+@ComponentScan(basePackages = { "com.real.proj.controller.exception", "com.real.proj.controller.exception.handler",
+    "com.real.proj.forum.controller", "com.real.proj.forum.service", "com.real.proj.user.service" })
+@EnableMongoRepositories({ "com.real.proj.user.service", "com.real.proj.forum.service" })
 @EnableAutoConfiguration
 public class ForumServiceApp implements CommandLineRunner {
 
