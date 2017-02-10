@@ -1,10 +1,14 @@
 package com.real.proj.amc.model;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Date;
+
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class BaseMasterEntity {
+public class BaseMasterEntity implements PropertyChangeListener {
 
   Object id;
   @JsonIgnore
@@ -18,6 +22,7 @@ public class BaseMasterEntity {
   protected boolean markForDeletion;
 
   BaseMasterEntity() {
+    this.createdBy = getLoggedInUser();
     this.createdOn = new Date();
   }
 
@@ -50,7 +55,9 @@ public class BaseMasterEntity {
   }
 
   public void setModifiedBy(String modifiedBy) {
+
     this.modifiedBy = modifiedBy;
+    this.lastModified = new Date();
   }
 
   public void markForDeletion() {
@@ -63,5 +70,18 @@ public class BaseMasterEntity {
 
   public Object getId() {
     return this.id;
+  }
+
+  @Override
+  public void propertyChange(PropertyChangeEvent event) {
+    if (event.getPropertyName().matches("(modifiedBy|lastModified)"))
+      return;
+    this.modifiedBy = getLoggedInUser();
+    this.lastModified = new Date();
+  }
+
+  private String getLoggedInUser() {
+    return SecurityContextHolder.getContext().getAuthentication() == null ? "TEST_USER"
+        : SecurityContextHolder.getContext().getAuthentication().getName();
   }
 }

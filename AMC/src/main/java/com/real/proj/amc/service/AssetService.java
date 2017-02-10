@@ -8,31 +8,28 @@ import org.springframework.stereotype.Service;
 import com.real.proj.amc.model.Apartment;
 import com.real.proj.amc.model.Asset;
 import com.real.proj.amc.model.UOM;
+import com.real.proj.controller.exception.EntityNotFoundException;
 import com.real.proj.user.model.User;
 import com.real.proj.user.service.UserService;
 
 @Service
 public class AssetService implements IAgentAssetService {
 
-  private AssetRepository assetRepository;
-  private UserService userService;
-
   @Autowired
-  public void setAssetRepository(AssetRepository repository, UserService userService) {
-    this.assetRepository = repository;
-    this.userService = userService;
-  }
+  private AssetRepository assetRepository;
+  @Autowired
+  private UserService userService;
 
   public Asset createAsset(Asset asset, String loggedInUser) {
     User authorizedUser = userService.getUser(loggedInUser);
-    asset.setCreatedBy(authorizedUser);
+    // asset.setCreatedBy(authorizedUser);
     return assetRepository.save(asset);
   }
 
   public Asset createApartment(String loggedInUser) {
     User authorizedUser = userService.getUser(loggedInUser);
     Asset newAsset = new Apartment(new Apartment.Details(100, 2, 1000.0, UOM.SFT));
-    newAsset.setCreatedBy(authorizedUser);
+    // newAsset.setCreatedBy(authorizedUser);
     Asset saved = assetRepository.save(newAsset);
     return saved;
   }
@@ -64,5 +61,12 @@ public class AssetService implements IAgentAssetService {
   public Asset[] getAssetsIOnBoardedByStatus(String status) {
     // TODO Auto-generated method stub
     return null;
+  }
+
+  public Asset getAssetById(String assetId) {
+    Asset asset = this.assetRepository.findOne(assetId);
+    if (asset == null)
+      throw new EntityNotFoundException();
+    return asset;
   }
 }

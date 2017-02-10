@@ -7,7 +7,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document
+@Document(collection = "Taxes")
 public class Tax extends BaseMasterEntity {
 
   @Id

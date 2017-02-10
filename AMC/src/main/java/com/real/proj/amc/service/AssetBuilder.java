@@ -22,7 +22,7 @@ public class AssetBuilder {
     if (asset == null)
       throw new NullPointerException();
     asset.setOwner(owner);
-    asset.setCreatedBy(agent);
+    // asset.setCreatedBy(agent);
     self.asset = asset;
     return self;
   }
@@ -33,7 +33,7 @@ public class AssetBuilder {
   }
 
   public AssetBuilder withSubscription(List<Package> packages) {
-
+    return null;
   }
 
 }

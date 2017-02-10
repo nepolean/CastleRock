@@ -13,7 +13,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-@Document
+@Document(collection = "Coupons")
 public class Coupon extends BaseMasterEntity {
 
   @Id
@@ -81,11 +81,14 @@ public class Coupon extends BaseMasterEntity {
     this.discPct = discPct;
   }
 
-  /******************************
-   * BUISINESS LOGIC
+  /*****************************
+   *      BUISINESS LOGIC      *
    *****************************/
 
   public double applyDiscount(double totalAmount) throws InvalidCouponException {
+    Date now = new Date();
+    if (now.before(validFrom) || now.after(validTo))
+      throw new InvalidCouponException("This coupon has expired.");
     return totalAmount * this.discPct / 100;
   }
 

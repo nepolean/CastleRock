@@ -5,61 +5,42 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Reference;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.real.proj.user.model.User;
 
-@Document
-public class Asset implements java.io.Serializable {
+@Document(collection = "Assets")
+public class Asset extends BaseMasterEntity implements java.io.Serializable {
 
   static final long serialVersionUID = 1L;
 
   @Id
   String id;
   protected AssetType type;
+  @Reference
   Location location;
-  // Asset belongsTo;
-  User owner;
-  User createdBy;
-  Date createdOn;
+  @Reference
+  Asset belongsTo;
+  User assetOwner;
   Set<AmenityMaster> amenities;
   List<MaintenanceService> services;
-  Subscription subscription;
-  Date lastModified;
-  // private Set<Package> subscribedPackages;
-  private Rating rating;
+  // Subscription subscription;
 
   public Asset() {
-    this.createdOn = new Date();
     // this.location = new Location();
   }
 
   public Asset(User ownedBy, User createdBy) {
-    this.owner = ownedBy;
-    this.createdBy = createdBy;
-    this.lastModified = new Date();
-
+    this.assetOwner = ownedBy;
   }
 
-  /*
-   * public Asset getBelongsTo() { return belongsTo; }
-   * 
-   * public void setBelongsTo(Asset belongsTo) { this.belongsTo = belongsTo; }
-   */
   public User getOwnedBy() {
-    return owner;
+    return assetOwner;
   }
 
   public void setOwnedBy(User ownedBy) {
-    this.owner = ownedBy;
-  }
-
-  public User getCreatedBy() {
-    return createdBy;
-  }
-
-  public void setCreatedBy(User authorizedUser) {
-    this.createdBy = authorizedUser;
+    this.assetOwner = ownedBy;
   }
 
   public Location getLocation() {
@@ -71,11 +52,11 @@ public class Asset implements java.io.Serializable {
   }
 
   public User getOwner() {
-    return owner;
+    return assetOwner;
   }
 
   public void setOwner(User owner) {
-    this.owner = owner;
+    this.assetOwner = owner;
   }
 
   public Date getCreatedOn() {
@@ -102,33 +83,14 @@ public class Asset implements java.io.Serializable {
     this.services = services;
   }
 
-  public SubscriptionStatus getStatus() {
-    if (this.subscription == null)
-      return SubscriptionStatus.NONE;
-    return this.subscription.getStatus();
-  }
-
   /*********************** BUISINESS LOGIC *************************/
   public void subscribe() {
 
   }
 
-  public void renew() {
-
-  }
-
-  public List<AMCPackage> getSubscribedPackages() {
-    if (this.subscription == null)
-      return null;
-    return this.subscription.getsubscribedPackages();
-  }
-
-  public Rating getRating() {
-    return rating;
-  }
-
-  public void setRating(Rating rating) {
-    this.rating = rating;
-  }
+  /*
+   * public List<AMCPackage> getSubscribedPackages() { if (this.subscription ==
+   * null) return null; return this.subscription.getsubscribedPackages(); }
+   */
 
 }
