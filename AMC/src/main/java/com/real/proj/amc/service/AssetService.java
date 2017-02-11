@@ -36,7 +36,7 @@ public class AssetService implements IAgentAssetService {
 
   public List<Asset> getMyAssets(String email) {
     User owner = userService.getUser(email);
-    return this.assetRepository.findByOwner(owner);
+    return this.assetRepository.findByAssetOwner(owner);
   }
 
   @Override

@@ -68,8 +68,8 @@ public class BaseMasterEntity implements PropertyChangeListener {
     return this.markForDeletion;
   }
 
-  public Object getId() {
-    return this.id;
+  public String getId() {
+    return this.id.toString();
   }
 
   @Override

@@ -53,4 +53,8 @@ public class GenericFCRUDService {
       this.template.remove(obj);
   }
 
+  public void removeAll(Class clz) {
+    this.template.dropCollection(clz);
+  }
+
 }

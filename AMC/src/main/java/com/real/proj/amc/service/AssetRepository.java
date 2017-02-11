@@ -11,7 +11,7 @@ import com.real.proj.user.model.User;
 @Repository
 public interface AssetRepository extends MongoRepository<Asset, String> {
 
-  public List<Asset> findByOwner(User name);
+  public List<Asset> findByAssetOwner(User name);
 
   // public Asset findById(String assetId);
 

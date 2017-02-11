@@ -35,6 +35,10 @@ public class Asset extends BaseMasterEntity implements java.io.Serializable {
     this.assetOwner = ownedBy;
   }
 
+  public String getId() {
+    return id;
+  }
+
   public User getOwnedBy() {
     return assetOwner;
   }

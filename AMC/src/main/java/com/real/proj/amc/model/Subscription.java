@@ -26,6 +26,7 @@ public class Subscription extends BaseMasterEntity {
   String assetId;
   @Reference
   List<AMCPackage> packages;
+  @Reference
   Map<String, ServiceLevelData> services;
   Date startDate;
   Date validUpto;
@@ -47,11 +48,17 @@ public class Subscription extends BaseMasterEntity {
 
   public void subscribe(List<AMCPackage> packages) {
     this.packages = packages;
+    this.currentState = States.SUBSCRIPTION_REQUESTED;
+  }
+
+  public String getId() {
+    return id;
   }
 
   public boolean rateAService(String serviceName, Rating rating) {
     ServiceLevelData sd = this.services.get(serviceName);
     sd.setUserRating(rating);
+    this.currentState = States.RATED;
     return areAllServicesRated();
   }
 
@@ -60,6 +67,15 @@ public class Subscription extends BaseMasterEntity {
       rateAService(name, rating);
     });
     return areAllServicesRated();
+  }
+
+  public void renew(List<AMCPackage> pkgs, List<Tax> taxes, List<Coupon> coupons) {
+    if (this.history == null)
+      this.history = new ArrayList<Subscription>();
+    this.history.add(this);
+    this.packages = pkgs;
+    this.quotation = null;
+    this.raiseQuote(taxes);
   }
 
   public Quotation raiseQuote(List<Tax> taxes) {
@@ -91,10 +107,11 @@ public class Subscription extends BaseMasterEntity {
     Quotation quote = new Quotation(totalAmount, taxAmount, discount);
 
     this.quotation = quote;
+    this.currentState = States.QUOTATION_SENT;
     return quote;
   }
 
-  public States getStatus() {
+  public States getState() {
     return currentState;
   }
 
@@ -142,5 +159,9 @@ public class Subscription extends BaseMasterEntity {
         return false;
     }
     return true;
+  }
+
+  public Map<String, ServiceLevelData> getServices() {
+    return this.services;
   }
 }
