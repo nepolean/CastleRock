@@ -78,14 +78,15 @@ public class SubscriptionServiceTest extends BaseTest {
   }
 
   @Test
-  public void rateAService() {
+  public void testRateService() {
     this.createTax();
     this.testCreateSubscription();
     this.testSubscribe();
     Subscription sb = this.subscRepo.findAll().get(0);
+    System.out.println(sb.getServices());
     this.subsService.rateServices(sb.getId(), "ELECTRICAL", Rating.FIVE);
     sb = this.subscRepo.findOne(sb.getId());
-    assertEquals(sb.getState(), States.RATED);
+    assertEquals(States.RATED, sb.getState());
     assertEquals(sb.areAllServicesRated(), false);
     Map<String, Rating> ratings = new HashMap<String, Rating>();
     ratings.put("ELECTRICAL", Rating.FIVE);
@@ -95,8 +96,17 @@ public class SubscriptionServiceTest extends BaseTest {
     assertEquals(sb.getServices().get("ELECTRICAL").getRating(), Rating.FIVE);
     assertEquals(sb.getServices().get("PLUMBING").getRating(), Rating.FOUR);
     assertEquals(sb.areAllServicesRated(), true);
-    System.out.println(sb.getState().name());
     assert (this.subsService.getStatus(sb.getId()).equals(States.QUOTATION_SENT.name()));
+  }
+
+  @Test
+  public void testRenew() {
+    this.testRateService();
+    this.createTax();
+    Subscription sb = this.subscRepo.findAll().get(0);
+    this.subsService.renew(sb.getId(), this.createTestPackage());
+    sb = this.subscRepo.findOne(sb.getId());
+    assertEquals(sb.getState(), States.RENEWED);
   }
 
   private void createTax() {

@@ -14,7 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.statemachine.StateMachine;
 
 @Document(collection = "Subscriptions")
-public class Subscription extends BaseMasterEntity {
+public class Subscription extends BaseMasterEntity implements Cloneable {
 
   @Transient
   @Autowired
@@ -72,10 +72,13 @@ public class Subscription extends BaseMasterEntity {
   public void renew(List<AMCPackage> pkgs, List<Tax> taxes, List<Coupon> coupons) {
     if (this.history == null)
       this.history = new ArrayList<Subscription>();
-    this.history.add(this);
+    Subscription old;
+    old = (Subscription) this.clone();
+    this.history.add(old);
     this.packages = pkgs;
     this.quotation = null;
     this.raiseQuote(taxes);
+    this.currentState = States.RENEWED;
   }
 
   public Quotation raiseQuote(List<Tax> taxes) {
@@ -163,5 +166,20 @@ public class Subscription extends BaseMasterEntity {
 
   public Map<String, ServiceLevelData> getServices() {
     return this.services;
+  }
+
+  public Subscription clone() {
+    Subscription sb = new Subscription();
+    sb.assetId = this.assetId;
+    sb.coupons = this.coupons;
+    sb.createdBy = this.createdBy;
+    sb.createdOn = this.createdOn;
+    sb.currentState = this.currentState;
+    sb.packages = this.packages;
+    sb.currentState = this.currentState;
+    sb.lastModified = this.lastModified;
+    sb.modifiedBy = this.modifiedBy;
+    sb.quotation = this.quotation;
+    return sb;
   }
 }

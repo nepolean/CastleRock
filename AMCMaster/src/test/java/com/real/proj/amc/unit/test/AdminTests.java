@@ -2,9 +2,13 @@ package com.real.proj.amc.unit.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.junit.After;
 import org.junit.Before;
@@ -13,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.real.proj.amc.model.AssetType;
 import com.real.proj.amc.model.BaseMasterEntity;
 import com.real.proj.amc.model.Coupon;
 import com.real.proj.amc.model.MaintenanceService;
@@ -21,8 +26,9 @@ import com.real.proj.amc.model.Tax;
 import com.real.proj.amc.service.GenericFCRUDService;
 import com.real.proj.unit.test.BaseTest;
 import com.real.proj.user.model.User;
+import com.real.proj.user.service.UserService;
 
-@SpringBootTest(classes = { GenericFCRUDService.class })
+@SpringBootTest(classes = { UserService.class, GenericFCRUDService.class })
 @EnableAutoConfiguration
 public class AdminTests extends BaseTest {
 
@@ -72,7 +78,10 @@ public class AdminTests extends BaseTest {
 
   @Test
   public void testCreateService() {
-    MaintenanceService service = new MaintenanceService("ELECTRICAL", "Maintain electrical equipment");
+    List<AssetType> applicableTo = new ArrayList<AssetType>();
+    applicableTo.add(AssetType.APARTMENT);
+    applicableTo.add(AssetType.FLAT);
+    MaintenanceService service = new MaintenanceService("ELECTRICAL", "Maintain electrical equipment", applicableTo);
     service.addPricing(Rating.ONE, 100.0, 10);
     service.addPricing(Rating.TWO, 80, 8);
     service.addPricing(Rating.THREE, 60, 6);
@@ -84,24 +93,39 @@ public class AdminTests extends BaseTest {
     testCreateService();
     List<MaintenanceService> services = findAll(MaintenanceService.class);
     MaintenanceService service = services.get(0);
-    service.addPricing(Rating.ONE, 120.0, 12);
+    service.addPricing(Rating.TWO, 120.0, 12);
     service = updateAndFind(service, MaintenanceService.class);
-    // assertEquals(service.getPrice(Rating.ONE), 120.0);
-    assertEquals(service.getVisitCount(Rating.ONE), 12);
-    assert (service.getPrice(Rating.ONE) - 120.0 < 0.1);
+    assertEquals(120.0, service.getPrice(Rating.TWO), 0.1);
+    assertEquals(12, service.getVisitCount(Rating.TWO));
+    assertEquals(120.0, service.getPrice(Rating.TWO), 0.1);
+  }
+
+  @Test
+  public void testCurrentPrice() {
+    this.testCreateService();
+    List<MaintenanceService> services = findAll(MaintenanceService.class);
+    MaintenanceService service = services.get(0);
+    service.addPricing(Rating.ONE, 120.0, 10, getFutureDate());
+    double currentPrice = service.getPrice(Rating.ONE);
+    assertEquals(100.0, currentPrice, 0.1);
+    double futurePrice = service.getPrice(Rating.ONE, getFutureDate());
+    assertEquals(120.0, futurePrice, 0.1);
+    try {
+      service.getPrice(Rating.ONE, getOldDate());
+      fail("Service should fail for non valid date range");
+    } catch (Exception ex) {
+
+    }
   }
 
   @After
   public <E extends BaseMasterEntity> void cleanUp() {
-    Class[] adminClasses = { Tax.class, Coupon.class, MaintenanceService.class };
+    Class[] adminClasses = { Tax.class, Coupon.class,
+        MaintenanceService.class };
     for (Class<E> cls : adminClasses) {
       List<E> objects = crudService.findAll(cls);
       crudService.removeAll(objects);
     }
-    /*
-     * List<Tax> taxes = crudService.findAll(Tax.class); for (Tax tax : taxes) {
-     * crudService.delete(tax, "tax"); }
-     */
   }
 
   /**********************
@@ -118,6 +142,20 @@ public class AdminTests extends BaseTest {
     assertNotNull(objects);
     assert (objects.size() > 0);
     return objects;
+  }
+
+  private Date getFutureDate() {
+    Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+    cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH) + 10);
+    System.out.println(cal.toString());
+    return cal.getTime();
+  }
+
+  private Date getOldDate() {
+    Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+    cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH) - 10);
+    System.out.println(cal.toString());
+    return cal.getTime();
   }
 
   private <E extends BaseMasterEntity> E updateAndFind(E entity, Class<E> clazz) {
