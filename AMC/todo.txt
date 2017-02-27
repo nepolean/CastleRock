@@ -1,0 +1,4 @@
+** Send notification on generating a quote.
+** Send notification on expiring a quote
+
+** remind admin when needs to be rated.

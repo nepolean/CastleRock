@@ -2,7 +2,6 @@ package com.real.proj.amc.unit.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -17,12 +16,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.real.proj.amc.model.Amenity;
 import com.real.proj.amc.model.AssetType;
 import com.real.proj.amc.model.BaseMasterEntity;
 import com.real.proj.amc.model.Coupon;
+import com.real.proj.amc.model.DeliveryModel;
+import com.real.proj.amc.model.FixedPricingScheme;
+import com.real.proj.amc.model.FixedPricingScheme.FixedPrice;
+import com.real.proj.amc.model.History;
 import com.real.proj.amc.model.MaintenanceService;
+import com.real.proj.amc.model.PricingStrategy;
 import com.real.proj.amc.model.Rating;
+import com.real.proj.amc.model.RatingBasedPricingScheme;
+import com.real.proj.amc.model.RatingBasedPricingScheme.RatingBasedPrice;
 import com.real.proj.amc.model.Tax;
+import com.real.proj.amc.model.UserInput;
 import com.real.proj.amc.service.GenericFCRUDService;
 import com.real.proj.unit.test.BaseTest;
 import com.real.proj.user.model.User;
@@ -78,14 +86,37 @@ public class AdminTests extends BaseTest {
 
   @Test
   public void testCreateService() {
+    Date dt = new Date(System.currentTimeMillis());
     List<AssetType> applicableTo = new ArrayList<AssetType>();
     applicableTo.add(AssetType.APARTMENT);
     applicableTo.add(AssetType.FLAT);
-    MaintenanceService service = new MaintenanceService("ELECTRICAL", "Maintain electrical equipment", applicableTo);
-    service.addPricing(Rating.ONE, 100.0, 10);
-    service.addPricing(Rating.TWO, 80, 8);
-    service.addPricing(Rating.THREE, 60, 6);
-    createEntity(service);
+    List<Amenity> amenities = new ArrayList<Amenity>();
+    amenities.add(new Amenity("ELECTRICITY"));
+
+    RatingBasedPrice price = new RatingBasedPrice();
+    price.addPriceFor(Rating.ONE, 100.0);
+    price.addPriceFor(Rating.TWO, 80.0);
+    price.addPriceFor(Rating.THREE, 60.0);
+
+    RatingBasedPricingScheme pricing = new RatingBasedPricingScheme(price, dt);
+
+    RatingBasedPrice price1 = new RatingBasedPrice();
+    price1.addPriceFor(Rating.ONE, 105.0);
+    price1.addPriceFor(Rating.TWO, 85.0);
+    price1.addPriceFor(Rating.THREE, 65.0);
+
+    pricing.updatePrice(price1, getFutureDate(2));
+
+    MaintenanceService service = new MaintenanceService("ELECTRICAL",
+        "Maintain electrical equipment",
+        applicableTo,
+        amenities,
+        DeliveryModel.BOTH, pricing);
+    service = (MaintenanceService) createEntity(service);
+    UserInput<String, Object> input = new UserInput<String, Object>();
+    input.add(RatingBasedPricingScheme.RATING, Rating.ONE);
+    double currentPrice = service.getPricingStrategy().getPrice(input);
+    assertEquals(100.0, currentPrice, 10);
   }
 
   @Test
@@ -93,11 +124,14 @@ public class AdminTests extends BaseTest {
     testCreateService();
     List<MaintenanceService> services = findAll(MaintenanceService.class);
     MaintenanceService service = services.get(0);
-    service.addPricing(Rating.TWO, 120.0, 12);
+    // modify pricing strategy
+    PricingStrategy pricing = new FixedPricingScheme(new FixedPrice(100.0));
+    service.setPricingStrategy(pricing);
+    // modify delivery method
+    service.setDeliveryModel(DeliveryModel.SUBSCRIPTION);
     service = updateAndFind(service, MaintenanceService.class);
-    assertEquals(120.0, service.getPrice(Rating.TWO), 0.1);
-    assertEquals(12, service.getVisitCount(Rating.TWO));
-    assertEquals(120.0, service.getPrice(Rating.TWO), 0.1);
+    assertEquals(100.0, service.getPrice(null), 0.1);
+    assertEquals(DeliveryModel.SUBSCRIPTION, service.getDeliveryModel());
   }
 
   @Test
@@ -105,36 +139,54 @@ public class AdminTests extends BaseTest {
     this.testCreateService();
     List<MaintenanceService> services = findAll(MaintenanceService.class);
     MaintenanceService service = services.get(0);
-    service.addPricing(Rating.ONE, 120.0, 10, getFutureDate());
-    double currentPrice = service.getPrice(Rating.ONE);
+    PricingStrategy pricingStrategy = service.getPricingStrategy();
+    UserInput<String, Object> userInput = new UserInput<String, Object>();
+    userInput.add(RatingBasedPricingScheme.RATING, Rating.ONE);
+    double currentPrice = pricingStrategy.getPrice(userInput);
     assertEquals(100.0, currentPrice, 0.1);
-    double futurePrice = service.getPrice(Rating.ONE, getFutureDate());
-    assertEquals(120.0, futurePrice, 0.1);
-    try {
-      service.getPrice(Rating.ONE, getOldDate());
-      fail("Service should fail for non valid date range");
-    } catch (Exception ex) {
+    double futurePrice = pricingStrategy.getPrice(userInput, getFutureDate(3));
+    assertEquals(105.0, futurePrice, 0.1);
+  }
 
-    }
+  @Test
+  public void testHistoryObject() {
+    History<Integer> history = new History<Integer>();
+    Integer one = Integer.valueOf(1);
+    history.addToHistory(one, new Date());
+    assertEquals(one, history.getCurrentValue());
+    Integer two = Integer.valueOf(2);
+    Date tomorrow = getFutureDate(1);
+    history.addToHistory(two, tomorrow);
+    assertEquals(one, history.getCurrentValue());
+    tomorrow = getFutureDate(2);
+    Integer three = Integer.valueOf(3);
+    history.addToHistory(three, tomorrow);
+    history.addToHistory(Integer.valueOf(4), getFutureDate(3));
+    Date myDate = getFutureDate(2);
+    Integer output = history.getValueForDate(myDate);
+    assertEquals(three, output);
   }
 
   @After
   public <E extends BaseMasterEntity> void cleanUp() {
     Class[] adminClasses = { Tax.class, Coupon.class,
         MaintenanceService.class };
+
     for (Class<E> cls : adminClasses) {
       List<E> objects = crudService.findAll(cls);
       crudService.removeAll(objects);
     }
+
   }
 
   /**********************
    * PRIVATE METHODS *
    **********************/
-  private void createEntity(BaseMasterEntity service) {
+  private BaseMasterEntity createEntity(BaseMasterEntity service) {
     service = crudService.create(service, defaultUser.getEmail());
     assertNotNull(service.getId());
     assertEquals(service.getCreatedBy(), defaultUser.getEmail());
+    return service;
   }
 
   private <E extends BaseMasterEntity> List<E> findAll(Class<E> e) {
@@ -144,9 +196,9 @@ public class AdminTests extends BaseTest {
     return objects;
   }
 
-  private Date getFutureDate() {
+  private Date getFutureDate(int daysAfter) {
     Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-    cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH) + 10);
+    cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH) + daysAfter);
     System.out.println(cal.toString());
     return cal.getTime();
   }

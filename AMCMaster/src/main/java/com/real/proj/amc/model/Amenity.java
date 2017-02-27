@@ -4,13 +4,13 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "Amenities")
-public class AmenityMaster {
+public class Amenity {
 
   @Id
   String id;
   String name;
 
-  public AmenityMaster(String name) {
+  public Amenity(String name) {
     this.name = name;
   }
 

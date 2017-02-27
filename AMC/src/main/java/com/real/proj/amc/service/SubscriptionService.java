@@ -10,7 +10,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.stereotype.Service;
 
-import com.real.proj.amc.model.AMCPackage;
+import com.real.proj.amc.model.BasePackage;
 import com.real.proj.amc.model.Coupon;
 import com.real.proj.amc.model.Events;
 import com.real.proj.amc.model.Rating;
@@ -70,7 +70,7 @@ public class SubscriptionService {
    * @param subscriptionId
    * @param pkgs
    */
-  public void subscribe(String subscriptionId, List<AMCPackage> pkgs) {
+  public void subscribe(String subscriptionId, List<BasePackage> pkgs) {
     if (pkgs == null || pkgs.isEmpty()) {
       logger.error("Invalid packages supplied");
       throw new RuntimeException("Empty package details are provided.");
@@ -152,11 +152,11 @@ public class SubscriptionService {
     generateQuotation(sb);
   }
 
-  public void renew(String subscriptionId, List<AMCPackage> pkgs) {
+  public void renew(String subscriptionId, List<BasePackage> pkgs) {
     this.renew(subscriptionId, pkgs, null);
   }
 
-  public void renew(String subscriptionId, List<AMCPackage> pkgs, List<Coupon> coupons) {
+  public void renew(String subscriptionId, List<BasePackage> pkgs, List<Coupon> coupons) {
     if (pkgs == null || pkgs.isEmpty())
       throw new RuntimeException("Empty package details are provided.");
     logger.debug("Renew the subscription {} ", subscriptionId);

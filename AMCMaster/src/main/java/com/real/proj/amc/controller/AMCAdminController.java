@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.real.proj.amc.model.AMCPackage;
+import com.real.proj.amc.model.BasePackage;
 import com.real.proj.amc.model.Coupon;
 import com.real.proj.amc.model.Tax;
 import com.real.proj.amc.service.GenericFCRUDService;
@@ -79,15 +79,15 @@ public class AMCAdminController {
   /******************* package *****************************/
 
   @RequestMapping(path = "/admin/package", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<List<AMCPackage>> getPackage() {
-    return new ResponseEntity<List<AMCPackage>>(this.crudService.findAll(AMCPackage.class), HttpStatus.OK);
+  public ResponseEntity<List<BasePackage>> getPackage() {
+    return new ResponseEntity<List<BasePackage>>(this.crudService.findAll(BasePackage.class), HttpStatus.OK);
   }
 
   @RequestMapping(path = "/admin/package", method = { RequestMethod.POST,
       RequestMethod.PUT }, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<AMCPackage> createPackage(@RequestBody @Valid AMCPackage pkg, Principal adminUser) {
-    AMCPackage newPkg = this.crudService.create(pkg, adminUser.getName());
-    return new ResponseEntity<AMCPackage>(newPkg, HttpStatus.OK);
+  public ResponseEntity<BasePackage> createPackage(@RequestBody @Valid BasePackage pkg, Principal adminUser) {
+    BasePackage newPkg = this.crudService.create(pkg, adminUser.getName());
+    return new ResponseEntity<BasePackage>(newPkg, HttpStatus.OK);
   }
 
 }

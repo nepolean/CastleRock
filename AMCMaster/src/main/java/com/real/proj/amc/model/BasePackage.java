@@ -1,6 +1,8 @@
 package com.real.proj.amc.model;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.constraints.NotNull;
 
@@ -8,24 +10,24 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "AMCPackages")
-public class AMCPackage extends BaseMasterEntity {
+@Document(collection = "Packages")
+public class BasePackage extends BaseMasterEntity {
 
   @Id
   private String id;
   @NotBlank
   private String name;
   @NotNull
-  private List<MaintenanceService> services;
-  // @NotNull
-  // private Map<Rating, Double> pricing;
+  private List<? extends MaintenanceService> services;
+  private Map<String, PackageVariant> variants;
+
   private boolean isActive;
 
-  public AMCPackage(String name, List<MaintenanceService> services) {
+  public BasePackage(String name, List<? extends MaintenanceService> services) {
     this.name = name;
     this.services = services;
-    // this.pricing = pricing;
-    isActive = true;
+    this.variants = new HashMap<String, PackageVariant>();
+    isActive = false;
   }
 
   public String getId() {
@@ -40,7 +42,7 @@ public class AMCPackage extends BaseMasterEntity {
     this.name = name;
   }
 
-  public List<MaintenanceService> getServices() {
+  public List<? extends MaintenanceService> getServices() {
     return services;
   }
 
@@ -48,34 +50,17 @@ public class AMCPackage extends BaseMasterEntity {
     this.services = services;
   }
 
-  /*
-   * public Map<Rating, Double> getPricing() { return pricing; }
-   */
-
-  public double getPricing(Rating rating) {
-    // Rating rating = asset.getRating();
+  public double getPricing(UserInput input) {
     // this is sigma of all services packaged hereunder.
     // return this.pricing.get(rating);
     if (this.services == null)
-      return 0;
+      throw new IllegalArgumentException();
     double price = 0.0;
     for (MaintenanceService service : this.services) {
-      price += service.getPrice(rating);
+      price += service.getPrice(input);
     }
     return price;
   }
-
-  /*
-   * public void setPricing(Map<Rating, Double> amount) { this.pricing = amount;
-   * }
-   */
-
-  /*
-   * public void addPrice(MaintenanceService service, Rating rating, double
-   * amount) {
-   * 
-   * }
-   */
 
   public boolean isActive() {
     return isActive;
@@ -83,6 +68,11 @@ public class AMCPackage extends BaseMasterEntity {
 
   public void setActive(boolean isActive) {
     this.isActive = isActive;
+  }
+
+  static class PackageVariant {
+    private String name;
+    private int visitCount;
   }
 
 }
