@@ -14,9 +14,9 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
-import com.real.proj.amc.model.BasePackage;
+import com.real.proj.amc.model.AMCPackage;
 import com.real.proj.amc.model.Asset;
-import com.real.proj.amc.model.MaintenanceService;
+import com.real.proj.amc.model.BasicService;
 import com.real.proj.amc.model.Rating;
 import com.real.proj.amc.model.ServiceLevelData;
 import com.real.proj.amc.model.States;
@@ -121,17 +121,17 @@ public class SubscriptionServiceTest extends BaseTest {
     return datum;
   }
 
-  private List<BasePackage> createTestPackage() {
-    MaintenanceService svc = new MaintenanceService("PLUMBING", "Enables the plubming service");
+  private List<AMCPackage> createTestPackage() {
+    BasicService svc = new BasicService("PLUMBING", "Enables the plubming service");
     svc.addPricing(Rating.FIVE, 10.0, 6);
     svc.addPricing(Rating.FOUR, 12.0, 8);
     svc.addPricing(Rating.THREE, 14.0, 10);
     svc = this.crudService.create(svc, authorizedUser.getEmail());
-    List<MaintenanceService> services = new ArrayList<MaintenanceService>();
+    List<BasicService> services = new ArrayList<BasicService>();
     services.add(svc);
-    BasePackage pkg = new BasePackage("DefaultPackage", services);
+    AMCPackage pkg = new AMCPackage("DefaultPackage", services);
     pkg = crudService.create(pkg, authorizedUser.getEmail());
-    List<BasePackage> pkgs = new ArrayList<BasePackage>();
+    List<AMCPackage> pkgs = new ArrayList<AMCPackage>();
     pkgs.add(pkg);
     return pkgs;
   }
@@ -140,7 +140,7 @@ public class SubscriptionServiceTest extends BaseTest {
   public void cleanup() {
     this.subscRepo.deleteAll();
     this.assetTest.cleanUp();
-    Class[] classes = { Tax.class, MaintenanceService.class, BasePackage.class };
+    Class[] classes = { Tax.class, BasicService.class, AMCPackage.class };
     for (Class clz : classes)
       this.crudService.removeAll(clz);
   }

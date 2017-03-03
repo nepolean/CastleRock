@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class FixedPricingScheme extends PricingStrategy {
 
-  History<FixedPrice> price = new History<FixedPrice>();
+  TimeLine<FixedPrice> price = new TimeLine<FixedPrice>();
 
   public FixedPricingScheme() {
 
@@ -18,7 +18,7 @@ public class FixedPricingScheme extends PricingStrategy {
     this.price.addToHistory(price, validFrom);
   }
 
-  public void setPrice(History<FixedPrice> price) {
+  public void setPrice(TimeLine<FixedPrice> price) {
     this.price = price;
   }
 

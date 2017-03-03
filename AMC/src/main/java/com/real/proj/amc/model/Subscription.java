@@ -25,7 +25,7 @@ public class Subscription extends BaseMasterEntity implements Cloneable {
 
   String assetId;
   @Reference
-  List<BasePackage> packages;
+  List<AMCPackage> packages;
   @Reference
   Map<String, ServiceLevelData> services;
   Date startDate;
@@ -46,7 +46,7 @@ public class Subscription extends BaseMasterEntity implements Cloneable {
     currentState = States.CREATED;
   }
 
-  public void subscribe(List<BasePackage> packages) {
+  public void subscribe(List<AMCPackage> packages) {
     this.packages = packages;
     this.currentState = States.SUBSCRIPTION_REQUESTED;
   }
@@ -69,7 +69,7 @@ public class Subscription extends BaseMasterEntity implements Cloneable {
     return areAllServicesRated();
   }
 
-  public void renew(List<BasePackage> pkgs, List<Tax> taxes, List<Coupon> coupons) {
+  public void renew(List<AMCPackage> pkgs, List<Tax> taxes, List<Coupon> coupons) {
     if (this.history == null)
       this.history = new ArrayList<Subscription>();
     Subscription old;
@@ -86,9 +86,9 @@ public class Subscription extends BaseMasterEntity implements Cloneable {
     double taxAmount = 0.0;
     double discount = 0.0;
     List<String> comments = new ArrayList<String>();
-    for (BasePackage pkg : this.packages) {
-      List<MaintenanceService> services = pkg.getServices();
-      for (MaintenanceService service : services) {
+    for (AMCPackage pkg : this.packages) {
+      List<BasicService> services = pkg.getServices();
+      for (BasicService service : services) {
         Rating userRating = this.services.get(service.getName()).getRating();
         double price = service.getPrice(userRating);
         totalAmount += price;
@@ -122,7 +122,7 @@ public class Subscription extends BaseMasterEntity implements Cloneable {
     this.currentState = state;
   }
 
-  public List<BasePackage> getsubscribedPackages() {
+  public List<AMCPackage> getsubscribedPackages() {
     return packages;
   }
 

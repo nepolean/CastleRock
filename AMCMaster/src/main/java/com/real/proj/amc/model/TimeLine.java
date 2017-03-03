@@ -1,32 +1,38 @@
 package com.real.proj.amc.model;
 
 import java.util.Date;
+import java.util.Set;
 import java.util.Stack;
+import java.util.TreeSet;
 
-public class History<T> {
+public class TimeLine<T> {
 
   private static final int PADDING = 100;
-  Stack<TimeLine<T>> history = new Stack<TimeLine<T>>();
+  private Stack<History<T>> history = new Stack<History<T>>();
 
-  public History() {
+  public TimeLine() {
 
   }
 
   public void addToHistory(T obj, Date on) {
-    if (obj == null || on == null)
-      throw new IllegalArgumentException("Null data is passed");
-    if (on.getTime() + PADDING < System.currentTimeMillis())
-      throw new IllegalArgumentException("Given date falls in the past");
+    validate(obj, on);
     if (history.size() > 0) {
-      TimeLine<T> recentValue = history.pop();
+      History<T> recentValue = history.pop();
       if (on.before(recentValue.getFrom()))
         throw new IllegalArgumentException("Given date conflicts with the existing date");
       recentValue.setTo(on);
       history.push(recentValue);
     }
-    TimeLine<T> newValue = new TimeLine<T>(obj);
+    History<T> newValue = new History<T>(obj);
     newValue.setFrom(on);
     history.push(newValue);
+  }
+
+  private void validate(T obj, Date on) {
+    if (obj == null || on == null)
+      throw new IllegalArgumentException("Null data is passed");
+    if (on.getTime() + PADDING < System.currentTimeMillis())
+      throw new IllegalArgumentException("Given date falls in the past");
   }
 
   public T getCurrentValue() {
@@ -34,7 +40,7 @@ public class History<T> {
       return null;
 
     T value = null;
-    for (TimeLine<T> t : history) {
+    for (History<T> t : history) {
       // valid range = >from && <to
       long now = System.currentTimeMillis();
       long to = t.getTo() == null ? Long.MAX_VALUE : t.getTo().getTime();
@@ -46,17 +52,41 @@ public class History<T> {
     return value;
   }
 
+  public T getValueForDate(Date myDate) {
+    if (myDate == null)
+      throw new IllegalArgumentException("Null date is passed");
+    T value = null;
+    for (History<T> t : this.history) {
+      if (myDate.after(t.getFrom())) {
+        value = t.getValue();
+      }
+    }
+    return value;
+  }
+
+  public int size() {
+    return this.history.size();
+  }
+
+  public Set<T> asList() {
+    Set<T> output = new TreeSet<T>();
+    history.forEach(value -> {
+      output.add(value.getValue());
+    });
+    return output;
+  }
+
   @Override
   public String toString() {
     return "History [history=" + history + "]";
   }
 
-  static class TimeLine<T> {
+  static class History<T> {
     T value;
     Date from;
     Date to;
 
-    TimeLine(T value) {
+    History(T value) {
       this.value = value;
     }
 
@@ -89,18 +119,6 @@ public class History<T> {
       return "TimeLine [value=" + value + ", from=" + from + ", to=" + to + "]";
     }
 
-  }
-
-  public T getValueForDate(Date myDate) {
-    if (myDate == null)
-      throw new IllegalArgumentException("Null date is passed");
-    T value = null;
-    for (TimeLine<T> t : this.history) {
-      if (myDate.after(t.getFrom())) {
-        value = t.getValue();
-      }
-    }
-    return value;
   }
 
 }

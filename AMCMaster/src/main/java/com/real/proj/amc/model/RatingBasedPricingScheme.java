@@ -7,7 +7,7 @@ import java.util.Map;
 public class RatingBasedPricingScheme extends PricingStrategy {
 
   public static final String RATING = "RATING";
-  History<RatingBasedPrice> priceHistory = new History<RatingBasedPrice>();
+  TimeLine<RatingBasedPrice> priceHistory = new TimeLine<RatingBasedPrice>();
 
   public RatingBasedPricingScheme() {
 
@@ -21,7 +21,7 @@ public class RatingBasedPricingScheme extends PricingStrategy {
     priceHistory.addToHistory(price, validFrom);
   }
 
-  public void setPriceHistory(History<RatingBasedPrice> priceHistory) {
+  public void setPriceHistory(TimeLine<RatingBasedPrice> priceHistory) {
     this.priceHistory = priceHistory;
   }
 

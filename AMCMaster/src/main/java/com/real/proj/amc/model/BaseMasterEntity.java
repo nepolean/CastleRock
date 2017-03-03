@@ -1,14 +1,13 @@
 package com.real.proj.amc.model;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Date;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class BaseMasterEntity implements PropertyChangeListener {
+public class BaseMasterEntity {
 
   Object id;
   @JsonIgnore
@@ -72,16 +71,13 @@ public class BaseMasterEntity implements PropertyChangeListener {
     return this.id.toString();
   }
 
-  @Override
-  public void propertyChange(PropertyChangeEvent event) {
-    if (event.getPropertyName().matches("(modifiedBy|lastModified)"))
-      return;
-    this.modifiedBy = getLoggedInUser();
-    this.lastModified = new Date();
-  }
-
   private String getLoggedInUser() {
-    return SecurityContextHolder.getContext().getAuthentication() == null ? "TEST_USER"
-        : SecurityContextHolder.getContext().getAuthentication().getName();
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    if (auth == null)
+      if ("TEST".equalsIgnoreCase(System.getProperty("ENVRIONMENT")))
+        return "TEST_USER";
+      else
+        throw new IllegalStateException("Security error. Login session may have expired!");
+    return auth.getName();
   }
 }

@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.real.proj.amc.model.Asset;
 import com.real.proj.amc.model.Location;
-import com.real.proj.amc.model.MaintenanceService;
+import com.real.proj.amc.model.BasicService;
 import com.real.proj.user.model.User;
 
 public class AssetBuilder {
@@ -27,7 +27,7 @@ public class AssetBuilder {
     return self;
   }
 
-  public AssetBuilder withServices(List<MaintenanceService> services) {
+  public AssetBuilder withServices(List<BasicService> services) {
     self.asset.setServices(services);
     return self;
   }
