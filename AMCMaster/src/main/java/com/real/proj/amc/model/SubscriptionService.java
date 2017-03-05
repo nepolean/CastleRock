@@ -5,13 +5,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class SubscriptionBasedService extends BasicService {
+public class SubscriptionService extends BasicService {
 
+  // private ServiceType type = ServiceType.SUBSCRIPTION;
   private Map<PackageScheme, ServiceLevelData> sla;
 
-  public SubscriptionBasedService(String name, String description, List<AssetType> applicableTo,
-      List<Amenity> amenities, PricingStrategy pricingStrategy) {
-    super(name, description, applicableTo, amenities, pricingStrategy);
+  public SubscriptionService(String category, String name, String description, List<AssetType> applicableTo,
+      List<String> amenities) {
+    super(category, name, description, applicableTo, amenities);
     sla = new HashMap<PackageScheme, ServiceLevelData>();
   }
 
@@ -20,7 +21,7 @@ public class SubscriptionBasedService extends BasicService {
       throw new IllegalArgumentException("Null data passed for name and/or data");
     if (data.validate())
       throw new IllegalArgumentException("Invalid service data is passed");
-    this.sla.put(data.getName(), data);
+    this.sla.put(data.getScheme(), data);
   }
 
   public ServiceLevelData getServiceLevelData(PackageScheme scheme) {

@@ -38,6 +38,7 @@ public class BaseTest {
     userRepository.deleteAll();
     createDummyUsers();
     // userRepository.save(users);
+    System.setProperty("ENVIRONMENT", "TEST");
   }
 
   @Test

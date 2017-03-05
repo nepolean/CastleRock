@@ -27,7 +27,7 @@ import com.real.proj.amc.model.PricingStrategy;
 import com.real.proj.amc.model.Rating;
 import com.real.proj.amc.model.RatingBasedPricingScheme;
 import com.real.proj.amc.model.RatingBasedPricingScheme.RatingBasedPrice;
-import com.real.proj.amc.model.SubscriptionBasedService;
+import com.real.proj.amc.model.SubscriptionService;
 import com.real.proj.amc.model.Tax;
 import com.real.proj.amc.model.TimeLine;
 import com.real.proj.amc.model.UserInput;
@@ -107,7 +107,7 @@ public class AdminTests extends BaseTest {
 
     pricing.updatePrice(price1, getFutureDate(2));
 
-    BasicService service = new SubscriptionBasedService("ELECTRICAL",
+    BasicService service = new SubscriptionService("ELECTRICAL",
         "Maintain electrical equipment",
         applicableTo,
         amenities,
@@ -171,7 +171,7 @@ public class AdminTests extends BaseTest {
         BasicService.class };
     for (Class<E> cls : adminClasses) {
       List<E> objects = crudService.findAll(cls);
-      crudService.removeAll(objects);
+      // crudService.removeAll(objects);
     }
 
   }

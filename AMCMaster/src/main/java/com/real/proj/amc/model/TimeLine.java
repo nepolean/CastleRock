@@ -1,11 +1,13 @@
 package com.real.proj.amc.model;
 
+import java.io.Serializable;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.Stack;
 import java.util.TreeSet;
 
-public class TimeLine<T> {
+public class TimeLine<T> implements Serializable {
 
   private static final int PADDING = 100;
   private Stack<History<T>> history = new Stack<History<T>>();
@@ -52,6 +54,10 @@ public class TimeLine<T> {
     return value;
   }
 
+  public Iterator<History<T>> getHistory() {
+    return this.history.iterator();
+  }
+
   public T getValueForDate(Date myDate) {
     if (myDate == null)
       throw new IllegalArgumentException("Null date is passed");
@@ -81,7 +87,7 @@ public class TimeLine<T> {
     return "History [history=" + history + "]";
   }
 
-  static class History<T> {
+  static class History<T> implements Serializable {
     T value;
     Date from;
     Date to;

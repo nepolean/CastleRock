@@ -1,17 +1,15 @@
 package com.real.proj.amc.model;
 
-public class ServiceLevelData {
+import java.io.Serializable;
 
-  public static enum Scheme {
-    PLATINUM, GOLD, SILVER
-  }
+public class ServiceLevelData implements Serializable {
 
-  private PackageScheme name;
+  private PackageScheme scheme;
 
   private int visits;
 
-  public ServiceLevelData(PackageScheme name, int visits) {
-    this.name = name;
+  public ServiceLevelData(PackageScheme scheme, int visits) {
+    this.scheme = scheme;
     this.visits = visits;
   }
 
@@ -23,21 +21,21 @@ public class ServiceLevelData {
     this.visits = visits;
   }
 
-  public PackageScheme getName() {
-    return name;
+  public PackageScheme getScheme() {
+    return scheme;
   }
 
   public void setName(PackageScheme name) {
-    this.name = name;
+    this.scheme = name;
   }
 
   @Override
   public String toString() {
-    return "ServiceLevelData [name=" + name + ", visits=" + visits + "]";
+    return "ServiceLevelData [name=" + scheme + ", visits=" + visits + "]";
   }
 
   public boolean validate() {
-    return name != null && visits > 0;
+    return scheme != null && visits > 0;
   }
 
 }

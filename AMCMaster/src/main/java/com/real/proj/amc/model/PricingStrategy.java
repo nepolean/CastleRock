@@ -4,6 +4,10 @@ import java.util.Date;
 
 public abstract class PricingStrategy {
 
+  public abstract String getName();
+
+  public abstract void setName(String name);
+
   public abstract double getPrice(UserInput<String, Object> input);
 
   public abstract void updatePrice(PriceData price, Date validFrom);

@@ -26,16 +26,15 @@ public class AMCPackage extends BaseMasterEntity {
   private long tenure; // in terms of no. of quarters
 
   private double discountPct;
-  private boolean isActive;
 
-  public AMCPackage(String name, String description, List<SubscriptionBasedService> services) {
+  public AMCPackage(String name, String description, List<SubscriptionService> services) {
     this.name = name;
     this.description = description;
     convertAndAdd(services);
     isActive = false;
   }
 
-  private void convertAndAdd(List<SubscriptionBasedService> services) {
+  private void convertAndAdd(List<SubscriptionService> services) {
     services.forEach(service -> {
       ServiceInfo info = new ServiceInfo(service);
       this.services.add(info);
@@ -62,13 +61,13 @@ public class AMCPackage extends BaseMasterEntity {
     this.services = services;
   }
 
-  public void addService(SubscriptionBasedService service) {
+  public void addService(SubscriptionService service) {
     if (this.services == null)
       this.services = new ArrayList<ServiceInfo>();
     this.services.add(new ServiceInfo(service));
   }
 
-  public PackagePriceInfo getActualPrice(List<SubscriptionBasedService> services, UserInput<String, Object> input,
+  public PackagePriceInfo getActualPrice(List<SubscriptionService> services, UserInput<String, Object> input,
       PackageScheme scheme) {
     // this is sigma of all services packaged hereunder.
     double actualPrice = getActualPriceFor(services, input, scheme);
@@ -76,12 +75,12 @@ public class AMCPackage extends BaseMasterEntity {
     return new PackagePriceInfo(scheme, actualPrice, discount);
   }
 
-  private double getActualPriceFor(List<SubscriptionBasedService> services, UserInput<String, Object> input,
+  private double getActualPriceFor(List<SubscriptionService> services, UserInput<String, Object> input,
       PackageScheme scheme) {
     if (this.services == null)
       throw new IllegalStateException("The package is not built ready");
     double actualPrice = 0.0;
-    for (SubscriptionBasedService service : services) {
+    for (SubscriptionService service : services) {
       double unitPrice = service.getPrice(input);
       ServiceLevelData sld = service.getServiceLevelData(scheme);
       int visitCount = sld.getVisits();
@@ -90,21 +89,13 @@ public class AMCPackage extends BaseMasterEntity {
     return actualPrice;
   }
 
-  public Set<PackagePriceInfo> getActualPriceForAllSchemes(List<SubscriptionBasedService> services,
+  public Set<PackagePriceInfo> getActualPriceForAllSchemes(List<SubscriptionService> services,
       UserInput<String, Object> input) {
     Set<PackagePriceInfo> variants = new HashSet<PackagePriceInfo>();
     PackageScheme[] schemes = PackageScheme.values();
     for (int i = 0; i < schemes.length; i++)
       variants.add(this.getActualPrice(services, input, schemes[i]));
     return variants;
-  }
-
-  public boolean isActive() {
-    return isActive;
-  }
-
-  public void setActive(boolean isActive) {
-    this.isActive = isActive;
   }
 
   static class ServiceInfo {

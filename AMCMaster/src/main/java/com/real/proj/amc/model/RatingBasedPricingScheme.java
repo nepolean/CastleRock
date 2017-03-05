@@ -1,11 +1,12 @@
 package com.real.proj.amc.model;
 
+import java.io.Serializable;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
-public class RatingBasedPricingScheme extends PricingStrategy {
+public class RatingBasedPricingScheme extends PricingStrategy implements Serializable {
 
+  public final static String NAME = "RATING_BASED";
   public static final String RATING = "RATING";
   TimeLine<RatingBasedPrice> priceHistory = new TimeLine<RatingBasedPrice>();
 
@@ -21,8 +22,20 @@ public class RatingBasedPricingScheme extends PricingStrategy {
     priceHistory.addToHistory(price, validFrom);
   }
 
+  public void setName(String name) {
+
+  }
+
+  public String getName() {
+    return NAME;
+  }
+
   public void setPriceHistory(TimeLine<RatingBasedPrice> priceHistory) {
     this.priceHistory = priceHistory;
+  }
+
+  public TimeLine<RatingBasedPrice> getPriceHistory() {
+    return this.priceHistory;
   }
 
   @Override
@@ -31,6 +44,9 @@ public class RatingBasedPricingScheme extends PricingStrategy {
       throw new IllegalArgumentException("Null price data is passed");
     if (!(price instanceof RatingBasedPrice))
       throw new IllegalArgumentException("Invalid TYPE for price data is passed");
+    RatingBasedPrice ratingBasedPrice = (RatingBasedPrice) price;
+    if (ratingBasedPrice.getPrice().size() != Rating.values().length)
+      throw new IllegalArgumentException("Price must be defined for all possible ratings");
     this.priceHistory.addToHistory((RatingBasedPrice) price, validFrom);
   }
 
@@ -52,12 +68,20 @@ public class RatingBasedPricingScheme extends PricingStrategy {
     return this.priceHistory.getValueForDate(on).getPriceFor(rating);
   }
 
-  public static class RatingBasedPrice extends PriceData {
+  public static class RatingBasedPrice extends PriceData implements Serializable {
 
     private Map<Rating, Double> price;
 
-    public RatingBasedPrice() {
-      price = new HashMap<Rating, Double>();
+    public RatingBasedPrice(Map<Rating, Double> price) {
+      this.price = price;
+    }
+
+    public Map<Rating, Double> getPrice() {
+      return price;
+    }
+
+    public void setPrice(Map<Rating, Double> price) {
+      this.price = price;
     }
 
     public void addPriceFor(Rating rating, double value) {

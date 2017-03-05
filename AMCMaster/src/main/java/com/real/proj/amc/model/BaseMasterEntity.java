@@ -7,8 +7,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class BaseMasterEntity {
-
+public abstract class BaseMasterEntity {
+  @JsonIgnore
   Object id;
   @JsonIgnore
   protected Date createdOn;
@@ -19,10 +19,12 @@ public class BaseMasterEntity {
   @JsonIgnore
   protected String modifiedBy;
   protected boolean markForDeletion;
+  protected boolean isActive;
 
   BaseMasterEntity() {
     this.createdBy = getLoggedInUser();
     this.createdOn = new Date();
+    this.isActive = false;
   }
 
   public Date getCreatedOn() {
@@ -67,17 +69,23 @@ public class BaseMasterEntity {
     return this.markForDeletion;
   }
 
-  public String getId() {
-    return this.id.toString();
-  }
+  public abstract String getId();
 
   private String getLoggedInUser() {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     if (auth == null)
-      if ("TEST".equalsIgnoreCase(System.getProperty("ENVRIONMENT")))
+      if ("TEST".equalsIgnoreCase(System.getProperty("ENVIRONMENT")))
         return "TEST_USER";
       else
-        throw new IllegalStateException("Security error. Login session may have expired!");
+        throw new IllegalStateException("Security error. Session may have expired!");
     return auth.getName();
+  }
+
+  public boolean isActive() {
+    return isActive;
+  }
+
+  public void setActive(boolean isActive) {
+    this.isActive = isActive;
   }
 }

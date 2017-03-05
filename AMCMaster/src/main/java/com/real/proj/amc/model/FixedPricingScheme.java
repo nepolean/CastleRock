@@ -1,13 +1,15 @@
 package com.real.proj.amc.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class FixedPricingScheme extends PricingStrategy {
+public class FixedPricingScheme extends PricingStrategy implements Serializable {
+
+  public final static String NAME = "Fixed";
 
   TimeLine<FixedPrice> price = new TimeLine<FixedPrice>();
 
   public FixedPricingScheme() {
-
   }
 
   public FixedPricingScheme(FixedPrice price) {
@@ -18,8 +20,22 @@ public class FixedPricingScheme extends PricingStrategy {
     this.price.addToHistory(price, validFrom);
   }
 
+  @Override
+  public void setName(String name) {
+    // this.name = "Fixed Price";
+  }
+
+  @Override
+  public String getName() {
+    return NAME;
+  }
+
   public void setPrice(TimeLine<FixedPrice> price) {
     this.price = price;
+  }
+
+  public TimeLine<FixedPrice> getPrice() {
+    return this.price;
   }
 
   @Override
@@ -46,7 +62,8 @@ public class FixedPricingScheme extends PricingStrategy {
     return "FixedPricingScheme [price=" + price + "]";
   }
 
-  public static class FixedPrice extends PriceData {
+  public static class FixedPrice extends PriceData implements Serializable {
+
     double price;
 
     public FixedPrice(double price) {

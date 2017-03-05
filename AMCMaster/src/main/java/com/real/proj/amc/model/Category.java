@@ -1,15 +1,27 @@
 package com.real.proj.amc.model;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "Categories")
 public class Category extends BaseMasterEntity {
+
+  @Id
+  private String id;
   private String name;
   private String description;
 
   public Category(String name, String description) {
     this.name = name;
     this.description = description;
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
   }
 
   public String getName() {

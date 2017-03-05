@@ -14,14 +14,13 @@ public abstract class BasicService extends BaseMasterEntity {
   @Id
   private String id;
   @NotNull
-  Category category;
+  String category;
   @NotBlank
   private String name;
   @NotBlank
   private String description;
   private List<AssetType> applicableTo;
-  private List<Amenity> amenities;
-  private boolean isActive;
+  private List<String> amenities;
 
   // This is only one kind of pricing which is 'Rating' based.
   // There are multiple options
@@ -37,14 +36,13 @@ public abstract class BasicService extends BaseMasterEntity {
 
   PricingStrategy pricingStrategy;
 
-  public BasicService(String name, String description, List<AssetType> applicableTo, List<Amenity> amenities,
-      PricingStrategy pricingStrategy) {
+  public BasicService(String category, String name, String description, List<AssetType> applicableTo,
+      List<String> amenities) {
+    this.category = category;
     this.name = name;
     this.description = description;
     this.applicableTo = applicableTo;
     this.amenities = amenities;
-    this.pricingStrategy = pricingStrategy;
-    this.isActive = false;
   }
 
   public String getId() {
@@ -67,23 +65,15 @@ public abstract class BasicService extends BaseMasterEntity {
     this.description = description;
   }
 
-  public boolean isActive() {
-    return isActive;
-  }
-
-  public void setActive(boolean isActive) {
-    this.isActive = isActive;
-  }
-
   public double getPrice(UserInput<String, Object> input) {
     return this.pricingStrategy.getPrice(input);
   }
 
-  public Category getCategory() {
-    return category;
+  public String getCategory() {
+    return this.category;
   }
 
-  public void setCategory(Category category) {
+  public void setCategory(String category) {
     this.category = category;
   }
 
@@ -95,11 +85,11 @@ public abstract class BasicService extends BaseMasterEntity {
     this.applicableTo = applicableTo;
   }
 
-  public List<Amenity> getAmenities() {
+  public List<String> getAmenities() {
     return amenities;
   }
 
-  public void setAmenities(List<Amenity> amenities) {
+  public void setAmenities(List<String> amenities) {
     this.amenities = amenities;
   }
 
@@ -114,4 +104,5 @@ public abstract class BasicService extends BaseMasterEntity {
   public void setId(String id) {
     this.id = id;
   }
+
 }

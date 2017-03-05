@@ -89,7 +89,7 @@ public class ControllerValidationHandler {
   public SimpleError handleInternalFailures(RuntimeException ex) {
     print(ex);
     return new SimpleError(HttpStatus.INTERNAL_SERVER_ERROR.value(),
-        "Unexpected error. Please contact the admin with the following key:" + ex.getMessage(), Category.SYSTEM);
+        "Unexpected error", Category.SYSTEM);
   }
 
   @ExceptionHandler({ com.real.proj.controller.exception.SecurityPermissionException.class })
