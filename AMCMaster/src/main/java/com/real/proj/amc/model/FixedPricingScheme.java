@@ -10,6 +10,7 @@ public class FixedPricingScheme extends PricingStrategy implements Serializable 
   TimeLine<FixedPrice> price = new TimeLine<FixedPrice>();
 
   public FixedPricingScheme() {
+
   }
 
   public FixedPricingScheme(FixedPrice price) {
@@ -17,7 +18,7 @@ public class FixedPricingScheme extends PricingStrategy implements Serializable 
   }
 
   public FixedPricingScheme(FixedPrice price, Date validFrom) {
-    this.price.addToHistory(price, validFrom);
+    this.price.addToHistory((FixedPrice) price, validFrom);
   }
 
   @Override

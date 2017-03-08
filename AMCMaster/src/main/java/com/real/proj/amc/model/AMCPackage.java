@@ -21,28 +21,37 @@ public class AMCPackage extends BaseMasterEntity {
   @NotBlank
   private String description;
   @NotNull
-  private List<ServiceInfo> services;
+  private List<ServiceInfo> serviceInfo;
 
   private long tenure; // in terms of no. of quarters
 
   private double discountPct;
 
-  public AMCPackage(String name, String description, List<SubscriptionService> services) {
+  public AMCPackage(String name, String description, Long tenure, Double discPct, List<SubscriptionService> services) {
     this.name = name;
     this.description = description;
     convertAndAdd(services);
+    this.tenure = tenure;
+    this.discountPct = discPct;
     isActive = false;
   }
 
   private void convertAndAdd(List<SubscriptionService> services) {
+    if (this.serviceInfo == null)
+      this.serviceInfo = new ArrayList<ServiceInfo>();
+
     services.forEach(service -> {
       ServiceInfo info = new ServiceInfo(service);
-      this.services.add(info);
+      this.serviceInfo.add(info);
     });
   }
 
   public String getId() {
     return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
   }
 
   public String getName() {
@@ -54,17 +63,51 @@ public class AMCPackage extends BaseMasterEntity {
   }
 
   public List<ServiceInfo> getServices() {
-    return services;
+    return serviceInfo;
   }
 
   public void setServices(List<ServiceInfo> services) {
-    this.services = services;
+    this.serviceInfo = services;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public List<ServiceInfo> getServiceInfo() {
+    return serviceInfo;
+  }
+
+  public void setServiceInfo(List<ServiceInfo> serviceInfo) {
+    this.serviceInfo = serviceInfo;
+  }
+
+  public long getTenure() {
+    return tenure;
+  }
+
+  public void setTenure(long tenure) {
+    this.tenure = tenure;
+  }
+
+  public double getDiscountPct() {
+    return discountPct;
+  }
+
+  public void setDiscountPct(double discountPct) {
+    this.discountPct = discountPct;
   }
 
   public void addService(SubscriptionService service) {
-    if (this.services == null)
-      this.services = new ArrayList<ServiceInfo>();
-    this.services.add(new ServiceInfo(service));
+    if (service == null)
+      throw new IllegalArgumentException("Null value passed for service");
+    if (this.serviceInfo == null)
+      this.serviceInfo = new ArrayList<ServiceInfo>();
+    this.serviceInfo.add(new ServiceInfo(service));
   }
 
   public PackagePriceInfo getActualPrice(List<SubscriptionService> services, UserInput<String, Object> input,
@@ -77,7 +120,7 @@ public class AMCPackage extends BaseMasterEntity {
 
   private double getActualPriceFor(List<SubscriptionService> services, UserInput<String, Object> input,
       PackageScheme scheme) {
-    if (this.services == null)
+    if (this.serviceInfo == null)
       throw new IllegalStateException("The package is not built ready");
     double actualPrice = 0.0;
     for (SubscriptionService service : services) {

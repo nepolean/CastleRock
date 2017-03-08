@@ -34,6 +34,7 @@ import com.real.proj.amc.model.Tax;
 import com.real.proj.amc.repository.AmenityRepository;
 import com.real.proj.amc.repository.CategoryRepository;
 import com.real.proj.amc.repository.CouponRepository;
+import com.real.proj.amc.repository.PackageRepository;
 import com.real.proj.amc.repository.ServiceRepository;
 import com.real.proj.amc.repository.TaxRepository;
 import com.real.proj.amc.service.GenericFCRUDService;
@@ -49,6 +50,8 @@ public class AMCAdminController {
   private CategoryRepository categoryRepo;
   private AmenityRepository amenityRepo;
   private ServiceRepository serviceRepo;
+
+  private PackageRepository packageRepo;
 
   @Autowired
   public void setGenericFCRUDService(GenericFCRUDService crudService) {
@@ -227,7 +230,7 @@ public class AMCAdminController {
       return new ResponseEntity<SubscriptionService>((SubscriptionService) null,
           HttpStatus.UNPROCESSABLE_ENTITY);
     SubscriptionService subsService = (SubscriptionService) service;
-    subsService.setServiceLevelData(sld);
+    subsService.addServiceLevelData(sld);
     return new ResponseEntity<SubscriptionService>(subsService, HttpStatus.OK);
   }
 
@@ -244,15 +247,21 @@ public class AMCAdminController {
 
   /******************* package *****************************/
 
-  @RequestMapping(path = "/admin/subscription/package", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<List<AMCPackage>> getPackage() {
-    return new ResponseEntity<List<AMCPackage>>(this.crudService.findAll(AMCPackage.class), HttpStatus.OK);
+  @RequestMapping(path = "/admin/package/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<AMCPackage> getPackage(String packageId) {
+    return new ResponseEntity<AMCPackage>(this.packageRepo.findOne(packageId), HttpStatus.OK);
+  }
+
+  @RequestMapping(path = "/admin/package", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Page<AMCPackage>> getPackage(Pageable pageable, List<String> serviceID) {
+    Page<AMCPackage> pkgs = this.packageRepo.findByServicesServiceIdIn(pageable, serviceID);
+    return new ResponseEntity<Page<AMCPackage>>(pkgs, HttpStatus.OK);
   }
 
   @RequestMapping(path = "/admin/package", method = { RequestMethod.POST,
       RequestMethod.PUT }, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<AMCPackage> createPackage(@RequestBody @Valid AMCPackage pkg, Principal adminUser) {
-    AMCPackage newPkg = this.crudService.create(pkg, adminUser.getName());
+    AMCPackage newPkg = this.packageRepo.save(pkg);
     return new ResponseEntity<AMCPackage>(newPkg, HttpStatus.OK);
   }
 

@@ -66,6 +66,8 @@ public abstract class BasicService extends BaseMasterEntity {
   }
 
   public double getPrice(UserInput<String, Object> input) {
+    if (this.pricingStrategy == null)
+      throw new IllegalStateException("Price has not been defined yet for this service");
     return this.pricingStrategy.getPrice(input);
   }
 
@@ -98,6 +100,8 @@ public abstract class BasicService extends BaseMasterEntity {
   }
 
   public void setPricingStrategy(PricingStrategy pricingStrategy) {
+    if (pricingStrategy == null)
+      throw new IllegalArgumentException("Null value passed in for price");
     this.pricingStrategy = pricingStrategy;
   }
 

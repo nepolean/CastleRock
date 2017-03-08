@@ -1,6 +1,7 @@
 package com.real.proj.amc.model;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -16,12 +17,19 @@ public class SubscriptionService extends BasicService {
     sla = new HashMap<PackageScheme, ServiceLevelData>();
   }
 
-  public void setServiceLevelData(ServiceLevelData data) {
-    if (data == null)
+  public void setServiceLevelData(Set<ServiceLevelData> sla) {
+    if (sla == null)
       throw new IllegalArgumentException("Null data passed for name and/or data");
-    if (data.validate())
-      throw new IllegalArgumentException("Invalid service data is passed");
-    this.sla.put(data.getScheme(), data);
+    final Set<ServiceLevelData> rejectedData = new HashSet<ServiceLevelData>();
+    sla.forEach(data -> {
+      try {
+        this.addServiceLevelData(data);
+      } catch (IllegalArgumentException ex) {
+        rejectedData.add(data);
+      }
+    });
+    if (rejectedData.size() > 0)
+      throw new IllegalArgumentException(String.format("The following data is rejected %s", rejectedData));
   }
 
   public ServiceLevelData getServiceLevelData(PackageScheme scheme) {
@@ -36,6 +44,12 @@ public class SubscriptionService extends BasicService {
 
   public Set<PackageScheme> getApplicableSchemes() {
     return sla.keySet();
+  }
+
+  public void addServiceLevelData(ServiceLevelData data) {
+    if (data == null || !data.validate())
+      throw new IllegalArgumentException("Invalid service data is passed");
+    this.sla.put(data.getScheme(), data);
   }
 
 }

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.real.proj.amc.model.AMCPackage;
 import com.real.proj.amc.model.AssetType;
 import com.real.proj.amc.model.FixedPricingScheme;
 import com.real.proj.amc.model.FixedPricingScheme.FixedPrice;
@@ -29,14 +30,21 @@ public class MetadataController {
 
   @RequestMapping(path = "/meta/service/subscription", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<SubscriptionService> getServiceMetadata() {
+    SubscriptionService service = createSubscriptionService();
+    return new ResponseEntity<SubscriptionService>(service, HttpStatus.OK);
+  }
+
+  private SubscriptionService createSubscriptionService() {
     List<AssetType> assetList = new ArrayList<AssetType>();
     assetList.add(AssetType.APARTMENT);
     assetList.add(AssetType.FLAT);
     assetList.add(AssetType.HOUSE);
     List<String> amenities = new ArrayList<String>();
     amenities.add("SOME AMENITY");
-    SubscriptionService service = new SubscriptionService("", "", "", assetList, amenities);
-    return new ResponseEntity<SubscriptionService>(service, HttpStatus.OK);
+    SubscriptionService service = new SubscriptionService("Asset", "Some Service", "This is new service", assetList,
+        amenities);
+    service.setId("10000000000000001");
+    return service;
   }
 
   @RequestMapping(path = "/meta/asset/types", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -64,8 +72,18 @@ public class MetadataController {
 
   @RequestMapping(path = "/meta/service/subsription/schemes/data", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ServiceLevelData> getSLAData() {
-    PackageScheme gold = PackageScheme.GOLD;
-    ServiceLevelData sld = new ServiceLevelData(gold, 10);
-    return new ResponseEntity<ServiceLevelData>(sld, HttpStatus.OK);
+    ServiceLevelData sld = new ServiceLevelData(PackageScheme.PLATINUM, (int) 10);
+    return new ResponseEntity<ServiceLevelData>((ServiceLevelData) sld, HttpStatus.OK);
   }
+
+  @RequestMapping(path = "/meta/package", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<AMCPackage> getPackage() {
+    List<SubscriptionService> services = new ArrayList<SubscriptionService>();
+    services.add(this.createSubscriptionService());
+    AMCPackage pkg = new AMCPackage("New Package", "This is new package", Long.valueOf(12), Double.valueOf(10.0),
+        services);
+    pkg.setId("1000000000000001");
+    return new ResponseEntity<AMCPackage>(pkg, HttpStatus.OK);
+  }
+
 }

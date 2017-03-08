@@ -2,6 +2,7 @@ package com.real.proj.amc.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 public class RatingBasedPricingScheme extends PricingStrategy implements Serializable {
@@ -71,6 +72,10 @@ public class RatingBasedPricingScheme extends PricingStrategy implements Seriali
   public static class RatingBasedPrice extends PriceData implements Serializable {
 
     private Map<Rating, Double> price;
+
+    public RatingBasedPrice() {
+      this.price = new HashMap<Rating, Double>();
+    }
 
     public RatingBasedPrice(Map<Rating, Double> price) {
       this.price = price;

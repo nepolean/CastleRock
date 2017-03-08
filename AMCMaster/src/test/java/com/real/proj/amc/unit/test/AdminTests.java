@@ -2,6 +2,7 @@ package com.real.proj.amc.unit.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -16,17 +17,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.real.proj.amc.model.Amenity;
+import com.real.proj.amc.model.AMCPackage;
 import com.real.proj.amc.model.AssetType;
 import com.real.proj.amc.model.BaseMasterEntity;
 import com.real.proj.amc.model.BasicService;
 import com.real.proj.amc.model.Coupon;
 import com.real.proj.amc.model.FixedPricingScheme;
 import com.real.proj.amc.model.FixedPricingScheme.FixedPrice;
+import com.real.proj.amc.model.PackageScheme;
 import com.real.proj.amc.model.PricingStrategy;
 import com.real.proj.amc.model.Rating;
 import com.real.proj.amc.model.RatingBasedPricingScheme;
 import com.real.proj.amc.model.RatingBasedPricingScheme.RatingBasedPrice;
+import com.real.proj.amc.model.ServiceLevelData;
 import com.real.proj.amc.model.SubscriptionService;
 import com.real.proj.amc.model.Tax;
 import com.real.proj.amc.model.TimeLine;
@@ -90,8 +93,8 @@ public class AdminTests extends BaseTest {
     List<AssetType> applicableTo = new ArrayList<AssetType>();
     applicableTo.add(AssetType.APARTMENT);
     applicableTo.add(AssetType.FLAT);
-    List<Amenity> amenities = new ArrayList<Amenity>();
-    amenities.add(new Amenity("ELECTRICITY"));
+    List<String> amenities = new ArrayList<String>();
+    amenities.add(new String("ELECTRICITY"));
 
     RatingBasedPrice price = new RatingBasedPrice();
     price.addPriceFor(Rating.ONE, 100.0);
@@ -104,14 +107,18 @@ public class AdminTests extends BaseTest {
     price1.addPriceFor(Rating.ONE, 105.0);
     price1.addPriceFor(Rating.TWO, 85.0);
     price1.addPriceFor(Rating.THREE, 65.0);
+    price1.addPriceFor(Rating.FOUR, 90.0);
+    price1.addPriceFor(Rating.FIVE, 95.0);
 
     pricing.updatePrice(price1, getFutureDate(2));
 
-    BasicService service = new SubscriptionService("ELECTRICAL",
+    BasicService service = new SubscriptionService("New Category", "ELECTRICAL",
         "Maintain electrical equipment",
         applicableTo,
-        amenities,
-        pricing);
+        amenities);
+    service.setPricingStrategy(pricing);
+    ServiceLevelData sld = new ServiceLevelData(PackageScheme.GOLD, 10);
+    ((SubscriptionService) service).addServiceLevelData(sld);
     service = (BasicService) createEntity(service);
     UserInput<String, Object> input = new UserInput<String, Object>();
     input.add(RatingBasedPricingScheme.RATING, Rating.ONE);
@@ -163,6 +170,33 @@ public class AdminTests extends BaseTest {
     Date myDate = getFutureDate(2);
     Integer output = history.getValueForDate(myDate);
     assertEquals(three, output);
+  }
+
+  @Test
+  public void testCreateAMCPackage() {
+    AMCPackage pkg = createAMCPackage();
+    pkg = (AMCPackage) this.createEntity(pkg);
+    assertNotNull(pkg.getId());
+  }
+
+  private AMCPackage createAMCPackage() {
+    List<SubscriptionService> services = this.crudService.findAll(SubscriptionService.class);
+    String name = "Annual Package";
+    String description = "Offers services for 1 year";
+    Long tenure = Long.valueOf(12);
+    Double disc = Double.valueOf(10);
+    AMCPackage pkg = new AMCPackage(name, description, tenure, disc, services);
+    return pkg;
+  }
+
+  @Test
+  public void testPackage() {
+    AMCPackage pkg = this.createAMCPackage();
+    try {
+      pkg.addService(null);
+      fail("Package should reject null service");
+    } catch (IllegalArgumentException ex) {
+    }
   }
 
   @After
