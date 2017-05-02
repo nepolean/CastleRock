@@ -13,11 +13,20 @@ public class User implements Serializable {
   private static final long serialVersionUID = 1L;
   @Id
   String Id;
+  String userName;
   String firstName;
   String lastName;
   String email;
   String mobileNo;
   // List<String> subscriptions;
+
+  public String getUserName() {
+    return this.userName;
+  }
+
+  public void setUserName(String userName) {
+    this.userName = userName;
+  }
 
   public String getFirstName() {
     return this.firstName;

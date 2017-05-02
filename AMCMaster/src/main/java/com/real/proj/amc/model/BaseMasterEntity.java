@@ -21,7 +21,7 @@ public abstract class BaseMasterEntity {
   protected boolean markForDeletion;
   protected boolean isActive;
 
-  BaseMasterEntity() {
+  protected BaseMasterEntity() {
     this.createdBy = getLoggedInUser();
     this.createdOn = new Date();
     this.isActive = false;

@@ -8,10 +8,12 @@ public abstract class PricingStrategy {
 
   public abstract void setName(String name);
 
-  public abstract double getPrice(UserInput<String, Object> input);
+  public abstract ServiceData getServiceLevelData(UserInput<String, Object> input);
 
   public abstract void updatePrice(PriceData price, Date validFrom);
 
-  public abstract double getPrice(UserInput<String, Object> input, Date on);
+  public abstract ServiceData getServiceLevelData(UserInput<String, Object> input, Date on);
+
+  public abstract ServiceData getDefaultServiceLevelData();
 
 }

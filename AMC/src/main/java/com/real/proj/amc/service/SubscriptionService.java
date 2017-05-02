@@ -14,7 +14,7 @@ import com.real.proj.amc.model.AMCPackage;
 import com.real.proj.amc.model.Coupon;
 import com.real.proj.amc.model.Events;
 import com.real.proj.amc.model.Rating;
-import com.real.proj.amc.model.ServiceLevelData;
+import com.real.proj.amc.model.ServiceData;
 import com.real.proj.amc.model.States;
 import com.real.proj.amc.model.Subscription;
 import com.real.proj.amc.model.Tax;
@@ -53,7 +53,7 @@ public class SubscriptionService {
    * @return
    */
 
-  public Subscription createSubscription(String assetId, Map<String, ServiceLevelData> serviceDetails) {
+  public Subscription createSubscription(String assetId, Map<String, ServiceData> serviceDetails) {
     if (serviceDetails == null || serviceDetails.size() < 1)
       throw new RuntimeException("Empty packages provided.");
     logger.debug("New subsscription for Asset {} is requested", assetId);
@@ -197,5 +197,12 @@ public class SubscriptionService {
   public String getStatus(String subscriptionId) {
     Subscription sb = getSubscription(subscriptionId);
     return sb.getState().name();
+  }
+
+  public Subscription get(String subscriptionId) {
+    Subscription subs = this.subsRepo.findOne(subscriptionId);
+    if (subs == null)
+      throw new EntityNotFoundException(subscriptionId, "", "Subscription");
+    return subs;
   }
 }

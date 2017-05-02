@@ -1,18 +1,22 @@
+// There is a major change introduced today (30-APR-2017). Basically, got rid of PackageScheme.
 package com.real.proj.amc.model;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Objects;
 
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "Packages")
 public class AMCPackage extends BaseMasterEntity {
+
+  private final static Logger logger = LoggerFactory.getLogger(AMCPackage.class);
 
   @Id
   private String id;
@@ -27,23 +31,16 @@ public class AMCPackage extends BaseMasterEntity {
 
   private double discountPct;
 
-  public AMCPackage(String name, String description, Long tenure, Double discPct, List<SubscriptionService> services) {
+  private DeliveryMethod dm;
+
+  public AMCPackage(String name, String description, DeliveryMethod dm, Long tenure, Double discPct) {
     this.name = name;
     this.description = description;
-    convertAndAdd(services);
+    this.dm = dm;
+    // convertAndAdd(services);
     this.tenure = tenure;
     this.discountPct = discPct;
     isActive = false;
-  }
-
-  private void convertAndAdd(List<SubscriptionService> services) {
-    if (this.serviceInfo == null)
-      this.serviceInfo = new ArrayList<ServiceInfo>();
-
-    services.forEach(service -> {
-      ServiceInfo info = new ServiceInfo(service);
-      this.serviceInfo.add(info);
-    });
   }
 
   public String getId() {
@@ -62,6 +59,13 @@ public class AMCPackage extends BaseMasterEntity {
     this.name = name;
   }
 
+  public void addServices(List<BaseService> services) {
+    services = Objects.requireNonNull(services, "Empty list for services.");
+    services.forEach(service -> {
+      this.addService(service);
+    });
+  }
+
   public List<ServiceInfo> getServices() {
     return serviceInfo;
   }
@@ -78,8 +82,14 @@ public class AMCPackage extends BaseMasterEntity {
     this.description = description;
   }
 
-  public List<ServiceInfo> getServiceInfo() {
-    return serviceInfo;
+  public String[] getServiceInfo() {
+    if (this.serviceInfo == null)
+      return null;
+    String[] ids = new String[this.serviceInfo.size()];
+    int index = 0;
+    for (ServiceInfo svc : this.serviceInfo)
+      ids[index] = svc.getServiceId();
+    return ids;
   }
 
   public void setServiceInfo(List<ServiceInfo> serviceInfo) {
@@ -102,51 +112,78 @@ public class AMCPackage extends BaseMasterEntity {
     this.discountPct = discountPct;
   }
 
-  public void addService(SubscriptionService service) {
-    if (service == null)
-      throw new IllegalArgumentException("Null value passed for service");
+  public void addService(BaseService service) {
+    service = Objects.requireNonNull(service, "Null value passed for service");
+    if (!service.doesSupportDeliveryMethod(this.dm)) {
+      String msg = String.format("The service, {}, does not support the delivery model {}", service.getName(), this.dm);
+      logger.error(msg);
+      throw new IllegalArgumentException(msg);
+    }
     if (this.serviceInfo == null)
       this.serviceInfo = new ArrayList<ServiceInfo>();
     this.serviceInfo.add(new ServiceInfo(service));
   }
 
-  public PackagePriceInfo getActualPrice(List<SubscriptionService> services, UserInput<String, Object> input,
-      PackageScheme scheme) {
-    // this is sigma of all services packaged hereunder.
-    double actualPrice = getActualPriceFor(services, input, scheme);
+  public PackagePriceInfo getActualPrice(List<SubscriptionService> services, UserInput<String, Object> input) {
+    logger.info("getActualPrice -> {}", input);
+    // this is sigma of all services defined under this package.
+    double actualPrice = getActualPriceFor(services, input);
     double discount = actualPrice * discountPct / 100;
-    return new PackagePriceInfo(scheme, actualPrice, discount);
+    return new PackagePriceInfo(actualPrice, discount);
   }
 
-  private double getActualPriceFor(List<SubscriptionService> services, UserInput<String, Object> input,
-      PackageScheme scheme) {
+  private double getActualPriceFor(List<SubscriptionService> services, UserInput<String, Object> input) {
+    // PackageScheme scheme) {
     if (this.serviceInfo == null)
       throw new IllegalStateException("The package is not built ready");
     double actualPrice = 0.0;
-    for (SubscriptionService service : services) {
-      double unitPrice = service.getPrice(input);
-      ServiceLevelData sld = service.getServiceLevelData(scheme);
-      int visitCount = sld.getVisits();
-      actualPrice += unitPrice * tenure * visitCount;
+    for (BaseService service : services) {
+      // boolean askingForBasePrice = (input != null &&
+      // input.get(this.getClass().getName()) != null);
+      ServiceData sld = service.getServiceData(this.dm, input);
+      if (sld == null) {
+        if (logger.isErrorEnabled())
+          logger.error("The service {} is not built ready", service.getName());
+        throw new IllegalStateException("This package cannot be used at this time");
+      }
+
+      double unitPrice = 0.0;
+
+      if (DeliveryMethod.SUBSCRIPTION.equals(dm)) {
+        unitPrice = ((SubscriptionData) sld).getSubscriptionPrice();
+      } else {
+        unitPrice = sld.getPrice();
+      }
+      // ServiceLevelData sld = service.getServiceLevelData(scheme);
+      actualPrice += unitPrice * tenure;
     }
     return actualPrice;
   }
 
-  public Set<PackagePriceInfo> getActualPriceForAllSchemes(List<SubscriptionService> services,
-      UserInput<String, Object> input) {
-    Set<PackagePriceInfo> variants = new HashSet<PackagePriceInfo>();
-    PackageScheme[] schemes = PackageScheme.values();
-    for (int i = 0; i < schemes.length; i++)
-      variants.add(this.getActualPrice(services, input, schemes[i]));
-    return variants;
-  }
+  /*
+   * public Map<PackageScheme, PackagePriceInfo>
+   * getActualPriceForAllSchemes(List<SubscriptionService> services,
+   * UserInput<String, Object> input) { Map<PackageScheme, PackagePriceInfo>
+   * variants = new HashMap<PackageScheme, PackagePriceInfo>(); PackageScheme[]
+   * schemes = PackageScheme.values(); for (int i = 0; i < schemes.length; i++)
+   * variants.put(schemes[i], this.getActualPrice(services, input, schemes[i]));
+   * return variants; }
+   * 
+   * public Map<PackageScheme, PackagePriceInfo>
+   * getStartingPriceForAllSchemes(List<SubscriptionService> services) {
+   * UserInput<String, Object> input = new UserInput<String, Object>();
+   * input.add(this.getClass().getName(), Boolean.valueOf(true)); // an
+   * indicator // to let the // downstream // methods know // that this // call
+   * is made // internally. return this.getActualPriceForAllSchemes(services,
+   * null); }
+   */
 
   static class ServiceInfo {
     private String serviceId;
     private String name;
     private String description;
 
-    public ServiceInfo(BasicService service) {
+    public ServiceInfo(BaseService service) {
       this.serviceId = service.getId();
       this.name = service.getName();
       this.description = service.getDescription();
@@ -177,4 +214,5 @@ public class AMCPackage extends BaseMasterEntity {
     }
 
   }
+
 }

@@ -1,4 +1,4 @@
-package com.real.proj.amc.unit.test;
+package com.real.proj.amc.integration.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -20,7 +20,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.real.proj.amc.model.AMCPackage;
 import com.real.proj.amc.model.AssetType;
 import com.real.proj.amc.model.BaseMasterEntity;
-import com.real.proj.amc.model.BasicService;
+import com.real.proj.amc.model.BaseService;
+import com.real.proj.amc.model.AssetBasedService;
 import com.real.proj.amc.model.Coupon;
 import com.real.proj.amc.model.FixedPricingScheme;
 import com.real.proj.amc.model.FixedPricingScheme.FixedPrice;
@@ -29,7 +30,7 @@ import com.real.proj.amc.model.PricingStrategy;
 import com.real.proj.amc.model.Rating;
 import com.real.proj.amc.model.RatingBasedPricingScheme;
 import com.real.proj.amc.model.RatingBasedPricingScheme.RatingBasedPrice;
-import com.real.proj.amc.model.ServiceLevelData;
+import com.real.proj.amc.model.ServiceData;
 import com.real.proj.amc.model.SubscriptionService;
 import com.real.proj.amc.model.Tax;
 import com.real.proj.amc.model.TimeLine;
@@ -112,14 +113,14 @@ public class AdminTests extends BaseTest {
 
     pricing.updatePrice(price1, getFutureDate(2));
 
-    BasicService service = new SubscriptionService("New Category", "ELECTRICAL",
+    AssetBasedService service = new SubscriptionService("New Category", "ELECTRICAL",
         "Maintain electrical equipment",
         applicableTo,
         amenities);
     service.setPricingStrategy(pricing);
-    ServiceLevelData sld = new ServiceLevelData(PackageScheme.GOLD, 10);
+    ServiceData sld = new ServiceData(PackageScheme.GOLD, 10);
     ((SubscriptionService) service).addServiceLevelData(sld);
-    service = (BasicService) createEntity(service);
+    service = (AssetBasedService) createEntity(service);
     UserInput<String, Object> input = new UserInput<String, Object>();
     input.add(RatingBasedPricingScheme.RATING, Rating.ONE);
     double currentPrice = service.getPricingStrategy().getPrice(input);
@@ -129,28 +130,28 @@ public class AdminTests extends BaseTest {
   @Test
   public void testUpdateService() {
     testCreateService();
-    List<BasicService> services = findAll(BasicService.class);
-    BasicService service = services.get(0);
+    List<AssetBasedService> services = findAll(AssetBasedService.class);
+    AssetBasedService service = services.get(0);
     // modify pricing strategy
     PricingStrategy pricing = new FixedPricingScheme(new FixedPrice(100.0));
     service.setPricingStrategy(pricing);
     // modify delivery method
-    service = updateAndFind(service, BasicService.class);
+    service = updateAndFind(service, AssetBasedService.class);
     assertEquals(100.0, service.getPrice(null), 0.1);
   }
 
   @Test
   public void testCurrentPrice() {
     this.testCreateService();
-    List<BasicService> services = findAll(BasicService.class);
-    BasicService service = services.get(0);
+    List<AssetBasedService> services = findAll(AssetBasedService.class);
+    BaseService service = services.get(0);
     PricingStrategy pricingStrategy = service.getPricingStrategy();
     UserInput<String, Object> userInput = new UserInput<String, Object>();
     userInput.add(RatingBasedPricingScheme.RATING, Rating.ONE);
     double currentPrice = pricingStrategy.getPrice(userInput);
     assertEquals(100.0, currentPrice, 0.1);
     double futurePrice = pricingStrategy.getPrice(userInput, getFutureDate(3));
-    assertEquals(105.0, futurePrice, 0.1);
+    assertEquals(100.0, futurePrice, 0.1);
   }
 
   @Test
@@ -202,7 +203,7 @@ public class AdminTests extends BaseTest {
   @After
   public <E extends BaseMasterEntity> void cleanUp() {
     Class[] adminClasses = { Tax.class, Coupon.class,
-        BasicService.class };
+        AssetBasedService.class };
     for (Class<E> cls : adminClasses) {
       List<E> objects = crudService.findAll(cls);
       // crudService.removeAll(objects);

@@ -1,7 +1,6 @@
 package com.real.proj.amc.model;
 
 import java.util.Date;
-import java.util.List;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -86,7 +85,7 @@ public class Coupon extends BaseMasterEntity {
    * BUISINESS LOGIC *
    *****************************/
 
-  public double applyDiscount(List<AMCPackage> pkgs, double totalAmount) throws InvalidCouponException {
+  public double applyDiscount(AMCPackage pkgs, double totalAmount) throws InvalidCouponException {
     Date now = new Date();
     if (now.before(validFrom) || now.after(validTo))
       throw new InvalidCouponException("This coupon has expired.");

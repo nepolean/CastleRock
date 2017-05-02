@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.real.proj.controller.exception.DBException;
 import com.real.proj.controller.exception.EntityNotFoundException;
+import com.real.proj.controller.exception.InvalidSessionException;
 import com.real.proj.controller.exception.SecurityPermissionException;
 import com.real.proj.controller.exception.handler.SimpleError.Category;
 
@@ -28,6 +29,12 @@ public class ControllerValidationHandler {
   @Autowired
   public ControllerValidationHandler(MessageSource msgSource) {
     this.msgSource = msgSource;
+  }
+
+  @ExceptionHandler(InvalidSessionException.class)
+  @ResponseStatus(HttpStatus.UNAUTHORIZED)
+  public void processInvalidSessionException(InvalidSessionException ex) {
+
   }
 
   @ExceptionHandler({ MethodArgumentNotValidException.class })

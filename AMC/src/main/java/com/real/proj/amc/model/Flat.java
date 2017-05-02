@@ -10,7 +10,7 @@ public class Flat extends Asset {
 
   private Flat() {
     type = AssetType.FLAT;
-    services = new ArrayList<BasicService>();
+    services = new ArrayList<AssetBasedService>();
     services.add(new ElectricalService());
     details = new Details();
   }
@@ -58,11 +58,11 @@ public class Flat extends Asset {
     this.details = details;
   }
 
-  public List<BasicService> getServices() {
+  public List<AssetBasedService> getServices() {
     return services;
   }
 
-  public void setServices(List<BasicService> services) {
+  public void setServices(List<AssetBasedService> services) {
     this.services = services;
   }
 

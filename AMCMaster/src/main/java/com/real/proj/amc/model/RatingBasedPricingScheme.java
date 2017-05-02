@@ -5,10 +5,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class RatingBasedPricingScheme extends PricingStrategy implements Serializable {
 
+  private static final long serialVersionUID = 1L;
   public final static String NAME = "RATING_BASED";
   public static final String RATING = "RATING";
+  private static final Logger logger = LoggerFactory.getLogger(RatingBasedPricingScheme.class);
+
   TimeLine<RatingBasedPrice> priceHistory = new TimeLine<RatingBasedPrice>();
 
   public RatingBasedPricingScheme() {
@@ -52,48 +58,67 @@ public class RatingBasedPricingScheme extends PricingStrategy implements Seriali
   }
 
   @Override
-  public double getPrice(UserInput<String, Object> input) {
+  public ServiceData getServiceLevelData(UserInput<String, Object> input) {
+    logger.info("getPrice {}", input);
     if (input == null)
       throw new IllegalArgumentException("No user input for this request");
     Rating rating = (Rating) input.get(RATING);
-    return this.priceHistory.getCurrentValue().getPriceFor(rating);
+    if (logger.isDebugEnabled())
+      logger.debug("user rating: {}", rating);
+    RatingBasedPrice currPrice = this.priceHistory.getCurrentValue();
+    ServiceData serviceData = currPrice.getServiceLevelData(rating);
+    if (serviceData == null) {
+      if (logger.isDebugEnabled())
+        logger.debug("ServiceLevelData is not available for the given rating");
+      throw new IllegalStateException("Price details not defined for the given rating.");
+    }
+    return serviceData;
   }
 
   @Override
-  public double getPrice(UserInput<String, Object> input, Date on) {
+  public ServiceData getServiceLevelData(UserInput<String, Object> input, Date on) {
     if (input == null)
       throw new IllegalArgumentException("No user input for this request");
     Rating rating = (Rating) input.get(RATING);
     if (rating == null)
       throw new IllegalArgumentException("Invalid rating");
-    return this.priceHistory.getValueForDate(on).getPriceFor(rating);
+    return this.priceHistory.getValueForDate(on).getServiceLevelData(rating);
+  }
+
+  @Override
+  public ServiceData getDefaultServiceLevelData() {
+    UserInput<String, Object> input = new UserInput<String, Object>();
+    input.add(RATING, Rating.FIVE); // assume 5 as the default rating
+    return this.getServiceLevelData(input);
   }
 
   public static class RatingBasedPrice extends PriceData implements Serializable {
 
-    private Map<Rating, Double> price;
+    private static final long serialVersionUID = 1L;
+
+    private Map<Rating, ServiceData> price;
 
     public RatingBasedPrice() {
-      this.price = new HashMap<Rating, Double>();
+      this.price = new HashMap<Rating, ServiceData>();
     }
 
-    public RatingBasedPrice(Map<Rating, Double> price) {
+    public RatingBasedPrice(Map<Rating, ServiceData> price) {
       this.price = price;
     }
 
-    public Map<Rating, Double> getPrice() {
+    public Map<Rating, ServiceData> getPrice() {
       return price;
     }
 
-    public void setPrice(Map<Rating, Double> price) {
+    public void setPrice(Map<Rating, ServiceData> price) {
       this.price = price;
     }
 
-    public void addPriceFor(Rating rating, double value) {
+    public void addPriceFor(Rating rating, ServiceData value) {
       this.price.put(rating, value);
     }
 
-    public double getPriceFor(Rating rating) {
+    public ServiceData getServiceLevelData(Rating rating) {
       return this.price.get(rating);
     }
 

@@ -3,9 +3,13 @@ package com.real.proj.amc.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class FixedPricingScheme extends PricingStrategy implements Serializable {
 
   public final static String NAME = "Fixed";
+  private final static Logger logger = LoggerFactory.getLogger(FixedPricingScheme.class);
 
   TimeLine<FixedPrice> price = new TimeLine<FixedPrice>();
 
@@ -40,13 +44,26 @@ public class FixedPricingScheme extends PricingStrategy implements Serializable 
   }
 
   @Override
-  public double getPrice(UserInput<String, Object> input) {
-    return this.price.getCurrentValue().getPrice();
+  public ServiceData getServiceLevelData(UserInput<String, Object> input) {
+    FixedPrice data = this.price.getCurrentValue();
+    if (data == null) {
+      if (logger.isErrorEnabled())
+        logger.error("Pricing not defined for this service");
+      return null;
+    }
+
+    return data.getPrice();
   }
 
   @Override
-  public double getPrice(UserInput<String, Object> input, Date on) {
-    return this.price.getValueForDate(on).getPrice();
+  public ServiceData getServiceLevelData(UserInput<String, Object> input, Date on) {
+    FixedPrice data = this.price.getValueForDate(on);
+    if (data == null) {
+      if (logger.isDebugEnabled())
+        logger.debug("pricing not available for the given date {}", on);
+      return null;
+    }
+    return data.getPrice();
   }
 
   @Override
@@ -59,23 +76,29 @@ public class FixedPricingScheme extends PricingStrategy implements Serializable 
   }
 
   @Override
+  public ServiceData getDefaultServiceLevelData() {
+    return this.getServiceLevelData(null);
+  }
+
+  @Override
   public String toString() {
     return "FixedPricingScheme [price=" + price + "]";
   }
 
   public static class FixedPrice extends PriceData implements Serializable {
 
-    double price;
+    private static final long serialVersionUID = 1L;
+    ServiceData price;
 
-    public FixedPrice(double price) {
+    public FixedPrice(ServiceData price) {
       this.price = price;
     }
 
-    public double getPrice() {
+    public ServiceData getPrice() {
       return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(ServiceData price) {
       this.price = price;
     }
 
@@ -85,4 +108,5 @@ public class FixedPricingScheme extends PricingStrategy implements Serializable 
     }
 
   }
+
 }

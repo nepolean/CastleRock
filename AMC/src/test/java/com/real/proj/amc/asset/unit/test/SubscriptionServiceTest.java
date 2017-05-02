@@ -16,9 +16,9 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
 import com.real.proj.amc.model.AMCPackage;
 import com.real.proj.amc.model.Asset;
-import com.real.proj.amc.model.BasicService;
+import com.real.proj.amc.model.AssetBasedService;
 import com.real.proj.amc.model.Rating;
-import com.real.proj.amc.model.ServiceLevelData;
+import com.real.proj.amc.model.ServiceData;
 import com.real.proj.amc.model.States;
 import com.real.proj.amc.model.Subscription;
 import com.real.proj.amc.model.Tax;
@@ -56,7 +56,7 @@ public class SubscriptionServiceTest extends BaseTest {
   @Test
   public void testCreateSubscription() {
     Asset asset = assetTest.newAsset(authorizedUser, assetOwner);
-    Map<String, ServiceLevelData> pkgs = createTestAssetServiceDetails();
+    Map<String, ServiceData> pkgs = createTestAssetServiceDetails();
     Subscription sub = this.subsService.createSubscription(asset.getId(), pkgs);
     subscRepo.save(sub);// , authorizedUser.getEmail());
     List<Subscription> subscriptions = this.subscRepo.findAll();
@@ -114,20 +114,20 @@ public class SubscriptionServiceTest extends BaseTest {
     this.crudService.create(t1, authorizedUser.getEmail());
   }
 
-  private Map<String, ServiceLevelData> createTestAssetServiceDetails() {
-    Map<String, ServiceLevelData> datum = new HashMap<String, ServiceLevelData>();
-    datum.put("ELECTRICAL", new ServiceLevelData("ELECTRICAL"));
-    datum.put("PLUMBING", new ServiceLevelData("PLUMBING"));
+  private Map<String, ServiceData> createTestAssetServiceDetails() {
+    Map<String, ServiceData> datum = new HashMap<String, ServiceData>();
+    datum.put("ELECTRICAL", new ServiceData("ELECTRICAL"));
+    datum.put("PLUMBING", new ServiceData("PLUMBING"));
     return datum;
   }
 
   private List<AMCPackage> createTestPackage() {
-    BasicService svc = new BasicService("PLUMBING", "Enables the plubming service");
+    AssetBasedService svc = new AssetBasedService("PLUMBING", "Enables the plubming service");
     svc.addPricing(Rating.FIVE, 10.0, 6);
     svc.addPricing(Rating.FOUR, 12.0, 8);
     svc.addPricing(Rating.THREE, 14.0, 10);
     svc = this.crudService.create(svc, authorizedUser.getEmail());
-    List<BasicService> services = new ArrayList<BasicService>();
+    List<AssetBasedService> services = new ArrayList<AssetBasedService>();
     services.add(svc);
     AMCPackage pkg = new AMCPackage("DefaultPackage", services);
     pkg = crudService.create(pkg, authorizedUser.getEmail());
@@ -140,7 +140,7 @@ public class SubscriptionServiceTest extends BaseTest {
   public void cleanup() {
     this.subscRepo.deleteAll();
     this.assetTest.cleanUp();
-    Class[] classes = { Tax.class, BasicService.class, AMCPackage.class };
+    Class[] classes = { Tax.class, AssetBasedService.class, AMCPackage.class };
     for (Class clz : classes)
       this.crudService.removeAll(clz);
   }

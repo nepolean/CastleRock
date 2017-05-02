@@ -24,7 +24,7 @@ public class Asset extends BaseMasterEntity implements java.io.Serializable {
   Asset belongsTo;
   User assetOwner;
   Set<Amenity> amenities;
-  List<BasicService> services;
+  List<AssetBasedService> services;
   // Subscription subscription;
 
   public Asset() {
@@ -79,11 +79,11 @@ public class Asset extends BaseMasterEntity implements java.io.Serializable {
     this.amenities = amenities;
   }
 
-  public List<BasicService> getServices() {
+  public List<AssetBasedService> getServices() {
     return services;
   }
 
-  public void setServices(List<BasicService> services) {
+  public void setServices(List<AssetBasedService> services) {
     this.services = services;
   }
 

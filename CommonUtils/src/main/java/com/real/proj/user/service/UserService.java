@@ -3,6 +3,7 @@ package com.real.proj.user.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.real.proj.controller.exception.EntityNotFoundException;
 import com.real.proj.user.model.User;
 
 @Service
@@ -33,6 +34,13 @@ public class UserService {
     // user.addSubscription(forumId);
     user = userRepository.save(user);
     return user;
+  }
+
+  public User findByUserName(String userName) {
+    User loggedInUser = this.userRepository.findByUserName(userName);
+    if (loggedInUser == null)
+      throw new EntityNotFoundException(userName, "", "User");
+    return loggedInUser;
   }
 
 }

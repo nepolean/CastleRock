@@ -22,7 +22,7 @@ import com.real.proj.amc.model.PriceData;
 import com.real.proj.amc.model.Rating;
 import com.real.proj.amc.model.RatingBasedPricingScheme;
 import com.real.proj.amc.model.RatingBasedPricingScheme.RatingBasedPrice;
-import com.real.proj.amc.model.ServiceLevelData;
+import com.real.proj.amc.model.ServiceData;
 import com.real.proj.amc.model.SubscriptionService;
 
 @RestController
@@ -71,9 +71,9 @@ public class MetadataController {
   }
 
   @RequestMapping(path = "/meta/service/subsription/schemes/data", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<ServiceLevelData> getSLAData() {
-    ServiceLevelData sld = new ServiceLevelData(PackageScheme.PLATINUM, (int) 10);
-    return new ResponseEntity<ServiceLevelData>((ServiceLevelData) sld, HttpStatus.OK);
+  public ResponseEntity<ServiceData> getSLAData() {
+    ServiceData sld = new ServiceData(PackageScheme.PLATINUM, (int) 10);
+    return new ResponseEntity<ServiceData>((ServiceData) sld, HttpStatus.OK);
   }
 
   @RequestMapping(path = "/meta/package", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)

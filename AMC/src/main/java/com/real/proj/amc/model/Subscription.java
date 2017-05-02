@@ -25,30 +25,29 @@ public class Subscription extends BaseMasterEntity implements Cloneable {
 
   String assetId;
   @Reference
-  List<AMCPackage> packages;
+  AMCPackage pkg;
   @Reference
-  Map<String, ServiceLevelData> services;
+  Map<String, ServiceData> services;
   Date startDate;
   Date validUpto;
+  @Reference
   Quotation quotation;
   States currentState;
   SubscriptionStatus status;
+  @Reference
   List<Subscription> history;
+  @Reference
   List<Coupon> coupons;
 
   public Subscription() {
 
   }
 
-  public Subscription(String assetId, Map<String, ServiceLevelData> services) {
+  public Subscription(String assetId, AMCPackage pkg, Map<String, ServiceData> services) {
     this.assetId = assetId;
+    this.pkg = pkg;
     this.services = services;
-    currentState = States.CREATED;
-  }
-
-  public void subscribe(List<AMCPackage> packages) {
-    this.packages = packages;
-    this.currentState = States.SUBSCRIPTION_REQUESTED;
+    currentState = States.SUBSCRIPTION_REQUESTED;
   }
 
   public String getId() {
@@ -56,7 +55,7 @@ public class Subscription extends BaseMasterEntity implements Cloneable {
   }
 
   public boolean rateAService(String serviceName, Rating rating) {
-    ServiceLevelData sd = this.services.get(serviceName);
+    ServiceData sd = this.services.get(serviceName);
     sd.setUserRating(rating);
     this.currentState = States.RATED;
     return areAllServicesRated();
@@ -69,35 +68,18 @@ public class Subscription extends BaseMasterEntity implements Cloneable {
     return areAllServicesRated();
   }
 
-  public void renew(List<AMCPackage> pkgs, List<Tax> taxes, List<Coupon> coupons) {
-    if (this.history == null)
-      this.history = new ArrayList<Subscription>();
-    Subscription old;
-    old = (Subscription) this.clone();
-    this.history.add(old);
-    this.packages = pkgs;
-    this.quotation = null;
-    this.raiseQuote(taxes);
-    this.currentState = States.RENEWED;
-  }
-
-  public Quotation raiseQuote(List<Tax> taxes) {
+  public Quotation raiseQuote(List<SubscriptionService> services, List<Tax> taxes, List<Coupon> coupons,
+      UserInput input) {
     double totalAmount = 0.0;
     double taxAmount = 0.0;
     double discount = 0.0;
     List<String> comments = new ArrayList<String>();
-    for (AMCPackage pkg : this.packages) {
-      List<BasicService> services = pkg.getServices();
-      for (BasicService service : services) {
-        Rating userRating = this.services.get(service.getName()).getRating();
-        double price = service.getPrice(userRating);
-        totalAmount += price;
-      }
-    }
+    // TODO: Need to think about how the pricing model works?
+    this.pkg.getActualPrice(services, input, PackageScheme.GOLD);
     if (coupons != null)
       try {
         for (Coupon coupon : this.coupons)
-          discount += coupon.applyDiscount(this.packages, totalAmount);
+          discount += coupon.applyDiscount(this.pkg, totalAmount);
       } catch (InvalidCouponException e) {
         comments.add(e.getMessage());
       }
@@ -114,6 +96,19 @@ public class Subscription extends BaseMasterEntity implements Cloneable {
     return quote;
   }
 
+  public void renew(AMCPackage pkg, List<SubscriptionService> services, List<Tax> taxes, List<Coupon> coupons,
+      UserInput input) {
+    if (this.history == null)
+      this.history = new ArrayList<Subscription>();
+    Subscription old;
+    old = (Subscription) this.clone();
+    this.history.add(old);
+    this.pkg = pkg;
+    this.quotation = null;
+    this.raiseQuote(services, taxes, coupons, input);
+    this.currentState = States.RENEWED;
+  }
+
   public States getState() {
     return currentState;
   }
@@ -122,8 +117,8 @@ public class Subscription extends BaseMasterEntity implements Cloneable {
     this.currentState = state;
   }
 
-  public List<AMCPackage> getsubscribedPackages() {
-    return packages;
+  public AMCPackage getsubscribedPackage() {
+    return pkg;
   }
 
   public void setCoupons(List<Coupon> coupons) {
@@ -156,15 +151,15 @@ public class Subscription extends BaseMasterEntity implements Cloneable {
   public boolean areAllServicesRated() {
     if (this.services == null)
       return false;
-    Collection<ServiceLevelData> userServices = this.services.values();
-    for (ServiceLevelData svc : userServices) {
+    Collection<ServiceData> userServices = this.services.values();
+    for (ServiceData svc : userServices) {
       if (svc.getRating() == null)
         return false;
     }
     return true;
   }
 
-  public Map<String, ServiceLevelData> getServices() {
+  public Map<String, ServiceData> getServices() {
     return this.services;
   }
 
@@ -175,7 +170,7 @@ public class Subscription extends BaseMasterEntity implements Cloneable {
     sb.createdBy = this.createdBy;
     sb.createdOn = this.createdOn;
     sb.currentState = this.currentState;
-    sb.packages = this.packages;
+    sb.pkg = this.pkg;
     sb.currentState = this.currentState;
     sb.lastModified = this.lastModified;
     sb.modifiedBy = this.modifiedBy;

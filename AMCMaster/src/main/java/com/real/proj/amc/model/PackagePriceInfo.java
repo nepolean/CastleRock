@@ -6,8 +6,8 @@ public class PackagePriceInfo {
   private double actualPrice;
   private double discount;
 
-  public PackagePriceInfo(PackageScheme scheme, double actualPrice, double discount) {
-    this.scheme = scheme;
+  public PackagePriceInfo(double actualPrice, double discount) {
+    // this.scheme = scheme;
     this.actualPrice = actualPrice;
     this.discount = discount;
   }

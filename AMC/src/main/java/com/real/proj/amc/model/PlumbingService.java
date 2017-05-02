@@ -3,19 +3,19 @@ package com.real.proj.amc.model;
 import java.util.Date;
 import java.util.Set;
 
-public class PlumbingService extends BasicService {
+public class PlumbingService extends AssetBasedService {
 
-  private TimeLine<ServiceLevelData> sla;
+  private TimeLine<ServiceData> sla;
 
-  public void setServiceLevelData(ServiceLevelData data) {
+  public void setServiceLevelData(ServiceData data) {
     sla.addToHistory(data, new Date());
   }
 
-  public void updateServiceLevelData(ServiceLevelData data, Date validFrom) {
+  public void updateServiceLevelData(ServiceData data, Date validFrom) {
     sla.addToHistory(data, validFrom);
   }
 
-  public ServiceLevelData getServiceLevelData() {
+  public ServiceData getServiceLevelData() {
     return sla.getCurrentValue();
   }
 
@@ -23,7 +23,7 @@ public class PlumbingService extends BasicService {
     return sla.size() == 0;
   }
 
-  public Set<ServiceLevelData> getSerivceLevelData() {
+  public Set<ServiceData> getSerivceLevelData() {
     return sla.asList();
   }
 

@@ -1,8 +1,11 @@
 package com.real.proj.amc.controller;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.validation.Valid;
@@ -21,14 +24,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.real.proj.amc.model.AMCPackage;
 import com.real.proj.amc.model.Amenity;
-import com.real.proj.amc.model.BasicService;
+import com.real.proj.amc.model.AssetBasedService;
+import com.real.proj.amc.model.BaseService;
 import com.real.proj.amc.model.Category;
 import com.real.proj.amc.model.Coupon;
 import com.real.proj.amc.model.FixedPricingScheme;
+import com.real.proj.amc.model.PackagePriceInfo;
+import com.real.proj.amc.model.PackageScheme;
 import com.real.proj.amc.model.PriceData;
 import com.real.proj.amc.model.PricingStrategy;
 import com.real.proj.amc.model.RatingBasedPricingScheme;
-import com.real.proj.amc.model.ServiceLevelData;
+import com.real.proj.amc.model.ServiceData;
 import com.real.proj.amc.model.SubscriptionService;
 import com.real.proj.amc.model.Tax;
 import com.real.proj.amc.repository.AmenityRepository;
@@ -173,16 +179,16 @@ public class AMCAdminController {
 
   /******************* Service *****************************/
   @RequestMapping(path = "/admin/services", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Page<BasicService>> getServices(Pageable pageable) {
-    Page<BasicService> services = this.serviceRepo.findAll(pageable);
-    return new ResponseEntity<Page<BasicService>>(services, HttpStatus.OK);
+  public ResponseEntity<Page<AssetBasedService>> getServices(Pageable pageable) {
+    Page<AssetBasedService> services = this.serviceRepo.findAll(pageable);
+    return new ResponseEntity<Page<AssetBasedService>>(services, HttpStatus.OK);
   }
 
   @RequestMapping(path = "/admin/services/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<BasicService> getService(@PathVariable String id) {
-    BasicService service = this.serviceRepo.findOne(id);
+  public ResponseEntity<AssetBasedService> getService(@PathVariable String id) {
+    AssetBasedService service = this.serviceRepo.findOne(id);
     HttpStatus status = Objects.isNull(service) ? HttpStatus.NOT_FOUND : HttpStatus.OK;
-    return new ResponseEntity<BasicService>(service, status);
+    return new ResponseEntity<AssetBasedService>(service, status);
   }
 
   @RequestMapping(path = "/admin/services/subscritpion", method = { RequestMethod.POST,
@@ -202,11 +208,11 @@ public class AMCAdminController {
   // not?
   @RequestMapping(path = "/admin/service/{id}/price", method = { RequestMethod.POST,
       RequestMethod.PUT }, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<BasicService> definePrice(@PathVariable String id, @RequestBody String scheme,
+  public ResponseEntity<AssetBasedService> definePrice(@PathVariable String id, @RequestBody String scheme,
       @RequestBody PriceData price, @RequestBody Long date) {
-    BasicService svc = this.serviceRepo.findOne(id);
+    AssetBasedService svc = this.serviceRepo.findOne(id);
     if (Objects.isNull(svc))
-      return new ResponseEntity<BasicService>(svc, HttpStatus.NOT_FOUND);
+      return new ResponseEntity<AssetBasedService>(svc, HttpStatus.NOT_FOUND);
     PricingStrategy priceStrategy = svc.getPricingStrategy();
     if (priceStrategy == null)
       priceStrategy = createPriceStrategy(scheme);
@@ -216,14 +222,14 @@ public class AMCAdminController {
     Date wef = Objects.isNull(date) ? new Date() : new Date(date);
     priceStrategy.updatePrice(price, wef);
     svc = this.serviceRepo.save(svc);
-    return new ResponseEntity<BasicService>(svc, HttpStatus.OK);
+    return new ResponseEntity<AssetBasedService>(svc, HttpStatus.OK);
   }
 
   @RequestMapping(path = "/admin/service/subscritpion/{id}/data", method = { RequestMethod.POST,
       RequestMethod.PUT }, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<SubscriptionService> defineServiceLevelData(@PathVariable String id,
-      @RequestBody ServiceLevelData sld) {
-    BasicService service = this.serviceRepo.findOne(id);
+      @RequestBody ServiceData sld) {
+    BaseService service = this.serviceRepo.findOne(id);
     if (Objects.isNull(service))
       return new ResponseEntity<SubscriptionService>((SubscriptionService) null, HttpStatus.NOT_FOUND);
     else if (!(service instanceof SubscriptionService))
@@ -248,8 +254,21 @@ public class AMCAdminController {
   /******************* package *****************************/
 
   @RequestMapping(path = "/admin/package/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<AMCPackage> getPackage(String packageId) {
+  public ResponseEntity<AMCPackage> getPackage(@PathVariable String packageId) {
     return new ResponseEntity<AMCPackage>(this.packageRepo.findOne(packageId), HttpStatus.OK);
+  }
+
+  @RequestMapping(path = "/admin/package/{id}/variants", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Map<PackageScheme, PackagePriceInfo>> getPackageVariants(@PathVariable String packageId) {
+    AMCPackage pkg = this.packageRepo.findOne(packageId);
+    String[] serviceIds = pkg.getServiceInfo();
+    List<SubscriptionService> services = new ArrayList<SubscriptionService>();
+    this.serviceRepo.findAll(Arrays.asList(serviceIds)).forEach(service -> {
+      services.add((SubscriptionService) service);
+    });
+    Map<PackageScheme, PackagePriceInfo> basicPriceDetails = pkg
+        .getStartingPriceForAllSchemes(services);
+    return new ResponseEntity<Map<PackageScheme, PackagePriceInfo>>(basicPriceDetails, HttpStatus.OK);
   }
 
   @RequestMapping(path = "/admin/package", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
