@@ -1,10 +1,14 @@
-package com.real.proj.amc.model;
+package com.real.proj.amc.model.deleted;
 
 import java.io.Serializable;
 import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.real.proj.amc.model.PriceData;
+import com.real.proj.amc.model.TimeLine;
+import com.real.proj.amc.model.UserInput;
 
 public class FixedPricingScheme extends PricingStrategy implements Serializable {
 

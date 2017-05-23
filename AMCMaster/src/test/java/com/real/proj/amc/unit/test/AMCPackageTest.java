@@ -15,16 +15,16 @@ import org.junit.Test;
 
 import com.real.proj.amc.model.AMCPackage;
 import com.real.proj.amc.model.AssetType;
-import com.real.proj.amc.model.FixedPricingScheme;
-import com.real.proj.amc.model.FixedPricingScheme.FixedPrice;
 import com.real.proj.amc.model.PackagePriceInfo;
 import com.real.proj.amc.model.PriceData;
-import com.real.proj.amc.model.PricingStrategy;
 import com.real.proj.amc.model.Rating;
-import com.real.proj.amc.model.RatingBasedPricingScheme;
-import com.real.proj.amc.model.RatingBasedPricingScheme.RatingBasedPrice;
+import com.real.proj.amc.model.deleted.FixedPricingScheme;
+import com.real.proj.amc.model.deleted.PricingStrategy;
+import com.real.proj.amc.model.deleted.RatingBasedPricingScheme;
+import com.real.proj.amc.model.deleted.SubscriptionService;
+import com.real.proj.amc.model.deleted.FixedPricingScheme.FixedPrice;
+import com.real.proj.amc.model.deleted.RatingBasedPricingScheme.RatingBasedPrice;
 import com.real.proj.amc.model.ServiceData;
-import com.real.proj.amc.model.SubscriptionService;
 import com.real.proj.amc.model.UserInput;
 
 public class AMCPackageTest {

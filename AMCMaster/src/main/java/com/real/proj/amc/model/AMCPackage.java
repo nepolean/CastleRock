@@ -10,13 +10,23 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotBlank;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import com.real.proj.amc.repository.ServiceRepository;
 
 @Document(collection = "Packages")
 public class AMCPackage extends BaseMasterEntity {
 
   private final static Logger logger = LoggerFactory.getLogger(AMCPackage.class);
+
+  ServiceRepository repository;
+
+  @Autowired
+  public void setServiceRepository(ServiceRepository repository) {
+    this.repository = repository;
+  }
 
   @Id
   private String id;
@@ -33,11 +43,10 @@ public class AMCPackage extends BaseMasterEntity {
 
   private DeliveryMethod dm;
 
-  public AMCPackage(String name, String description, DeliveryMethod dm, Long tenure, Double discPct) {
+  public AMCPackage(String name, String description, Long tenure, Double discPct) {
     this.name = name;
     this.description = description;
-    this.dm = dm;
-    // convertAndAdd(services);
+    this.dm = DeliveryMethod.SUBSCRIPTION;
     this.tenure = tenure;
     this.discountPct = discPct;
     isActive = false;
@@ -60,7 +69,7 @@ public class AMCPackage extends BaseMasterEntity {
   }
 
   public void addServices(List<BaseService> services) {
-    services = Objects.requireNonNull(services, "Empty list for services.");
+    services = Objects.requireNonNull(services, "No services data provided.");
     services.forEach(service -> {
       this.addService(service);
     });
@@ -82,13 +91,12 @@ public class AMCPackage extends BaseMasterEntity {
     this.description = description;
   }
 
-  public String[] getServiceInfo() {
+  public List<String> getServiceInfo() {
     if (this.serviceInfo == null)
       return null;
-    String[] ids = new String[this.serviceInfo.size()];
-    int index = 0;
+    List<String> ids = new ArrayList<String>(this.serviceInfo.size());
     for (ServiceInfo svc : this.serviceInfo)
-      ids[index] = svc.getServiceId();
+      ids.add(svc.getServiceId());
     return ids;
   }
 
@@ -114,8 +122,8 @@ public class AMCPackage extends BaseMasterEntity {
 
   public void addService(BaseService service) {
     service = Objects.requireNonNull(service, "Null value passed for service");
-    if (!service.doesSupportDeliveryMethod(this.dm)) {
-      String msg = String.format("The service, {}, does not support the delivery model {}", service.getName(), this.dm);
+    if (!service.canSubscribe()) {
+      String msg = String.format("The service, {}, does not support subscription model ", service.getName());
       logger.error(msg);
       throw new IllegalArgumentException(msg);
     }
@@ -124,15 +132,21 @@ public class AMCPackage extends BaseMasterEntity {
     this.serviceInfo.add(new ServiceInfo(service));
   }
 
-  public PackagePriceInfo getActualPrice(List<SubscriptionService> services, UserInput<String, Object> input) {
+  public PackagePriceInfo getActualPrice(UserInput<String, Object> input) {
     logger.info("getActualPrice -> {}", input);
     // this is sigma of all services defined under this package.
+    List<BaseService> services = this.loadServiceData();
     double actualPrice = getActualPriceFor(services, input);
     double discount = actualPrice * discountPct / 100;
     return new PackagePriceInfo(actualPrice, discount);
   }
 
-  private double getActualPriceFor(List<SubscriptionService> services, UserInput<String, Object> input) {
+  private List<BaseService> loadServiceData() {
+    this.repository.findAll(this.getServiceInfo());
+    return null;
+  }
+
+  private double getActualPriceFor(List<BaseService> services, UserInput<String, Object> input) {
     // PackageScheme scheme) {
     if (this.serviceInfo == null)
       throw new IllegalStateException("The package is not built ready");
@@ -140,21 +154,13 @@ public class AMCPackage extends BaseMasterEntity {
     for (BaseService service : services) {
       // boolean askingForBasePrice = (input != null &&
       // input.get(this.getClass().getName()) != null);
-      ServiceData sld = service.getServiceData(this.dm, input);
+      SubscriptionData sld = service.getSubscriptionData(input);
       if (sld == null) {
         if (logger.isErrorEnabled())
           logger.error("The service {} is not built ready", service.getName());
         throw new IllegalStateException("This package cannot be used at this time");
       }
-
-      double unitPrice = 0.0;
-
-      if (DeliveryMethod.SUBSCRIPTION.equals(dm)) {
-        unitPrice = ((SubscriptionData) sld).getSubscriptionPrice();
-      } else {
-        unitPrice = sld.getPrice();
-      }
-      // ServiceLevelData sld = service.getServiceLevelData(scheme);
+      double unitPrice = sld.getSubscriptionPrice();
       actualPrice += unitPrice * tenure;
     }
     return actualPrice;

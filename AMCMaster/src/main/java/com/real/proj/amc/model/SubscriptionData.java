@@ -1,13 +1,13 @@
 package com.real.proj.amc.model;
 
-public class SubscriptionData extends ServiceData {
+public class SubscriptionData {
 
+  @SuppressWarnings("unused")
   private static final long serialVersionUID = 1L;
   private int visitCount;
   private double subscriptionPrice;
 
-  public SubscriptionData(double subscriptionPrice, double unitPrice, int visitCount) {
-    super(unitPrice);
+  public SubscriptionData(double subscriptionPrice, int visitCount) {
     if (visitCount <= 0)
       throw new IllegalArgumentException("Invalid visit count");
     this.visitCount = visitCount;
@@ -32,8 +32,7 @@ public class SubscriptionData extends ServiceData {
 
   @Override
   public String toString() {
-    return "SubscriptionData [visitCount=" + visitCount + ", subscriptionPrice=" + subscriptionPrice + ", unitPrice="
-        + price + "]";
+    return "SubscriptionData [visitCount=" + visitCount + ", subscriptionPrice=" + subscriptionPrice + "]";
   }
 
 }

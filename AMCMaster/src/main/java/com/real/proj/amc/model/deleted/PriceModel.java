@@ -1,4 +1,4 @@
-package com.real.proj.amc.model;
+package com.real.proj.amc.model.deleted;
 
 public enum PriceModel {
 

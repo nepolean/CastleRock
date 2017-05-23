@@ -2,15 +2,12 @@ package com.real.proj.amc.model;
 
 import java.io.Serializable;
 
-public class ServiceData implements Serializable {
+public class OneTimeData implements Serializable {
 
   private static final long serialVersionUID = 1L;
+  private double price;
 
-  protected double price;
-
-  public ServiceData(double price) {
-    if (price <= 0.0)
-      throw new IllegalArgumentException("Invalid price.");
+  public OneTimeData(double price) {
     this.price = price;
   }
 
@@ -22,13 +19,9 @@ public class ServiceData implements Serializable {
     this.price = price;
   }
 
-  public boolean validate() {
-    return price != 0;
-  }
-
   @Override
   public String toString() {
-    return "ServiceLevelData [price=" + price + "]";
+    return "OneTimeData [price=" + price + "]";
   }
 
 }

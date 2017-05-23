@@ -29,9 +29,9 @@ public class AssetBasedService extends BaseService {
 
   // Map<Rating, List<ServiceData>> pricing;
 
-  public AssetBasedService(String category, String name, String description, List<AssetType> applicableTo,
-      List<String> amenities, DeliveryMethod delivery) {
-    super(category, name, description);
+  public AssetBasedService(String name, String description, List<AssetType> applicableTo,
+      List<String> amenities) {
+    super(Category.ASSET, name, description);
     this.applicableTo = applicableTo;
     this.amenities = amenities;
   }
@@ -52,14 +52,25 @@ public class AssetBasedService extends BaseService {
     this.amenities = amenities;
   }
 
-  protected void rejectIfDataIsNotValid(DeliveryMethod delivery, ServiceMetadata sld) {
-    if (Objects.isNull(sld) || !(sld instanceof RatingBasedMetadata)) {
+  protected UserInput<String, Object> getDefaultInput() {
+    UserInput<String, Object> input = new UserInput<String, Object>();
+    input.add("RATING", Rating.FIVE);
+    return input;
+  }
+
+  protected void rejectIfDataIsNotValid(DeliveryMethod delivery, ServiceMetadata data) {
+    Objects.requireNonNull(data, "Null value passed in for service metadata.");
+    if (delivery == DeliveryMethod.SUBSCRIPTION && !(data instanceof RatingBasedSubscriptionMetadata)) {
       if (logger.isErrorEnabled())
-        logger.error("wrong data type {}", sld);
+        logger.error("wrong data type {}", data);
+      throw new IllegalArgumentException("Invalid service details have been passed.");
+    } else if (delivery == DeliveryMethod.TRANSACTIONAL && !(data instanceof RatingBasedOneTimeMetadata)) {
+      if (logger.isErrorEnabled())
+        logger.error("wrong data type {}", data);
       throw new IllegalArgumentException("Invalid service details have been passed.");
     }
     List<String> errorHolder = new LinkedList<String>();
-    if (!sld.isValid(delivery, errorHolder)) {
+    if (!data.isValid(errorHolder)) {
       String errorString = concat(errorHolder);
       throw new IllegalArgumentException(errorString);
     }

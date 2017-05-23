@@ -8,41 +8,36 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RatingBasedMetadata extends ServiceMetadata {
+public class RatingBasedSubscriptionMetadata extends SubscriptionMetadata {
 
   private static final String USER_INPUT = "RATING";
-  private static final Logger logger = LoggerFactory.getLogger(RatingBasedMetadata.class);
+  private static final Logger logger = LoggerFactory.getLogger(RatingBasedSubscriptionMetadata.class);
 
   /* holds pricing & other service specific details */
-  Map<Rating, ServiceData> data;
+  Map<Rating, SubscriptionData> subscriptionData;
 
-  public RatingBasedMetadata(Map<Rating, ServiceData> data) {
-    if (data == null)
-      throw new IllegalArgumentException("ServiceLevelData cannot be null.");
-    this.data = data;
+  public RatingBasedSubscriptionMetadata(Map<Rating, SubscriptionData> data) {
+    this.subscriptionData = data;
   }
 
   @Override
-  public boolean isValid(DeliveryMethod deliveryMethod, List<String> errors) {
+  public boolean isValid(List<String> errors) {
     if (errors == null)
       errors = new LinkedList<String>();
     errors.clear();
     for (Rating rating : Rating.values()) {
-      ServiceData sld = data.get(rating);
+      SubscriptionData sld = this.subscriptionData.get(rating);
       if (sld == null) {
         errors.add("ServiceLevelData for rating," + rating + ", is empty.");
         continue;
       }
-      if (deliveryMethod != DeliveryMethod.TRANSACTIONAL && !(sld instanceof SubscriptionData)) {
-        errors.add(String.format("Wrong service data type is passed. Expected {}", SubscriptionData.class.getName()));
-      }
-
     }
-    return errors.size() > 0;
+    return errors.size() == 0;
   }
 
-  public ServiceData getServiceData(UserInput<String, Object> input) {
-    if (this.data == null)
+  @Override
+  public SubscriptionData getSubscriptionData(UserInput<String, Object> input) {
+    if (this.subscriptionData == null)
       throw new IllegalStateException("The requested details are not available at the moment.");
     Rating rating = Rating.FIVE; // default rating
     if (Objects.isNull(input) || Objects.isNull(input.get(USER_INPUT))) {
@@ -50,7 +45,7 @@ public class RatingBasedMetadata extends ServiceMetadata {
     } else {
       rating = (Rating) input.get(USER_INPUT);
     }
-    ServiceData sd = this.data.get(rating);
+    SubscriptionData sd = this.subscriptionData.get(rating);
     return sd;
   }
 

@@ -10,6 +10,7 @@ import java.util.TreeSet;
 public class TimeLine<T> implements Serializable {
 
   private static final int PADDING = 100;
+  // TODO: Revisit this data structure; should be based on date
   private Stack<History<T>> history = new Stack<History<T>>();
 
   public TimeLine() {
