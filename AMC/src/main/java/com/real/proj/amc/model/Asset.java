@@ -1,7 +1,6 @@
 package com.real.proj.amc.model;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 import org.springframework.data.annotation.Id;
@@ -24,7 +23,7 @@ public class Asset extends BaseMasterEntity implements java.io.Serializable {
   Asset belongsTo;
   User assetOwner;
   Set<Amenity> amenities;
-  List<AssetBasedService> services;
+
   // Subscription subscription;
 
   public Asset() {
@@ -79,22 +78,6 @@ public class Asset extends BaseMasterEntity implements java.io.Serializable {
     this.amenities = amenities;
   }
 
-  public List<AssetBasedService> getServices() {
-    return services;
-  }
-
-  public void setServices(List<AssetBasedService> services) {
-    this.services = services;
-  }
-
   /*********************** BUISINESS LOGIC *************************/
-  public void subscribe() {
-
-  }
-
-  /*
-   * public List<AMCPackage> getSubscribedPackages() { if (this.subscription ==
-   * null) return null; return this.subscription.getsubscribedPackages(); }
-   */
 
 }

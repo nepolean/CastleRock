@@ -19,4 +19,9 @@ public class UserInput<K, E> {
     this.arguments.put(key, value);
   }
 
+  @Override
+  public String toString() {
+    return "UserInput [arguments=" + arguments + "]";
+  }
+
 }

@@ -5,7 +5,10 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Reference;
@@ -16,59 +19,57 @@ import org.springframework.statemachine.StateMachine;
 @Document(collection = "Subscriptions")
 public class Subscription extends BaseMasterEntity implements Cloneable {
 
+  private static Logger logger = LoggerFactory.getLogger(Subscription.class);
+
   @Transient
   @Autowired
   StateMachine<States, Events> sm;
 
   @Id
   String id;
-
   String assetId;
-  @Reference
-  AMCPackage pkg;
-  @Reference
-  Map<String, ServiceData> services;
+  String userId;
   Date startDate;
   Date validUpto;
   @Reference
   Quotation quotation;
-  States currentState;
   SubscriptionStatus status;
   @Reference
   List<Subscription> history;
   @Reference
   List<Coupon> coupons;
 
-  public Subscription() {
+  private List<Product> products;
 
+  private States currentState;
+
+  private int tenure;
+
+  public Subscription(String userId, String assetId, List<Product> products, int tenure) {
+    this.userId = Objects.requireNonNull(userId, "UserId cannot be null");
+    this.assetId = Objects.requireNonNull(assetId, "Asset id cannot be null");
+    this.products = validateAndSet(products);
+    this.tenure = tenure;
+    currentState = States.SUBSCRIPTION_REQUESTED;
   }
 
-  public Subscription(String assetId, AMCPackage pkg, Map<String, ServiceData> services) {
-    this.assetId = assetId;
-    this.pkg = pkg;
-    this.services = services;
-    currentState = States.SUBSCRIPTION_REQUESTED;
+  private List<Product> validateAndSet(List<Product> products) {
+    products = Objects.requireNonNull(products, "Product data cannot be null");
+    for (Product product : products) {
+      if (!product.canSubscribe()) {
+        if (logger.isErrorEnabled())
+          logger.error("The product {} does not support subscription model", product.getName());
+        throw new IllegalArgumentException(String.format("The product {} does not support subscription model", product.getName());
+      }
+    }    
+    return products;
   }
 
   public String getId() {
     return id;
   }
 
-  public boolean rateAService(String serviceName, Rating rating) {
-    ServiceData sd = this.services.get(serviceName);
-    sd.setUserRating(rating);
-    this.currentState = States.RATED;
-    return areAllServicesRated();
-  }
-
-  public boolean rateAllServices(Map<String, Rating> serviceRatings) {
-    serviceRatings.forEach((name, rating) -> {
-      rateAService(name, rating);
-    });
-    return areAllServicesRated();
-  }
-
-  public Quotation raiseQuote(List<SubscriptionService> services, List<Tax> taxes, List<Coupon> coupons,
+  public Quotation raiseQuote(List<Tax> taxes, List<Coupon> coupons,
       UserInput input) {
     double totalAmount = 0.0;
     double taxAmount = 0.0;

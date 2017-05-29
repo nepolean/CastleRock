@@ -4,15 +4,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Date;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.real.proj.amc.model.AssetBasedService;
-import com.real.proj.amc.model.AssetType;
 import com.real.proj.amc.model.BaseService;
 import com.real.proj.amc.model.OneTimeData;
 import com.real.proj.amc.model.OneTimeMetadata;
@@ -22,24 +19,26 @@ import com.real.proj.amc.model.RatingBasedSubscriptionMetadata;
 import com.real.proj.amc.model.ServiceMetadata;
 import com.real.proj.amc.model.SubscriptionData;
 import com.real.proj.amc.model.SubscriptionMetadata;
+import com.real.proj.amc.model.UserInput;
 
 public class ServiceTest {
 
+  private static Logger logger = LoggerFactory.getLogger(ServiceTest.class);
   static {
     System.setProperty("ENVIRONMENT", "TEST");
   }
 
   @Test
   public void testCreateService() {
-    BaseService svc = createBasicService();
+    BaseService svc = ServiceTestHelper.createBasicService();
     assertNotNull(svc);
     assertEquals("PLUMBING SERVICE", svc.getName());
   }
 
   @Test
   public void testSetValidSubscriptionData() {
-    BaseService svc = createBasicService();
-    SubscriptionMetadata metadata = createRatingBasedSubscriptionData();
+    BaseService svc = ServiceTestHelper.createBasicService();
+    SubscriptionMetadata metadata = ServiceTestHelper.createRatingBasedSubscriptionData();
     svc.setSubscriptionServiceData(metadata);
     assertEquals(true, svc.canSubscribe());
     assertEquals(false, svc.canRequestOneTime());
@@ -51,8 +50,8 @@ public class ServiceTest {
   @Test
   public void testSetValidOneTimeData() {
 
-    BaseService svc = this.createBasicService();
-    OneTimeMetadata metadata = this.createOneTimeMetadata();
+    BaseService svc = ServiceTestHelper.createBasicService();
+    OneTimeMetadata metadata = ServiceTestHelper.createOneTimeMetadata();
     svc.setOneTimeServiceData(metadata);
     assertEquals(true, svc.canRequestOneTime());
     assertEquals(false, svc.canSubscribe());
@@ -62,8 +61,8 @@ public class ServiceTest {
 
   @Test
   public void testSetInvalidSubscriptionData() {
-    BaseService svc = this.createBasicService();
-    ServiceMetadata metadata = this.createOneTimeMetadata();
+    BaseService svc = ServiceTestHelper.createBasicService();
+    ServiceMetadata metadata = ServiceTestHelper.createOneTimeMetadata();
     try {
       svc.setSubscriptionServiceData(metadata);
       fail("The service must not accept in-compatible service metadata");
@@ -73,8 +72,8 @@ public class ServiceTest {
 
   @Test
   public void testSetInvalidOneTimeData() {
-    BaseService svc = this.createBasicService();
-    ServiceMetadata metadata = this.createRatingBasedSubscriptionData();
+    BaseService svc = ServiceTestHelper.createBasicService();
+    ServiceMetadata metadata = ServiceTestHelper.createRatingBasedSubscriptionData();
     try {
       svc.setOneTimeServiceData(metadata);
       fail("The service must not accept in-compatible service metadata");
@@ -84,57 +83,71 @@ public class ServiceTest {
 
   }
 
-  private RatingBasedSubscriptionMetadata createRatingBasedSubscriptionData() {
-    Map<Rating, SubscriptionData> data = createRatingBasedSubscriptionMap();
-    return new RatingBasedSubscriptionMetadata(data);
+  @Test
+  public void testUpdateSubscriptionData() {
+    BaseService svc = ServiceTestHelper.createBasicService();
+    ServiceMetadata metadata = ServiceTestHelper.createRatingBasedSubscriptionData();
+    svc.setSubscriptionServiceData(metadata);
+    RatingBasedSubscriptionMetadata ratingBasedMD = (RatingBasedSubscriptionMetadata) metadata;
+    ratingBasedMD.updateSubscriptionMetadata(Rating.ONE, new SubscriptionData(200.0, 20));
+    svc.updateSubscriptionData(ratingBasedMD, new Date());
+    // get value for rating one
+    UserInput<String, Object> input = new UserInput<String, Object>();
+    input.add("RATING", Rating.ONE);
+    double price = svc.getSubscriptionData(input).getSubscriptionPrice();
+    int count = svc.getSubscriptionData(input).getVisitCount();
+    if (logger.isDebugEnabled())
+      logger.debug("Updated price = {} and count = {}", price, count);
+    assertEquals(20, count);
+    assert (200.0 - price < 0.1);
   }
 
-  private Map<Rating, SubscriptionData> createRatingBasedSubscriptionMap() {
-    Map<Rating, SubscriptionData> map = new HashMap<Rating, SubscriptionData>();
-    map.put(Rating.ONE, new SubscriptionData(100.0, 3));
-    map.put(Rating.TWO, new SubscriptionData(120.0, 4));
-    map.put(Rating.THREE, new SubscriptionData(140.0, 6));
-    map.put(Rating.FOUR, new SubscriptionData(160.0, 8));
-    map.put(Rating.FIVE, new SubscriptionData(180.0, 10));
-    return map;
+  @Test
+  public void testUpdateOneTimeData() {
+    BaseService svc = ServiceTestHelper.createBasicService();
+    ServiceMetadata metadata = ServiceTestHelper.createOneTimeMetadata();
+    svc.setOneTimeServiceData(metadata);
+    RatingBasedOneTimeMetadata ratingBasedMD = (RatingBasedOneTimeMetadata) metadata;
+    ratingBasedMD.updateSubscriptionMetadata(Rating.ONE, new OneTimeData(200.0));
+    svc.updateOneTimeData(ratingBasedMD, new Date());
+    // get value for rating one
+    UserInput<String, Object> input = new UserInput<String, Object>();
+    input.add("RATING", Rating.ONE);
+    double price = svc.getOneTimeData(input).getPrice();
+    if (logger.isDebugEnabled())
+      logger.debug("Updated price = {}", price);
+    assert (200.0 - price < 0.1);
   }
 
-  private OneTimeMetadata createOneTimeMetadata() {
-    Map<Rating, OneTimeData> map = this.createOneTimeDataMap();
-    OneTimeMetadata metadata = new RatingBasedOneTimeMetadata(map);
-    return metadata;
+  @Test
+  public void testUnsetSubscriptionData() {
+    BaseService svc = ServiceTestHelper.createBasicService();
+    ServiceMetadata metadata = ServiceTestHelper.createRatingBasedSubscriptionData();
+    svc.setSubscriptionServiceData(metadata);
+    assertEquals(true, svc.canSubscribe());
+    svc.unsetSubscriptionServiceData();
+    assertEquals(false, svc.canSubscribe());
+    try {
+      svc.getSubscriptionData();
+      fail("The service must not return any value");
+    } catch (Exception ex) {
+
+    }
   }
 
-  private Map<Rating, OneTimeData> createOneTimeDataMap() {
-    Map<Rating, OneTimeData> map = new HashMap<Rating, OneTimeData>();
-    map.put(Rating.ONE, new OneTimeData(10.0));
-    map.put(Rating.TWO, new OneTimeData(12.0));
-    map.put(Rating.THREE, new OneTimeData(14.0));
-    map.put(Rating.FOUR, new OneTimeData(16.0));
-    map.put(Rating.FIVE, new OneTimeData(18.0));
-    return map;
-  }
-
-  private AssetBasedService createBasicService() {
-    String name = "PLUMBING SERVICE";
-    String desc = "The plumbing service takes care of plumbing needs.";
-    List<AssetType> applicableTo = createSampleApplicableList();
-    List<String> amenities = createSampleAmenities();
-    return new AssetBasedService(name, desc, applicableTo, amenities);
-  }
-
-  private List<AssetType> createSampleApplicableList() {
-    List<AssetType> assets = new ArrayList<AssetType>();
-    assets.add(AssetType.APARTMENT);
-    assets.add(AssetType.FLAT);
-    assets.add(AssetType.HOUSE);
-    return assets;
-  }
-
-  private List<String> createSampleAmenities() {
-    List<String> amenities = new ArrayList<String>();
-    amenities.add("Sewage");
-    return amenities;
+  @Test
+  public void testUnsetOneTimeData() {
+    BaseService svc = ServiceTestHelper.createBasicService();
+    ServiceMetadata metadata = ServiceTestHelper.createOneTimeMetadata();
+    svc.setOneTimeServiceData(metadata);
+    assertEquals(true, svc.canRequestOneTime());
+    svc.unsetOneTimeServiceData();
+    assertEquals(false, svc.canRequestOneTime());
+    try {
+      svc.getOneTimeData();
+      fail("The service must not return any value");
+    } catch (IllegalStateException ex) {
+    }
   }
 
 }

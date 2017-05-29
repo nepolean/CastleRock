@@ -6,6 +6,7 @@ public class SubscriptionData {
   private static final long serialVersionUID = 1L;
   private int visitCount;
   private double subscriptionPrice;
+  private double discountPct;
 
   public SubscriptionData(double subscriptionPrice, int visitCount) {
     if (visitCount <= 0)
@@ -28,6 +29,18 @@ public class SubscriptionData {
 
   public void setSubscriptionPrice(double subscriptionPrice) {
     this.subscriptionPrice = subscriptionPrice;
+  }
+
+  public double getDiscount() {
+    return this.subscriptionPrice * this.discountPct / 100;
+  }
+
+  public double getDiscountPct() {
+    return discountPct;
+  }
+
+  public void setDiscountPct(double discountPct) {
+    this.discountPct = discountPct;
   }
 
   @Override

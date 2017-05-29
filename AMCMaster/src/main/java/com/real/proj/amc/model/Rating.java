@@ -14,4 +14,8 @@ public enum Rating {
     return this.rating;
   }
 
+  public static String getKey() {
+    return "RATING";
+  }
+
 }

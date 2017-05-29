@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public class User implements Serializable {
   /**
-   * 
+   * default serial id
    */
   private static final long serialVersionUID = 1L;
   @Id
@@ -19,6 +19,18 @@ public class User implements Serializable {
   String email;
   String mobileNo;
   // List<String> subscriptions;
+
+  public User(String firstName, String lastName, String email, String mobileNo) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.email = email;
+    this.mobileNo = mobileNo;
+  }
+
+  public User(String userName, String firstName, String lastName, String email, String mobileNo) {
+    this(firstName, lastName, email, mobileNo);
+    this.userName = userName;
+  }
 
   public String getUserName() {
     return this.userName;

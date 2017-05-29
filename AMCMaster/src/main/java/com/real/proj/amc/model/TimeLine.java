@@ -9,6 +9,10 @@ import java.util.TreeSet;
 
 public class TimeLine<T> implements Serializable {
 
+  /**
+   * default serial version UID
+   */
+  private static final long serialVersionUID = 1L;
   private static final int PADDING = 100;
   // TODO: Revisit this data structure; should be based on date
   private Stack<History<T>> history = new Stack<History<T>>();
@@ -88,7 +92,11 @@ public class TimeLine<T> implements Serializable {
     return "History [history=" + history + "]";
   }
 
-  static class History<T> implements Serializable {
+  static class History<T> implements Serializable, Comparable {
+    /**
+     * default serial id
+     */
+    private static final long serialVersionUID = 1L;
     T value;
     Date from;
     Date to;

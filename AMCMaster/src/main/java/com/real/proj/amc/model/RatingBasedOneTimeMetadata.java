@@ -17,6 +17,7 @@ public class RatingBasedOneTimeMetadata extends OneTimeMetadata {
   Map<Rating, OneTimeData> oneTimeData;
 
   public RatingBasedOneTimeMetadata(Map<Rating, OneTimeData> data) {
+    data = Objects.requireNonNull(data, "The data cannot be null");
     this.oneTimeData = data;
   }
 
@@ -47,6 +48,12 @@ public class RatingBasedOneTimeMetadata extends OneTimeMetadata {
     }
     OneTimeData sd = this.oneTimeData.get(rating);
     return sd;
+  }
+
+  public void updateSubscriptionMetadata(Rating rating, OneTimeData data) {
+    data = Objects.requireNonNull(data, "The data cannot be null");
+    rating = Objects.requireNonNull(rating, "The rating cannot be null");
+    this.oneTimeData.put(rating, data);
   }
 
 }

@@ -1,4 +1,6 @@
-package com.real.proj.amc.model;
+package com.real.proj.amc.model.deleted;
+
+import com.real.proj.amc.model.PackageScheme;
 
 public class PackagePriceInfo {
 

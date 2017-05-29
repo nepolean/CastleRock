@@ -17,9 +17,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import com.real.proj.amc.repository.ServiceRepository;
 
 @Document(collection = "Packages")
-public class AMCPackage extends BaseMasterEntity {
+public class AMCPackage extends BaseMasterEntity implements Product {
 
   private final static Logger logger = LoggerFactory.getLogger(AMCPackage.class);
+
+  public static final String TYPE = "PACKAGE";
 
   ServiceRepository repository;
 
@@ -37,18 +39,17 @@ public class AMCPackage extends BaseMasterEntity {
   @NotNull
   private List<ServiceInfo> serviceInfo;
 
-  private long tenure; // in terms of no. of quarters
-
-  private double discountPct;
+  private TenureBasedDiscount tenureBasedDisc;
 
   private DeliveryMethod dm;
 
-  public AMCPackage(String name, String description, Long tenure, Double discPct) {
+  private Category category;
+
+  public AMCPackage(Category category, String name, String description) {
+    this.category = category;
     this.name = name;
     this.description = description;
     this.dm = DeliveryMethod.SUBSCRIPTION;
-    this.tenure = tenure;
-    this.discountPct = discPct;
     isActive = false;
   }
 
@@ -69,18 +70,26 @@ public class AMCPackage extends BaseMasterEntity {
   }
 
   public void addServices(List<BaseService> services) {
+    if (logger.isDebugEnabled())
+      logger.info("Add services to package");
     services = Objects.requireNonNull(services, "No services data provided.");
+    StringBuilder failedToAdd = new StringBuilder();
     services.forEach(service -> {
-      this.addService(service);
+      try {
+        this.addService(service);
+      } catch (IllegalArgumentException ex) {
+        failedToAdd.append(service.getName() + ", reason:" + ex.getMessage() + "\n");
+      } catch (NullPointerException ex) {
+        logger.warn("Ignoring null service");
+      }
     });
+    failedToAdd.trimToSize();
+    if (failedToAdd.length() > 0)
+      throw new IllegalArgumentException("The following services have failed to add. \n" + failedToAdd.toString());
   }
 
   public List<ServiceInfo> getServices() {
     return serviceInfo;
-  }
-
-  public void setServices(List<ServiceInfo> services) {
-    this.serviceInfo = services;
   }
 
   public String getDescription() {
@@ -104,66 +113,69 @@ public class AMCPackage extends BaseMasterEntity {
     this.serviceInfo = serviceInfo;
   }
 
-  public long getTenure() {
-    return tenure;
-  }
-
-  public void setTenure(long tenure) {
-    this.tenure = tenure;
-  }
-
-  public double getDiscountPct() {
-    return discountPct;
-  }
-
-  public void setDiscountPct(double discountPct) {
-    this.discountPct = discountPct;
-  }
-
   public void addService(BaseService service) {
-    service = Objects.requireNonNull(service, "Null value passed for service");
-    if (!service.canSubscribe()) {
-      String msg = String.format("The service, {}, does not support subscription model ", service.getName());
-      logger.error(msg);
-      throw new IllegalArgumentException(msg);
-    }
+    if (logger.isInfoEnabled())
+      logger.info("Adding new service to the package");
+    service = validate(service);
     if (this.serviceInfo == null)
       this.serviceInfo = new ArrayList<ServiceInfo>();
     this.serviceInfo.add(new ServiceInfo(service));
   }
 
-  public PackagePriceInfo getActualPrice(UserInput<String, Object> input) {
+  private BaseService validate(BaseService service) {
+    service = Objects.requireNonNull(service, "Null value passed for service");
+    if (!service.canSubscribe()) {
+      String msg = String.format("The service, {}, does not support subscription model ", service.getName());
+      if (logger.isErrorEnabled())
+        logger.error(msg);
+      throw new IllegalArgumentException(msg);
+    }
+    if (!service.getCategory().equals(this.category)) {
+      String msg = String.format("The category does not match. Expected category {}, provided {}", this.category,
+          service.getCategory());
+      if (logger.isErrorEnabled())
+        logger.error(msg);
+      throw new IllegalArgumentException(msg);
+    }
+    return service;
+  }
+
+  public SubscriptionData getActualPrice(UserInput<String, Object> input) {
     logger.info("getActualPrice -> {}", input);
     // this is sigma of all services defined under this package.
-    List<BaseService> services = this.loadServiceData();
-    double actualPrice = getActualPriceFor(services, input);
-    double discount = actualPrice * discountPct / 100;
-    return new PackagePriceInfo(actualPrice, discount);
+    Iterable<BaseService> services = this.loadServiceData();
+    if (logger.isDebugEnabled())
+      logger.debug("Loaded service details from db");
+    return getActualPriceFor(services, input);
   }
 
-  private List<BaseService> loadServiceData() {
-    this.repository.findAll(this.getServiceInfo());
-    return null;
+  private Iterable<BaseService> loadServiceData() {
+    Iterable<BaseService> services = this.repository.findAll(this.getServiceInfo());
+    return services;
   }
 
-  private double getActualPriceFor(List<BaseService> services, UserInput<String, Object> input) {
+  private SubscriptionData getActualPriceFor(Iterable<BaseService> services, UserInput<String, Object> input) {
     // PackageScheme scheme) {
-    if (this.serviceInfo == null)
+    if (this.serviceInfo == null) {
+      if (logger.isErrorEnabled())
+        logger.error("service info is null");
       throw new IllegalStateException("The package is not built ready");
+    }
     double actualPrice = 0.0;
+    int visitCount = 0;
     for (BaseService service : services) {
-      // boolean askingForBasePrice = (input != null &&
-      // input.get(this.getClass().getName()) != null);
-      SubscriptionData sld = service.getSubscriptionData(input);
-      if (sld == null) {
+      SubscriptionData subsData = service.getSubscriptionData(input);
+      if (subsData == null) {
         if (logger.isErrorEnabled())
           logger.error("The service {} is not built ready", service.getName());
         throw new IllegalStateException("This package cannot be used at this time");
       }
-      double unitPrice = sld.getSubscriptionPrice();
-      actualPrice += unitPrice * tenure;
+      double unitPrice = subsData.getSubscriptionPrice();
+      actualPrice += unitPrice;
+      visitCount += subsData.getVisitCount();
     }
-    return actualPrice;
+
+    return new SubscriptionData(actualPrice, visitCount);
   }
 
   /*
@@ -219,6 +231,49 @@ public class AMCPackage extends BaseMasterEntity {
       this.description = description;
     }
 
+  }
+
+  @Override
+  public String getType() {
+    return TYPE;
+  }
+
+  @Override
+  public boolean canSubscribe() {
+    return true;
+  }
+
+  @Override
+  public boolean canRequestOneTime() {
+    return false;
+  }
+
+  @Override
+  public SubscriptionData getSubscriptionData() {
+    return this.getSubscriptionData(null);
+  }
+
+  @Override
+  public OneTimeData getOneTimeData() {
+    return null;
+  }
+
+  @Override
+  public SubscriptionData getSubscriptionData(UserInput<String, Object> input) {
+    return this.getActualPrice(input);
+  }
+
+  @Override
+  public OneTimeData getOneTimeData(UserInput<String, Object> input) {
+    return null;
+  }
+
+  public TenureBasedDiscount getTenureBasedDisc() {
+    return tenureBasedDisc;
+  }
+
+  public void setTenureBasedDisc(TenureBasedDiscount tenureBasedDisc) {
+    this.tenureBasedDisc = tenureBasedDisc;
   }
 
 }
