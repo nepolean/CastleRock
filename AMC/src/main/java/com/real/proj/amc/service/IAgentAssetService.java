@@ -14,7 +14,7 @@ public interface IAgentAssetService {
 
   public Asset createAsset(Asset asset, Asset parent, User owner);
 
-  public void addAmenityDetailsToAsset(AmenityDetails details);
+  // public void addAmenityDetailsToAsset(AmenityDetails details);
 
   public AMCPackage suggestAPackage(AssetType assetType, List<Amenity> amenities);
 

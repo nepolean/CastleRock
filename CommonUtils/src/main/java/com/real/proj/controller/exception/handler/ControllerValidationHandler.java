@@ -1,7 +1,7 @@
 package com.real.proj.controller.exception.handler;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -24,7 +24,7 @@ import com.real.proj.controller.exception.handler.SimpleError.Category;
 public class ControllerValidationHandler {
 
   private MessageSource msgSource;
-  private Logger logger = LogManager.getLogger(ControllerValidationHandler.class);
+  private Logger logger = LoggerFactory.getLogger(ControllerValidationHandler.class);
 
   @Autowired
   public ControllerValidationHandler(MessageSource msgSource) {
@@ -71,7 +71,7 @@ public class ControllerValidationHandler {
   @ResponseBody
   public SimpleError handleEntityNotFound(EntityNotFoundException ex) {
     print(ex);
-    return new SimpleError(HttpStatus.NOT_FOUND.value(), ex.toString(), Category.SYSTEM);
+    return new SimpleError(HttpStatus.NOT_FOUND.value(), ex.getMessage(), Category.USER);
   }
 
   @ExceptionHandler({ com.real.proj.controller.exception.DBException.class })
@@ -87,7 +87,23 @@ public class ControllerValidationHandler {
   @ResponseBody
   public SimpleError handleIllegalState(IllegalStateException ex) {
     print(ex);
-    return new SimpleError(HttpStatus.PRECONDITION_FAILED.value(), ex.toString(), Category.SYSTEM);
+    return new SimpleError(HttpStatus.PRECONDITION_FAILED.value(), ex.getMessage(), Category.SYSTEM);
+  }
+
+  @ExceptionHandler({ java.lang.IllegalArgumentException.class })
+  @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+  @ResponseBody
+  public SimpleError handleIllegalArgument(IllegalArgumentException ex) {
+    print(ex);
+    return new SimpleError(HttpStatus.UNPROCESSABLE_ENTITY.value(), ex.getMessage(), Category.USER);
+  }
+
+  @ExceptionHandler({ java.lang.NullPointerException.class })
+  @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+  @ResponseBody
+  public SimpleError handleIllegalState(NullPointerException ex) {
+    print(ex);
+    return new SimpleError(HttpStatus.UNPROCESSABLE_ENTITY.value(), ex.getMessage(), Category.USER);
   }
 
   @ExceptionHandler({ java.lang.RuntimeException.class })

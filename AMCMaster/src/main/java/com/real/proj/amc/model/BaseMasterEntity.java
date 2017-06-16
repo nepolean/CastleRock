@@ -20,11 +20,13 @@ public abstract class BaseMasterEntity {
   protected String modifiedBy;
   protected boolean markForDeletion;
   protected boolean isActive;
+  protected boolean isDeleted;
 
   protected BaseMasterEntity() {
     this.createdBy = getLoggedInUser();
     this.createdOn = new Date();
     this.isActive = false;
+    isDeleted = false;
   }
 
   public Date getCreatedOn() {

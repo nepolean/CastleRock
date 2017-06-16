@@ -15,15 +15,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.real.proj.amc.model.AMCPackage;
 import com.real.proj.amc.model.AssetType;
+import com.real.proj.amc.model.Category;
 import com.real.proj.amc.model.PackageScheme;
-import com.real.proj.amc.model.PriceData;
 import com.real.proj.amc.model.Rating;
 import com.real.proj.amc.model.deleted.FixedPricingScheme;
-import com.real.proj.amc.model.deleted.RatingBasedPricingScheme;
-import com.real.proj.amc.model.deleted.SubscriptionService;
 import com.real.proj.amc.model.deleted.FixedPricingScheme.FixedPrice;
+import com.real.proj.amc.model.deleted.PriceData;
+import com.real.proj.amc.model.deleted.RatingBasedPricingScheme;
 import com.real.proj.amc.model.deleted.RatingBasedPricingScheme.RatingBasedPrice;
-import com.real.proj.amc.model.ServiceData;
+import com.real.proj.amc.model.deleted.ServiceData;
+import com.real.proj.amc.model.deleted.SubscriptionService;
 
 @RestController
 public class MetadataController {
@@ -61,7 +62,7 @@ public class MetadataController {
     for (Rating rating : ratings) {
       prices.put(rating, 0.0);
     }
-    schemes.put(RatingBasedPricingScheme.NAME, new RatingBasedPrice(prices));
+    schemes.put(RatingBasedPricingScheme.NAME, new RatingBasedPrice());
     return new ResponseEntity<Map<String, PriceData>>(schemes, HttpStatus.OK);
   }
 
@@ -72,7 +73,7 @@ public class MetadataController {
 
   @RequestMapping(path = "/meta/service/subsription/schemes/data", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ServiceData> getSLAData() {
-    ServiceData sld = new ServiceData(PackageScheme.PLATINUM, (int) 10);
+    ServiceData sld = new ServiceData();
     return new ResponseEntity<ServiceData>((ServiceData) sld, HttpStatus.OK);
   }
 
@@ -80,8 +81,7 @@ public class MetadataController {
   public ResponseEntity<AMCPackage> getPackage() {
     List<SubscriptionService> services = new ArrayList<SubscriptionService>();
     services.add(this.createSubscriptionService());
-    AMCPackage pkg = new AMCPackage("New Package", "This is new package", Long.valueOf(12), Double.valueOf(10.0),
-        services);
+    AMCPackage pkg = new AMCPackage(Category.ASSET, "New Package", "This is new package");
     pkg.setId("1000000000000001");
     return new ResponseEntity<AMCPackage>(pkg, HttpStatus.OK);
   }

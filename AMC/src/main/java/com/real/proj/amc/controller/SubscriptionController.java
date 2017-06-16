@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.real.proj.amc.model.Rating;
 import com.real.proj.amc.service.SubscriptionService;
 
 @RestController
@@ -30,16 +29,16 @@ public class SubscriptionController {
 
   @RequestMapping(path = "/subscription/rate", method = RequestMethod.POST)
   public void rate() {
-    service.rate("5899dec21c4c8f7e1e797ba2", Rating.ONE);
+    // service.rate("5899dec21c4c8f7e1e797ba2", Rating.ONE);
   }
 
   @RequestMapping(path = "/subscription/pay", method = RequestMethod.POST)
   public void pay() {
-    service.pay();
+    // service.pay();
   }
 
   @RequestMapping(path = "/subscription/subscribe", method = RequestMethod.POST)
   public void subscribe() {
-    service.subscribe();
+    // service.subscribe();
   }
 }

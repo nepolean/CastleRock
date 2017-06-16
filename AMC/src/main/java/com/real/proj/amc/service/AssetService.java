@@ -5,8 +5,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.real.proj.amc.model.AMCPackage;
+import com.real.proj.amc.model.Amenity;
 import com.real.proj.amc.model.Apartment;
 import com.real.proj.amc.model.Asset;
+import com.real.proj.amc.model.AssetType;
+import com.real.proj.amc.model.PackageScheme;
+import com.real.proj.amc.model.Subscription;
 import com.real.proj.amc.model.UOM;
 import com.real.proj.controller.exception.EntityNotFoundException;
 import com.real.proj.user.model.User;
@@ -39,19 +44,16 @@ public class AssetService implements IAgentAssetService {
     return this.assetRepository.findByAssetOwner(owner);
   }
 
-  @Override
   public Asset onBoardAsset(Asset asset) {
     // TODO Auto-generated method stub
     return null;
   }
 
-  @Override
   public Asset addPackage(Asset asset, Package service) {
     // TODO Auto-generated method stub
     return null;
   }
 
-  @Override
   public Asset[] getAssetsIOnboarded() {
     // TODO Auto-generated method stub
     return null;
@@ -68,5 +70,29 @@ public class AssetService implements IAgentAssetService {
     if (asset == null)
       throw new EntityNotFoundException();
     return asset;
+  }
+
+  @Override
+  public Asset createAsset(Asset asset, Asset parent, User owner) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public AMCPackage suggestAPackage(AssetType assetType, List<Amenity> amenities) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public Subscription subscribe(String assetId, AMCPackage pkg, PackageScheme scheme) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public Asset[] getAssetsIOnBoarded() {
+    // TODO Auto-generated method stub
+    return null;
   }
 }

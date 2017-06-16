@@ -8,7 +8,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.real.proj.amc.model.PriceData;
 import com.real.proj.amc.model.Rating;
 import com.real.proj.amc.model.TimeLine;
 import com.real.proj.amc.model.UserInput;

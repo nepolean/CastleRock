@@ -1,7 +1,6 @@
 package com.real.proj.amc;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -10,6 +9,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
+import com.real.proj.amc.model.AMCPackage;
+import com.real.proj.amc.model.Asset;
+import com.real.proj.amc.repository.PackageRepository;
+import com.real.proj.amc.service.AssetRepository;
+import com.real.proj.amc.unit.test.ServiceTestHelper;
 import com.real.proj.user.model.User;
 import com.real.proj.user.service.UserRepository;
 
@@ -17,18 +21,36 @@ import com.real.proj.user.service.UserRepository;
 @ComponentScan(basePackages = { "com.real.proj.controller.exception", "com.real.proj.controller.exception.handler",
     "com.real.proj.amc.controller", "com.real.proj.amc.service", "com.real.proj.amc.repository",
     "com.real.proj.user.model",
-    "com.real.proj.user.service" })
-@EnableMongoRepositories({ "com.real.proj.user.service", "com.real.proj.amc.service", "com.real.proj.amc.repository" })
+    "com.real.proj.user.model.workflow",
+    "com.real.proj.user.service",
+    "com.real.proj.amc.model.quote",
+    "com.real.proj.util" })
+@EnableMongoRepositories({ "com.real.proj.user.service", "com.real.proj.amc.service", "com.real.proj.amc.repository",
+    "com.real.proj.amc.model.quote" })
 @EnableAutoConfiguration
 public class AMCServiceApp implements CommandLineRunner {
 
-  private static final Logger logger = LogManager.getLogger(AMCServiceApp.class);
+  private static final org.slf4j.Logger logger = LoggerFactory.getLogger(AMCServiceApp.class);
 
   private UserRepository userRepository;
+
+  private AssetRepository assetRepository;
+
+  private PackageRepository packageRepository;
 
   @Autowired
   public void setUserRepository(UserRepository userRepository) {
     this.userRepository = userRepository;
+  }
+
+  @Autowired
+  public void setQuotationRepository(AssetRepository quoteRepository) {
+    this.assetRepository = quoteRepository;
+  }
+
+  @Autowired
+  public void setPackageRepository(PackageRepository packageRepository) {
+    this.packageRepository = packageRepository;
   }
 
   public AMCServiceApp() {
@@ -44,12 +66,32 @@ public class AMCServiceApp implements CommandLineRunner {
 
   public void run(String... args) throws Exception {
     createFewUsers();
+    createAsset();
+    createPackage();
+  }
+
+  private void createPackage() {
+    AMCPackage pkg = ServiceTestHelper.createFullPackage();
+    this.packageRepository.save(pkg);
+  }
+
+  private void createAsset() {
+    System.setProperty("ENVIRONMENT", "TEST");
+    User user = userRepository.findByUserName("user1");
+    if (user == null)
+      throw new NullPointerException();
+    Asset newAsset = new Asset(user, user);
+    newAsset = this.assetRepository.save(newAsset);
+    String id = newAsset.getId();
+    logger.info("{}", id);
+    newAsset = null;
+    Asset newQuote = this.assetRepository.findOne(id);
   }
 
   private void createFewUsers() {
     User user = userRepository.findByEmail("user");
     if (null == user) {
-      User dummyUser = new User();
+      User dummyUser = new User("Dummy", "User", "dummy@email.com", "999999");
       dummyUser.setFirstName("Dummy");
       dummyUser.setLastName("Dummy");
       dummyUser.setEmail("user");
@@ -60,7 +102,7 @@ public class AMCServiceApp implements CommandLineRunner {
     }
     user = userRepository.findByEmail("user1");
     if (null == user) {
-      User dummyUser = new User();
+      User dummyUser = new User("Dummy", "User", "dummy@email.com", "999999");
       dummyUser.setFirstName("Dummy");
       dummyUser.setLastName("Dummy");
       dummyUser.setEmail("user1");

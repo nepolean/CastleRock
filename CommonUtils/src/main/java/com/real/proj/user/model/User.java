@@ -20,6 +20,10 @@ public class User implements Serializable {
   String mobileNo;
   // List<String> subscriptions;
 
+  public User() {
+
+  }
+
   public User(String firstName, String lastName, String email, String mobileNo) {
     this.firstName = firstName;
     this.lastName = lastName;

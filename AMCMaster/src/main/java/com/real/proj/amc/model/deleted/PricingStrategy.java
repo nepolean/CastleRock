@@ -2,7 +2,6 @@ package com.real.proj.amc.model.deleted;
 
 import java.util.Date;
 
-import com.real.proj.amc.model.PriceData;
 import com.real.proj.amc.model.UserInput;
 
 public abstract class PricingStrategy {

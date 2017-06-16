@@ -1,102 +1,45 @@
-package com.real.proj.amc.model;
+package com.real.proj.amc.model.quote;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.statefulj.fsm.RetryException;
-import org.statefulj.fsm.model.Action;
-import org.statefulj.fsm.model.State;
-import org.statefulj.fsm.model.impl.StateImpl;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.statemachine.annotation.WithStateMachine;
+import org.springframework.stereotype.Component;
 
+import com.real.proj.amc.model.AMCPackage;
+import com.real.proj.amc.model.Asset;
+import com.real.proj.amc.model.Coupon;
+import com.real.proj.amc.model.EventHistory;
+import com.real.proj.amc.model.Location;
+import com.real.proj.amc.model.Product;
+import com.real.proj.amc.model.SubscriptionData;
+import com.real.proj.amc.model.Tax;
+import com.real.proj.amc.model.TenureBasedDiscount;
+import com.real.proj.amc.model.UserData;
+import com.real.proj.amc.model.UserInput;
 import com.real.proj.user.model.User;
 
+@Document(collection = "Quotations")
+@WithStateMachine
+@Component
 public class Quotation {
-
-  static class QuotationAction implements Action<Quotation> {
-    @Override
-    public void execute(Quotation paramT, String paramString, Object... paramArrayOfObject) throws RetryException {
-      // logger.info("Action on quote for {}",
-      // paramT.createdFor.getFirstName());
-      logger.info("Event name {}", paramString);
-      // throw new RuntimeException("I cannot perform action");
-      // logger.info("Parameters {}", paramArrayOfObject);
-    }
-
-  }
 
   private static Logger logger = LoggerFactory.getLogger(Quotation.class);
 
-  /* States related to FSM */
-
-  public static enum States {
-    // @formatter:off
-    INIT (new StateImpl<Quotation>("INIT")),
-    QUOTE_GENERATED (new StateImpl<Quotation>("QUOTE_GENERATED")),
-    QUOTE_ACCEPTED (new StateImpl<Quotation>("QUOTE_ACCEPTED")),
-    QUOTE_REGENERATED (new StateImpl<Quotation>("QUOTE_REGENERATED")), 
-    QUOTE_APPROVED (new StateImpl<Quotation>("QUOTE_APPROVED")), 
-    PAYMENT_RECEIVED (new StateImpl<Quotation>("PAYMENT_RECVD", false)),
-    END (new StateImpl<Quotation>("END", true));
-    // @formatter:on
-
-    State<Quotation> myState;
-
-    States(State<Quotation> state) {
-      this.myState = state;
-    }
-
-    public State<Quotation> get() {
-      return this.myState;
-    }
-
-    public String toString() {
-      return get().getName();
-    }
-
-  }
-  /* Events related to FSM */
-
-  public static enum Event {
-    //@formatter:off
-    GENERATE_QUOTE("GENERATE_QUOTE"), 
-    ACCEPT_QUOTE("ACCEPT_QUOTE"), 
-    REGENERATE_QUOTE("REGENERATE_QUOTE"), 
-    APPROVE_QUOTE("APPROVE_QUOTE"), 
-    PAYMENT_RECEIVED("PAYMENT_RECEIVED"), 
-    END("END");
-    //@formatter:on
-
-    private String value;
-
-    Event(String value) {
-      this.value = value;
-    }
-
-  }
-
-  /* Transitions */
-
-  // @formatter:off
-  static {
-    States.INIT.get().addTransition(Event.GENERATE_QUOTE.name(), States.QUOTE_GENERATED.get(), new QuotationAction());
-    States.QUOTE_GENERATED.get().addTransition(Event.ACCEPT_QUOTE.name(), States.QUOTE_ACCEPTED.get(), new QuotationAction());
-    States.QUOTE_ACCEPTED.get().addTransition(Event.REGENERATE_QUOTE.name(), States.QUOTE_REGENERATED.get(), new QuotationAction());
-    States.QUOTE_REGENERATED.get().addTransition(Event.ACCEPT_QUOTE.name(), States.QUOTE_APPROVED.get(), new QuotationAction());
-    States.QUOTE_ACCEPTED.get().addTransition(Event.APPROVE_QUOTE.name(), States.QUOTE_APPROVED.get(), new QuotationAction());
-    States.QUOTE_APPROVED.get().addTransition(Event.PAYMENT_RECEIVED.name(), States.PAYMENT_RECEIVED.get(), new QuotationAction());
-    States.PAYMENT_RECEIVED.get().addTransition(Event.END.name(), States.END.get());
-  }
-  // @formatter:on
-
   /* This variable maintains the current state of the workflow */
-  private String state;
+
+  @Id
+  String id;
 
   double amount;
 
@@ -128,20 +71,26 @@ public class Quotation {
 
   private Set<DiscountAmount> discounts = new LinkedHashSet<DiscountAmount>(10);
 
-  private Set<Event> history = new HashSet<Event>();
+  private List<EventHistory> history = new LinkedList<EventHistory>();
 
   private List<String> comments;
 
-  private boolean isAgent;
+  private boolean createdByAgent;
 
   private Set<ServiceAmount> serviceCosts = new LinkedHashSet<ServiceAmount>(10);
+
+  private QStates currentState;
+
+  Quotation() {
+
+  }
 
   public Quotation(User createdFor, User createdBy, Location location) {
     this.createdFor = createdFor;
     this.createdBy = createdBy;
     this.location = location;
     isNewUser = Objects.isNull(createdFor.getUserName());
-    isAgent = createdBy.equals(createdFor);
+    createdByAgent = !Objects.equals(createdFor, createdBy);
   }
 
   public Quotation(Asset asset, User agent) {
@@ -149,18 +98,24 @@ public class Quotation {
     this.createdBy = agent;
     this.location = asset.getLocation();
     isNewUser = false;
-    isAgent = Objects.isNull(agent);
+    createdByAgent = Objects.isNull(agent);
   }
 
   public Quotation(Quotation otherQuote) {
-
     this.createdFor = otherQuote.createdFor;
     this.createdBy = otherQuote.createdBy;
     this.location = otherQuote.location;
     this.data = otherQuote.data;
     this.applicableTaxes = otherQuote.applicableTaxes;
     this.applicableCoupons = otherQuote.applicableCoupons;
+  }
 
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
   }
 
   public void addProducts(Set<Product> products) {
@@ -227,9 +182,9 @@ public class Quotation {
       logger.debug("Total netamt = {}", this.netAmount);
     }
     this.createdOn = new Date();
-    // valid for 30 days
-    long duration = 30 * 24 * 60 * 60 * 100;
-    this.validUpto = new Date(this.createdOn.getTime() + duration);
+    Calendar today = Calendar.getInstance();
+    today.add(Calendar.DAY_OF_MONTH, 30);
+    this.validUpto = today.getTime();
     logger.info("New quote generated. It will expire on {}", SimpleDateFormat.getDateInstance().format(validUpto));
   }
 
@@ -246,6 +201,7 @@ public class Quotation {
   private void applyCoupons() {
     if (Objects.nonNull(applicableCoupons))
       for (Coupon cpn : applicableCoupons) {
+        // TODO redesign coupons
         // cpn.applyDiscount(pkgs, totalAmount)
       }
 
@@ -370,11 +326,6 @@ public class Quotation {
 
   @Override
   public String toString() {
-    // return "Quotation [totalAmount=" + amount + ", taxAmount=" + taxAmount
-    // +
-    // ", discount=" + discount
-    // + ", netAmount=" + netAmount + "]";
-
     StringBuilder template = new StringBuilder();
     template.append("\nDear " + this.createdFor.getFirstName() + ",\n");
     template.append(
@@ -454,8 +405,17 @@ public class Quotation {
     return this.data;
   }
 
-  public String getState() {
-    return this.state;
+  public List<EventHistory> getHistory() {
+    if (this.history == null)
+      this.history = new LinkedList<EventHistory>();
+    return history;
   }
 
+  public void setState(QStates currentState) {
+    this.currentState = currentState;
+  }
+
+  public QStates getState() {
+    return this.currentState;
+  }
 }

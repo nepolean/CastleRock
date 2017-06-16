@@ -1,6 +1,7 @@
 package com.real.proj.amc.model;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.data.annotation.Id;
@@ -76,6 +77,11 @@ public class Asset extends BaseMasterEntity implements java.io.Serializable {
 
   public void setAmenities(Set<Amenity> amenities) {
     this.amenities = amenities;
+  }
+
+  public void setServices(List<AssetBasedService> services) {
+    // TODO Auto-generated method stub
+
   }
 
   /*********************** BUISINESS LOGIC *************************/

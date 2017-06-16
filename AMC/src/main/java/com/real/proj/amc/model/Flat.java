@@ -7,11 +7,12 @@ public class Flat extends Asset {
 
   private static Flat flat = null;
   Details details;
+  private List<AssetBasedService> services;
 
   private Flat() {
     type = AssetType.FLAT;
     services = new ArrayList<AssetBasedService>();
-    services.add(new ElectricalService());
+    // services.add(new ElectricalService());
     details = new Details();
   }
 

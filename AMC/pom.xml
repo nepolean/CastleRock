@@ -46,13 +46,9 @@
     <dependency>
       <groupId>org.springframework.statemachine</groupId>
       <artifactId>spring-statemachine-boot</artifactId>
-      <version>1.2.1.RELEASE</version>
+      <version>1.2.5.RELEASE</version>
     </dependency>
-    <dependency>
-      <groupId>org.statefulj</groupId>
-      <artifactId>statefulj-fsm</artifactId>
-      <version>3.0</version>
-    </dependency>
+    
     <dependency>
       <groupId>RealService</groupId>
       <artifactId>CommonUtils</artifactId>

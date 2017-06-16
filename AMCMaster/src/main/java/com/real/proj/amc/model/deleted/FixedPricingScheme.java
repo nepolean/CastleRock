@@ -6,7 +6,6 @@ import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.real.proj.amc.model.PriceData;
 import com.real.proj.amc.model.TimeLine;
 import com.real.proj.amc.model.UserInput;
 
@@ -96,6 +95,10 @@ public class FixedPricingScheme extends PricingStrategy implements Serializable 
 
     public FixedPrice(ServiceData price) {
       this.price = price;
+    }
+
+    public FixedPrice(double d) {
+      // TODO Auto-generated constructor stub
     }
 
     public ServiceData getPrice() {

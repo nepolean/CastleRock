@@ -12,12 +12,11 @@ import org.springframework.stereotype.Service;
 
 import com.real.proj.amc.model.AMCPackage;
 import com.real.proj.amc.model.Coupon;
-import com.real.proj.amc.model.Events;
 import com.real.proj.amc.model.Rating;
-import com.real.proj.amc.model.ServiceData;
-import com.real.proj.amc.model.States;
 import com.real.proj.amc.model.Subscription;
 import com.real.proj.amc.model.Tax;
+import com.real.proj.amc.model.quote.QEvents;
+import com.real.proj.amc.model.quote.QStates;
 import com.real.proj.controller.exception.EntityNotFoundException;
 import com.real.proj.user.service.UserService;
 
@@ -26,8 +25,7 @@ public class SubscriptionService {
 
   Logger logger = LoggerFactory.getLogger(SubscriptionService.class);
 
-  @Autowired
-  StateMachine<States, Events> stateMachine;
+  StateMachine<QStates, QEvents> stateMachine;
   private GenericFCRUDService crudService;
 
   @Autowired
@@ -77,7 +75,7 @@ public class SubscriptionService {
     }
     logger.debug("Subscribing with the new packages");
     Subscription sb = getSubscription(subscriptionId);
-    sb.subscribe(pkgs);
+    // sb.subscribe(pkgs);
     this.subsRepo.save(sb);
   }
 
@@ -94,12 +92,12 @@ public class SubscriptionService {
   public void rateServices(String subscriptionId, String serviceName, Rating rating) {
     logger.debug("Rate a service {} with {} for subscription {}", serviceName, rating, subscriptionId);
     Subscription sb = getSubscription(subscriptionId);
-    boolean allRated = sb.rateAService(serviceName, rating);
-    logger.debug("Are all the services are rated? {}", allRated);
-    if (allRated)
-      generateQuotation(sb);
-    else
-      subsRepo.save(sb);
+    // boolean allRated = sb.rateAService(serviceName, rating);
+    // logger.debug("Are all the services are rated? {}", allRated);
+    // if (allRated)
+    // generateQuotation(sb);
+    // else
+    subsRepo.save(sb);
   }
 
   /**
@@ -114,11 +112,7 @@ public class SubscriptionService {
     if (ratings == null || ratings.size() == 0)
       throw new RuntimeException("User rating not provided.");
     Subscription sb = getSubscription(subscriptionId);
-    boolean allRated = sb.rateAllServices(ratings);
-    if (allRated)
-      generateQuotation(sb);
-    else
-      subsRepo.save(sb);
+
   }
 
   /**
@@ -162,7 +156,7 @@ public class SubscriptionService {
     logger.debug("Renew the subscription {} ", subscriptionId);
     Subscription sb = getSubscription(subscriptionId);
     List<Tax> taxes = this.getTax();
-    sb.renew(pkgs, taxes, coupons);
+    // sb.renew(pkgs, taxes, coupons);
     this.subsRepo.save(sb);
   }
 
@@ -176,7 +170,7 @@ public class SubscriptionService {
   private void generateQuotation(Subscription sb) {
     logger.debug("Generate a new quotation for the subscription {} " + sb.getId());
     List<Tax> taxes = getTax();
-    sb.raiseQuote(taxes);
+    // sb.raiseQuote(taxes);
     this.subsRepo.save(sb);
     logger.debug("Successfully created a new quotation");
     notify(sb);
@@ -196,7 +190,7 @@ public class SubscriptionService {
 
   public String getStatus(String subscriptionId) {
     Subscription sb = getSubscription(subscriptionId);
-    return sb.getState().name();
+    return sb.getState();
   }
 
   public Subscription get(String subscriptionId) {

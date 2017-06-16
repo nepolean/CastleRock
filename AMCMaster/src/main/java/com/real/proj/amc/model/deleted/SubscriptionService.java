@@ -12,7 +12,7 @@ public class SubscriptionService extends AssetBasedService {
 
   public SubscriptionService(String category, String name, String description, List<AssetType> applicableTo,
       List<String> amenities) {
-    super(category, name, description, applicableTo, amenities);
+    super(name, description, applicableTo, amenities);
     // sla = new HashMap<PackageScheme, ServiceLevelData>();
   }
 

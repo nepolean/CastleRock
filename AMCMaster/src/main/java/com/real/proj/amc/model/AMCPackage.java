@@ -1,6 +1,7 @@
 // There is a major change introduced today (30-APR-2017). Basically, got rid of PackageScheme.
 package com.real.proj.amc.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -12,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.real.proj.amc.repository.ServiceRepository;
@@ -19,10 +21,12 @@ import com.real.proj.amc.repository.ServiceRepository;
 @Document(collection = "Packages")
 public class AMCPackage extends BaseMasterEntity implements Product {
 
+  @Transient
   private final static Logger logger = LoggerFactory.getLogger(AMCPackage.class);
 
   public static final String TYPE = "PACKAGE";
 
+  @Transient
   ServiceRepository repository;
 
   @Autowired
@@ -196,10 +200,19 @@ public class AMCPackage extends BaseMasterEntity implements Product {
    * null); }
    */
 
-  static class ServiceInfo {
+  public class ServiceInfo implements Serializable {
+
+    /**
+     * Default serial uid
+     */
+    private static final long serialVersionUID = 1L;
     private String serviceId;
     private String name;
     private String description;
+
+    public ServiceInfo() {
+
+    }
 
     public ServiceInfo(BaseService service) {
       this.serviceId = service.getId();

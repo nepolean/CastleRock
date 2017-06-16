@@ -92,7 +92,7 @@ public class TimeLine<T> implements Serializable {
     return "History [history=" + history + "]";
   }
 
-  static class History<T> implements Serializable, Comparable {
+  static class History<T> implements Serializable {
     /**
      * default serial id
      */
