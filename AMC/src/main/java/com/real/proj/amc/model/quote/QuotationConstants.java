@@ -12,5 +12,9 @@ public class QuotationConstants {
 
   public static final String QUOTE_ID_KEY = "QUOTE_ID_KEY";
 
-  public static final String USER_DATA = "USER_DATA";
+  public static final String QUOTATION_OBJ_KEY = "QUOTATION_OBJ_KEY";
+  public static final String USER_DATA_KEY = "USER_DATA_KEY";
+  public static final String USER_ACCEPTANCE_KEY = "USER_ACCEPTANCE_KEY";
+  public static final String USER_COMMENTS_KEY = "USER_COMMENTS_KEY";
+
 }

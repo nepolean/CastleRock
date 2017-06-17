@@ -76,6 +76,11 @@ public class User implements Serializable {
     this.mobileNo = mobileNo;
   }
 
+  public String getRole() {
+    // TODO Need to implement this for fool proof.
+    return "AGENT";
+  }
+
   /*
    * public void addSubscription(String forumId) {
    * this.getSubscriptions().add(forumId); }

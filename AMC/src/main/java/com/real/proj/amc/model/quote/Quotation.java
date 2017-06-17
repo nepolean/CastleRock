@@ -3,6 +3,7 @@ package com.real.proj.amc.model.quote;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -63,7 +64,7 @@ public class Quotation {
 
   private UserData data;
 
-  private Set<Tax> applicableTaxes;
+  private List<Tax> applicableTaxes;
 
   private Set<Coupon> applicableCoupons;
 
@@ -80,6 +81,14 @@ public class Quotation {
   private Set<ServiceAmount> serviceCosts = new LinkedHashSet<ServiceAmount>(10);
 
   private QStates currentState;
+
+  private Set<Product> selectedItems;
+
+  private boolean userAccepted;
+
+  private boolean userRejected;
+
+  private boolean quoteApproved;
 
   Quotation() {
 
@@ -143,10 +152,6 @@ public class Quotation {
     getSelectedItems().add(product);
   }
 
-  public Set<Product> getSelectedItems() {
-    return data.getSelectedItems();
-  }
-
   public void setUserData(UserData data) {
     boolean firstTime = Objects.isNull(this.data);
     this.data = Objects.requireNonNull(data, "User data cannot be null");
@@ -158,7 +163,7 @@ public class Quotation {
     this.setUserData(data);
   }
 
-  public void setApplicableTaxes(Set<Tax> applicableTaxes) {
+  public void setApplicableTaxes(List<Tax> applicableTaxes) {
     this.applicableTaxes = applicableTaxes;
   }
 
@@ -226,7 +231,7 @@ public class Quotation {
   private void calculateTotalPrice(UserInput<String, Object> input) {
     double totalAmount = 0.0;
     double totalDiscount = 0.0;
-    for (Product product : data.getSelectedItems()) {
+    for (Product product : getSelectedItems()) {
       SubscriptionData subsData = product.getSubscriptionData(input);
       if (logger.isDebugEnabled())
         logger.debug("Product {}, subscription data {} ", product.getName(), subsData);
@@ -321,7 +326,12 @@ public class Quotation {
   }
 
   public boolean hasExpired() {
-    return Objects.isNull(this.validUpto) ? false : System.currentTimeMillis() > this.validUpto.getTime();
+    logger.info("Now {}", Calendar.getInstance().getTime());
+    logger.info("Valid {}", this.validUpto);
+    logger.info("Compare {}", Calendar.getInstance().getTime().after(this.validUpto));
+    logger.info("Quotation expired? {}",
+        (Objects.isNull(this.validUpto) ? false : System.currentTimeMillis() > this.validUpto.getTime()));
+    return Objects.isNull(this.validUpto) ? false : Calendar.getInstance().getTime().after(this.validUpto);
   }
 
   @Override
@@ -350,10 +360,14 @@ public class Quotation {
     return template.toString();
   }
 
-  public class ServiceAmount {
+  public static class ServiceAmount {
 
     private String name;
     private double serviceCost;
+
+    public ServiceAmount() {
+
+    }
 
     public ServiceAmount(String name, double serviceCost) {
       this.name = name;
@@ -372,6 +386,10 @@ public class Quotation {
     private String name;
     private double discount;
 
+    public DiscountAmount() {
+
+    }
+
     public DiscountAmount(String name, double discount) {
       this.name = name;
       this.discount = discount;
@@ -389,6 +407,10 @@ public class Quotation {
     private String type;
     private double tax;
 
+    public TaxAmount() {
+
+    }
+
     public TaxAmount(String type, double taxAmt) {
       this.type = type;
       this.tax = taxAmt;
@@ -399,6 +421,15 @@ public class Quotation {
       return "@" + type + " = +" + tax + "";
     }
 
+  }
+
+  public Set<Product> getSelectedItems() {
+    selectedItems = (Objects.isNull(selectedItems) ? new HashSet<Product>() : selectedItems);
+    return selectedItems;
+  }
+
+  public void setSelectedItems(Set<Product> selectedItems) {
+    this.selectedItems = Objects.requireNonNull(selectedItems, "Choose at least one service");
   }
 
   public UserData getUserData() {
@@ -417,5 +448,21 @@ public class Quotation {
 
   public QStates getState() {
     return this.currentState;
+  }
+
+  public void userAccepted() {
+    this.userAccepted = true;
+  }
+
+  public void userRejected() {
+    this.userRejected = true;
+  }
+
+  public void approveQuote() {
+    this.quoteApproved = true;
+  }
+
+  public boolean hasBeenApproved() {
+    return this.quoteApproved;
   }
 }

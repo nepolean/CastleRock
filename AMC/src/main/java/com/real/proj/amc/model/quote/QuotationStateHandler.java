@@ -92,8 +92,10 @@ public class QuotationStateHandler extends LifecycleObjectSupport {
       logger.debug("sm has been reset to appropriate state");
     boolean b = false;
     b = this.sm.sendEvent(message);
-    if (!b)
-      logger.warn("state transition not occured");
+    if (!b) {
+      logger.warn("Action {} not valid for  {} at this time", message.getPayload(), source);
+      throw new IllegalArgumentException("This action not allowed on this object at this time.");
+    }
     if (this.sm.hasStateMachineError()) {
       logger.error("the user action has resulted in an error");
       throw exception.get(0);

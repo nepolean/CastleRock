@@ -16,6 +16,10 @@ public class RatingBasedSubscriptionMetadata extends SubscriptionMetadata {
   /* holds pricing & other service specific details */
   Map<Rating, SubscriptionData> subscriptionData;
 
+  RatingBasedSubscriptionMetadata() {
+
+  }
+
   public RatingBasedSubscriptionMetadata(Map<Rating, SubscriptionData> data) {
     data = Objects.requireNonNull(data, "SubscriptionData cannot be null");
     this.subscriptionData = data;

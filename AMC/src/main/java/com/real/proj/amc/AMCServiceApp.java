@@ -1,5 +1,7 @@
 package com.real.proj.amc;
 
+import java.util.List;
+
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -11,7 +13,11 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 import com.real.proj.amc.model.AMCPackage;
 import com.real.proj.amc.model.Asset;
+import com.real.proj.amc.model.BaseService;
+import com.real.proj.amc.model.Category;
+import com.real.proj.amc.model.TenureBasedDiscount;
 import com.real.proj.amc.repository.PackageRepository;
+import com.real.proj.amc.repository.ServiceRepository;
 import com.real.proj.amc.service.AssetRepository;
 import com.real.proj.amc.unit.test.ServiceTestHelper;
 import com.real.proj.user.model.User;
@@ -38,6 +44,8 @@ public class AMCServiceApp implements CommandLineRunner {
 
   private PackageRepository packageRepository;
 
+  private ServiceRepository serviceRepository;
+
   @Autowired
   public void setUserRepository(UserRepository userRepository) {
     this.userRepository = userRepository;
@@ -46,6 +54,11 @@ public class AMCServiceApp implements CommandLineRunner {
   @Autowired
   public void setQuotationRepository(AssetRepository quoteRepository) {
     this.assetRepository = quoteRepository;
+  }
+
+  @Autowired
+  public void setServiceRepository(ServiceRepository serviceRepository) {
+    this.serviceRepository = serviceRepository;
   }
 
   @Autowired
@@ -65,18 +78,29 @@ public class AMCServiceApp implements CommandLineRunner {
   }
 
   public void run(String... args) throws Exception {
+    System.setProperty("ENVIRONMENT", "TEST");
+
     createFewUsers();
-    createAsset();
+    // createAsset();
     createPackage();
   }
 
   private void createPackage() {
-    AMCPackage pkg = ServiceTestHelper.createFullPackage();
+    List<BaseService> services = ServiceTestHelper.createFewServices();
+    services = this.serviceRepository.save(services);
+    AMCPackage pkg = new AMCPackage(Category.ASSET, "GOOD PACKAGE", "Package");
+    pkg.addServices(services);
+    pkg.setActive(true);
+    TenureBasedDiscount disc = new TenureBasedDiscount();
+    disc.addDiscount(1, 10);
+    disc.addDiscount(2, 12);
+    disc.addDiscount(3, 15);
+    disc.addDiscount(4, 20);
+    pkg.setTenureBasedDisc(disc);
     this.packageRepository.save(pkg);
   }
 
   private void createAsset() {
-    System.setProperty("ENVIRONMENT", "TEST");
     User user = userRepository.findByUserName("user1");
     if (user == null)
       throw new NullPointerException();

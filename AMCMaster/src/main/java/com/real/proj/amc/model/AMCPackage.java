@@ -1,22 +1,18 @@
 // There is a major change introduced today (30-APR-2017). Basically, got rid of PackageScheme.
 package com.real.proj.amc.model;
 
-import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-
-import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Reference;
 import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import com.real.proj.amc.repository.ServiceRepository;
 
 @Document(collection = "Packages")
 public class AMCPackage extends BaseMasterEntity implements Product {
@@ -26,22 +22,17 @@ public class AMCPackage extends BaseMasterEntity implements Product {
 
   public static final String TYPE = "PACKAGE";
 
-  @Transient
-  ServiceRepository repository;
-
-  @Autowired
-  public void setServiceRepository(ServiceRepository repository) {
-    this.repository = repository;
-  }
-
   @Id
   private String id;
   @NotBlank
   private String name;
   @NotBlank
   private String description;
-  @NotNull
-  private List<ServiceInfo> serviceInfo;
+  // @NotNull
+  // private List<ServiceInfo> serviceInfo;
+  @Reference
+  @DBRef
+  private List<BaseService> services;
 
   private TenureBasedDiscount tenureBasedDisc;
 
@@ -92,8 +83,8 @@ public class AMCPackage extends BaseMasterEntity implements Product {
       throw new IllegalArgumentException("The following services have failed to add. \n" + failedToAdd.toString());
   }
 
-  public List<ServiceInfo> getServices() {
-    return serviceInfo;
+  public List<BaseService> getServices() {
+    return services;
   }
 
   public String getDescription() {
@@ -104,26 +95,28 @@ public class AMCPackage extends BaseMasterEntity implements Product {
     this.description = description;
   }
 
-  public List<String> getServiceInfo() {
-    if (this.serviceInfo == null)
-      return null;
-    List<String> ids = new ArrayList<String>(this.serviceInfo.size());
-    for (ServiceInfo svc : this.serviceInfo)
-      ids.add(svc.getServiceId());
-    return ids;
-  }
-
-  public void setServiceInfo(List<ServiceInfo> serviceInfo) {
-    this.serviceInfo = serviceInfo;
-  }
+  /**
+   * public List<String> getServiceInfo() {
+   * if (this.serviceInfo == null)
+   * return null;
+   * List<String> ids = new ArrayList<String>(this.serviceInfo.size());
+   * for (ServiceInfo svc : this.serviceInfo)
+   * ids.add(svc.getServiceId());
+   * return ids;
+   * }
+   * 
+   * public void setServiceInfo(List<ServiceInfo> serviceInfo) {
+   * this.serviceInfo = serviceInfo;
+   * }
+   */
 
   public void addService(BaseService service) {
     if (logger.isInfoEnabled())
       logger.info("Adding new service to the package");
     service = validate(service);
-    if (this.serviceInfo == null)
-      this.serviceInfo = new ArrayList<ServiceInfo>();
-    this.serviceInfo.add(new ServiceInfo(service));
+    if (this.services == null)
+      this.services = new LinkedList<BaseService>();
+    this.services.add(service);
   }
 
   private BaseService validate(BaseService service) {
@@ -154,13 +147,14 @@ public class AMCPackage extends BaseMasterEntity implements Product {
   }
 
   private Iterable<BaseService> loadServiceData() {
-    Iterable<BaseService> services = this.repository.findAll(this.getServiceInfo());
+    // Iterable<BaseService> services =
+    // this.repository.findAll(this.getServiceInfo());
     return services;
   }
 
   private SubscriptionData getActualPriceFor(Iterable<BaseService> services, UserInput<String, Object> input) {
     // PackageScheme scheme) {
-    if (this.serviceInfo == null) {
+    if (this.services == null) {
       if (logger.isErrorEnabled())
         logger.error("service info is null");
       throw new IllegalStateException("The package is not built ready");
@@ -198,53 +192,54 @@ public class AMCPackage extends BaseMasterEntity implements Product {
    * indicator // to let the // downstream // methods know // that this // call
    * is made // internally. return this.getActualPriceForAllSchemes(services,
    * null); }
+   * 
+   * 
+   * static class ServiceInfo implements Serializable {
+   * 
+   * /**
+   * Default serial uid
+   *
+   * private static final long serialVersionUID = 1L;
+   * private String serviceId;
+   * private String name;
+   * private String description;
+   * 
+   * public ServiceInfo() {
+   * 
+   * }
+   * 
+   * public ServiceInfo(BaseService service) {
+   * this.serviceId = service.getId();
+   * this.name = service.getName();
+   * this.description = service.getDescription();
+   * }
+   * 
+   * public String getServiceId() {
+   * return serviceId;
+   * }
+   * 
+   * public void setServiceId(String serviceId) {
+   * this.serviceId = serviceId;
+   * }
+   * 
+   * public String getName() {
+   * return name;
+   * }
+   * 
+   * public void setName(String name) {
+   * this.name = name;
+   * }
+   * 
+   * public String getDescription() {
+   * return description;
+   * }
+   * 
+   * public void setDescription(String description) {
+   * this.description = description;
+   * }
+   * 
+   * }
    */
-
-  public class ServiceInfo implements Serializable {
-
-    /**
-     * Default serial uid
-     */
-    private static final long serialVersionUID = 1L;
-    private String serviceId;
-    private String name;
-    private String description;
-
-    public ServiceInfo() {
-
-    }
-
-    public ServiceInfo(BaseService service) {
-      this.serviceId = service.getId();
-      this.name = service.getName();
-      this.description = service.getDescription();
-    }
-
-    public String getServiceId() {
-      return serviceId;
-    }
-
-    public void setServiceId(String serviceId) {
-      this.serviceId = serviceId;
-    }
-
-    public String getName() {
-      return name;
-    }
-
-    public void setName(String name) {
-      this.name = name;
-    }
-
-    public String getDescription() {
-      return description;
-    }
-
-    public void setDescription(String description) {
-      this.description = description;
-    }
-
-  }
 
   @Override
   public String getType() {

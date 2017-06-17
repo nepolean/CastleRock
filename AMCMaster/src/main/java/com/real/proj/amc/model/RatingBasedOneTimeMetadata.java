@@ -16,6 +16,10 @@ public class RatingBasedOneTimeMetadata extends OneTimeMetadata {
   /* holds pricing & other service specific details */
   Map<Rating, OneTimeData> oneTimeData;
 
+  RatingBasedOneTimeMetadata() {
+
+  }
+
   public RatingBasedOneTimeMetadata(Map<Rating, OneTimeData> data) {
     data = Objects.requireNonNull(data, "The data cannot be null");
     this.oneTimeData = data;

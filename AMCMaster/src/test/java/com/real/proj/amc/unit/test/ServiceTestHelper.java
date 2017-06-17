@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.mockito.Mockito;
-
 import com.real.proj.amc.model.AMCPackage;
 import com.real.proj.amc.model.AssetBasedService;
 import com.real.proj.amc.model.AssetType;
@@ -19,7 +17,6 @@ import com.real.proj.amc.model.RatingBasedOneTimeMetadata;
 import com.real.proj.amc.model.RatingBasedSubscriptionMetadata;
 import com.real.proj.amc.model.SubscriptionData;
 import com.real.proj.amc.model.TenureBasedDiscount;
-import com.real.proj.amc.repository.ServiceRepository;
 
 public class ServiceTestHelper {
 
@@ -89,9 +86,9 @@ public class ServiceTestHelper {
   public static AMCPackage createFullPackage() {
     AMCPackage pkg = ServiceTestHelper.createRawPackage();
     pkg.addServices(ServiceTestHelper.createFewServices());
-    ServiceRepository repo = Mockito.mock(ServiceRepository.class);
-    Mockito.when(repo.findAll(pkg.getServiceInfo())).thenReturn(ServiceTestHelper.createFewServices());
-    pkg.setServiceRepository(repo);
+    // ServiceRepository repo = Mockito.mock(ServiceRepository.class);
+    // Mockito.when(repo.findAll(pkg.getServiceInfo())).thenReturn(ServiceTestHelper.createFewServices());
+    // pkg.setServiceRepository(repo);
     return pkg;
   }
 
