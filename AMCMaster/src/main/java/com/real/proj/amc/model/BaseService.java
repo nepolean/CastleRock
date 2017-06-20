@@ -1,5 +1,6 @@
 package com.real.proj.amc.model;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,8 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.annotation.Id;
 
-public abstract class BaseService extends BaseMasterEntity implements Product {
+public abstract class BaseService extends BaseMasterEntity implements Service, Product, Serializable {
 
+  private static final String TYPE = "SERVICE";
   private static Logger logger = LoggerFactory.getLogger(BaseService.class);
   @Id
   private String id;
@@ -29,6 +31,10 @@ public abstract class BaseService extends BaseMasterEntity implements Product {
   private boolean canRequestOneTime;
 
   protected Map<DeliveryMethod, TimeLine<ServiceMetadata>> detailsTracker;
+
+  BaseService() {
+
+  }
 
   public BaseService(Category category, String name, String description) {
     this.category = category;
@@ -68,13 +74,13 @@ public abstract class BaseService extends BaseMasterEntity implements Product {
     this.category = category;
   }
 
-  public void setSubscriptionServiceData(ServiceMetadata subcriptionData) {
+  public void setSubscriptionData(ServiceMetadata subcriptionData) {
     rejectIfDataIsNotValid(DeliveryMethod.SUBSCRIPTION, subcriptionData);
     addToTracker(DeliveryMethod.SUBSCRIPTION, subcriptionData, new Date());
     this.canSubscribe = true;
   }
 
-  public void setOneTimeServiceData(ServiceMetadata oneTimeData) {
+  public void setOneTimeData(ServiceMetadata oneTimeData) {
     rejectIfDataIsNotValid(DeliveryMethod.TRANSACTIONAL, oneTimeData);
     addToTracker(DeliveryMethod.TRANSACTIONAL, oneTimeData, new Date());
     this.canRequestOneTime = true;
@@ -101,7 +107,8 @@ public abstract class BaseService extends BaseMasterEntity implements Product {
 
   }
 
-  protected abstract void rejectIfDataIsNotValid(DeliveryMethod delivery,
+  protected abstract void rejectIfDataIsNotValid(
+      DeliveryMethod delivery,
       ServiceMetadata sld);
 
   private synchronized void addToTracker(DeliveryMethod dm, ServiceMetadata sld, Date applicableFrom) {
@@ -114,65 +121,82 @@ public abstract class BaseService extends BaseMasterEntity implements Product {
     this.detailsTracker.put(dm, sd);
   }
 
-  public SubscriptionData getSubscriptionData(UserInput<String, Object> input) {
+  public SubscriptionData fetchSubscriptionData(UserInput<String, Object> input) {
     if (logger.isDebugEnabled())
       logger.debug("subscription data requested with input {}", input);
+    UserInput<String, Object> userInput = Objects.requireNonNull(input,
+        "No user input.");
+    SubscriptionMetadata subsData = (SubscriptionMetadata) doGetCurrentSubscriptionData(DeliveryMethod.SUBSCRIPTION);
+    return subsData.getSubscriptionData(userInput);
+  }
+
+  private ServiceMetadata doGetCurrentSubscriptionData(DeliveryMethod deliveryMethod) {
     if (this.detailsTracker == null) {
       logger.error("The service {} is not ready", this.getName());
       throw new IllegalStateException("ServiceData has not been defined yet for this service");
     }
-    UserInput<String, Object> userInput = Objects.requireNonNull(input,
-        "No user input.");
-    TimeLine<ServiceMetadata> timeline = this.detailsTracker.get(DeliveryMethod.SUBSCRIPTION);
+    TimeLine<ServiceMetadata> timeline = this.detailsTracker.get(deliveryMethod);
     if (timeline == null) {
       logger.error("Subscription Data is null");
       throw new IllegalStateException("Subscription data is not set for this service");
     }
-    SubscriptionMetadata subsData = (SubscriptionMetadata) timeline.getCurrentValue();
-    if (subsData == null) {
+    ServiceMetadata svcMetadata = timeline.getCurrentValue();
+    if (svcMetadata == null) {
       logger.error("The subscription data is null");
       throw new IllegalStateException("Subscription data is not set for this service");
     }
-    return subsData.getSubscriptionData(userInput);
+    return svcMetadata;
   }
 
-  public SubscriptionData getSubscriptionData() {
+  public SubscriptionData fetchSubscriptionData() {
     UserInput<String, Object> input = getDefaultInput();
-    return this.getSubscriptionData(input);
+    try {
+      return this.fetchSubscriptionData(input);
+    } catch (Exception ex) {
+    }
+    return null;
   }
 
-  public OneTimeData getOneTimeData(UserInput<String, Object> input) {
+  public SubscriptionMetadata getSubscriptionServiceData() {
+    try {
+      return (SubscriptionMetadata) this.doGetCurrentSubscriptionData(DeliveryMethod.SUBSCRIPTION);
+    } catch (Exception ex) {
+    }
+    return null;
+  }
+
+  public OneTimeMetadata getOneTimeServiceData() {
+    try {
+      return (RatingBasedOneTimeMetadata) this.doGetCurrentSubscriptionData(DeliveryMethod.TRANSACTIONAL);
+    } catch (Exception ex) {
+
+    }
+    return null;
+  }
+
+  public OneTimeData fetchOneTimeData(UserInput<String, Object> input) {
     if (logger.isDebugEnabled())
       logger.debug("OneTime data requested with input {}", input);
-    if (this.detailsTracker == null) {
-      logger.error("The service {} is not ready", this.getName());
-      throw new IllegalStateException("OneTime data is not set for this service");
-    }
     UserInput<String, Object> userInput = Objects.requireNonNull(input,
         "No user input.");
-    TimeLine<ServiceMetadata> timeline = this.detailsTracker.get(DeliveryMethod.TRANSACTIONAL);
-    if (timeline == null) {
-      logger.error("OneTimeData is null");
-      throw new IllegalStateException("OneTime data is not set for this service");
-    }
-    OneTimeMetadata oneTimeMetadata = (OneTimeMetadata) timeline.getCurrentValue();
-    if (oneTimeMetadata == null) {
-      logger.error("OneTime Metadata is null");
-      throw new IllegalStateException("OneTime data is not set for this service");
-    }
+    OneTimeMetadata oneTimeMetadata = (OneTimeMetadata) this.doGetCurrentSubscriptionData(DeliveryMethod.TRANSACTIONAL);
     return oneTimeMetadata.getOneTimeData(userInput);
   }
 
-  public OneTimeData getOneTimeData() {
+  public OneTimeData fetchOneTimeData() {
     UserInput<String, Object> input = getDefaultInput();
-    return this.getOneTimeData(input);
+    try {
+      return this.fetchOneTimeData(input);
+    } catch (Exception ex) {
+    }
+    return null;
   }
 
   protected abstract UserInput<String, Object> getDefaultInput();
 
   @Override
   public String getType() {
-    return "SERVICE";
+    return TYPE;
   }
 
   @Override
@@ -182,6 +206,14 @@ public abstract class BaseService extends BaseMasterEntity implements Product {
 
   @Override
   public boolean canRequestOneTime() {
+    return this.canRequestOneTime;
+  }
+
+  public boolean getCanSubscribe() {
+    return canSubscribe;
+  }
+
+  public boolean getCanRequestOneTime() {
     return this.canRequestOneTime;
   }
 }

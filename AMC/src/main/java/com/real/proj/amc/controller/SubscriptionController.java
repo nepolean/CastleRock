@@ -5,21 +5,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.real.proj.amc.service.SubscriptionService;
+import com.real.proj.amc.repository.SubscriptionRepository;
 
 @RestController
 public class SubscriptionController {
 
-  private SubscriptionService service;
+  private SubscriptionRepository service;
 
   @Autowired
-  public void setSubscriptionService(SubscriptionService service) {
+  public void setSubscriptionService(SubscriptionRepository service) {
     this.service = service;
   }
 
   @RequestMapping(path = "/subscription/status", method = RequestMethod.GET)
   public String getStatus() {
-    return service.getStatus("5899dec21c4c8f7e1e797ba2");
+    return service.findOne("5899dec21c4c8f7e1e797ba2").getId();
   }
 
   @RequestMapping(path = "/subscription/start", method = RequestMethod.GET)

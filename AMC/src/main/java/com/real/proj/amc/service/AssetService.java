@@ -13,6 +13,7 @@ import com.real.proj.amc.model.AssetType;
 import com.real.proj.amc.model.PackageScheme;
 import com.real.proj.amc.model.Subscription;
 import com.real.proj.amc.model.UOM;
+import com.real.proj.amc.repository.AssetRepository;
 import com.real.proj.controller.exception.EntityNotFoundException;
 import com.real.proj.user.model.User;
 import com.real.proj.user.service.UserService;

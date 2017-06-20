@@ -15,6 +15,7 @@ import com.real.proj.amc.model.OneTimeMetadata;
 import com.real.proj.amc.model.Rating;
 import com.real.proj.amc.model.RatingBasedOneTimeMetadata;
 import com.real.proj.amc.model.RatingBasedSubscriptionMetadata;
+import com.real.proj.amc.model.Service;
 import com.real.proj.amc.model.SubscriptionData;
 import com.real.proj.amc.model.TenureBasedDiscount;
 
@@ -78,7 +79,7 @@ public class ServiceTestHelper {
     String name = "Annual Maintenace Package";
     String description = "Offers services for 1 year";
     AMCPackage pkg = new AMCPackage(cat, name, description);
-    List<BaseService> services = createFewServices();
+    List<Service> services = createFewServices();
     pkg.addServices(services);
     return pkg;
   }
@@ -103,13 +104,15 @@ public class ServiceTestHelper {
     return pkg;
   }
 
-  public static List<BaseService> createFewServices() {
-    List<BaseService> services = new ArrayList<BaseService>();
+  public static List<Service> createFewServices() {
+    List<Service> services = new ArrayList<Service>();
     BaseService svc = ServiceTestHelper.createBasicService();
-    svc.setSubscriptionServiceData(ServiceTestHelper.createRatingBasedSubscriptionData());
+    svc.setSubscriptionData(ServiceTestHelper.createRatingBasedSubscriptionData());
+    svc.setOneTimeData(ServiceTestHelper.createOneTimeMetadata());
     services.add(svc);
     svc = ServiceTestHelper.createBasicService();
-    svc.setSubscriptionServiceData(ServiceTestHelper.createRatingBasedSubscriptionData());
+    svc.setSubscriptionData(ServiceTestHelper.createRatingBasedSubscriptionData());
+    svc.setOneTimeData(ServiceTestHelper.createOneTimeMetadata());
     services.add(svc);
     return services;
   }

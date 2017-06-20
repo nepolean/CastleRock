@@ -26,11 +26,13 @@ import org.springframework.stereotype.Component;
 import com.real.proj.amc.model.AMCPackage;
 import com.real.proj.amc.model.Asset;
 import com.real.proj.amc.model.EventHistory;
+import com.real.proj.amc.model.Subscription;
 import com.real.proj.amc.model.Tax;
 import com.real.proj.amc.model.UserData;
+import com.real.proj.amc.repository.AssetRepository;
 import com.real.proj.amc.repository.PackageRepository;
+import com.real.proj.amc.repository.SubscriptionRepository;
 import com.real.proj.amc.repository.TaxRepository;
-import com.real.proj.amc.service.AssetRepository;
 import com.real.proj.user.model.User;
 import com.real.proj.user.service.UserRepository;
 import com.real.proj.util.SecurityHelper;
@@ -40,11 +42,18 @@ public class QuotationActionHandler implements QuotationStateChangeListener {
 
   private static final Logger logger = LoggerFactory.getLogger(QuotationActionHandler.class);
 
-  QuotationRepository quoteRepository;
-  PackageRepository packageRepository;
+  private QuotationNotificationHandler notificationHandler;
+  private QuotationRepository quoteRepository;
+  private PackageRepository packageRepository;
   private UserRepository userRepository;
   private AssetRepository assetRepository;
   private TaxRepository taxRepository;
+  private SubscriptionRepository subscriptionRepository;
+
+  @Autowired
+  public void setNotificationHandler(QuotationNotificationHandler notificationHandler) {
+    this.notificationHandler = notificationHandler;
+  }
 
   @Autowired
   public void setQuotationRepository(
@@ -52,12 +61,14 @@ public class QuotationActionHandler implements QuotationStateChangeListener {
       PackageRepository packageRepo,
       UserRepository userRepository,
       AssetRepository assetRepository,
-      TaxRepository taxRepository) {
+      TaxRepository taxRepository,
+      SubscriptionRepository subscriptionRepository) {
     this.quoteRepository = quoteRepo;
     this.packageRepository = packageRepo;
     this.userRepository = userRepository;
     this.assetRepository = assetRepository;
     this.taxRepository = taxRepository;
+    this.subscriptionRepository = subscriptionRepository;
   }
 
   @Autowired
@@ -87,10 +98,10 @@ public class QuotationActionHandler implements QuotationStateChangeListener {
       StateMachine<QStates, QEvents> stateMachine) {
     logger.info("Event name {}", event.toString());
     switch (event) {
-    case CREATE:
+    case CREATE_QUOTE:
       handeCreateQuote(message, targetState);
       break;
-    case SUBMITUSERDATA:
+    case GENERATE_QUOTE:
       handleGenerateQuote(message, targetState);
       break;
     case ACCEPT:
@@ -104,9 +115,6 @@ public class QuotationActionHandler implements QuotationStateChangeListener {
       break;
     case REJECT:
       handleRejectQuote(message, targetState);
-      break;
-    case EXPIRE:
-      handleExpiredQuote(message, targetState);
       break;
     case RENEW:
       handleQuoteRenewal(message);
@@ -131,8 +139,21 @@ public class QuotationActionHandler implements QuotationStateChangeListener {
     // TODO perhaps, send a message to payment service
     Map<String, Object> userData = this.getUserData(message);
     Quotation userQuote = this.getQuoteFromUserInput(userData);
-    if (userQuote.hasExpired())
-      this.handleExpiredQuotation(userQuote, stateMachine);
+    if (userQuote.hasExpired()) {
+      this.handleExpiredQuote(userQuote, stateMachine);
+      return;
+    }
+    userQuote.setState(targetState);
+    User loggedInUser = secHelper.getLoggedInUser();
+    //@formatter:off
+    EventHistory eventObj = 
+        new EventHistory(message.getPayload().toString(),
+            loggedInUser.getUserName(),
+            loggedInUser.getRole(),
+            "Payment Initated.");
+    //@formatter:on       
+    userQuote.getHistory().add(eventObj);
+    this.quoteRepository.save(userQuote);
 
   }
 
@@ -152,7 +173,7 @@ public class QuotationActionHandler implements QuotationStateChangeListener {
     //@formatter:on       
     userQuote.getHistory().add(eventObj);
     this.quoteRepository.save(userQuote);
-    notifyUser(userQuote);
+    this.notificationHandler.handleQuotationRejected(userQuote);
   }
 
   private void handlePaymentError(Message<QEvents> message, QStates targetState) {
@@ -168,11 +189,27 @@ public class QuotationActionHandler implements QuotationStateChangeListener {
     //@formatter:on       
     userQuote.getHistory().add(eventObj);
     this.quoteRepository.save(userQuote);
-    notifyUser(userQuote);
   }
 
   private void handlePaymentReceived(Message<QEvents> message, QStates targetState) {
+    // update quotation with state
+    Map<String, Object> userData = this.getUserData(message);
+    Quotation userQuote = this.getQuoteFromUserInput(userData);
+    userQuote.setState(targetState);
+    //@formatter:off
+    EventHistory eventObj = 
+        new EventHistory(message.getPayload().toString(),
+            "SYSTEM",
+            "SYSTEM",
+            "Payment Successful.");
+    //@formatter:on   
+    userQuote.getHistory().add(eventObj);
+    this.quoteRepository.save(userQuote);
 
+    // create subscription
+    Subscription subscription = new Subscription(userQuote);
+    subscription = this.subscriptionRepository.save(subscription);
+    this.notificationHandler.handleSubscriptionCreated(subscription);
   }
 
   private void handleQuoteRenewal(Message<QEvents> message) {
@@ -197,19 +234,21 @@ public class QuotationActionHandler implements QuotationStateChangeListener {
     this.quoteRepository.save(userQuote);
   }
 
-  private void handleExpiredQuote(Message<QEvents> message, QStates targetState) {
-    Map<String, Object> userData = this.getUserData(message);
-    Quotation userQuote = this.getQuoteFromUserInput(userData);
-    userQuote.setState(targetState);
+  private void handleExpiredQuote(Quotation userQuote, StateMachine<QStates, QEvents> stateMachine) {
+    logger.error("Quotation with id {} has expired.", userQuote.getId());
+    userQuote.setState(QStates.QUOTATION_EXPIRED);
     //@formatter:off
     EventHistory eventObj = 
-        new EventHistory(message.getPayload().toString(),
+        new EventHistory(QEvents.EXPIRE.toString(),
             "SYSTEM",
             "SYSTEM",
             "Quote has expired.");
     //@formatter:on       
     userQuote.getHistory().add(eventObj);
     this.quoteRepository.save(userQuote);
+    stateMachine.setStateMachineError(
+        new IllegalArgumentException(
+            "This quotation has expired. You may want to regenerate the quotation again."));
   }
 
   private void handeCreateQuote(Message<QEvents> message, QStates targetState) {
@@ -258,9 +297,67 @@ public class QuotationActionHandler implements QuotationStateChangeListener {
     logger.info("New quote created");
   }
 
+  private void handleGenerateQuote(Message<QEvents> message, QStates targetState) {
+    logger.info("Generate a quote");
+    if (logger.isDebugEnabled())
+      logger.debug("handleGenerateQuote  {}", message.getHeaders());
+    handleGenerateQuoteInternal(message, QEvents.GENERATE_QUOTE, targetState);
+  }
+
   private void handleRegenerateQuote(Message<QEvents> message, QStates targetState) {
     logger.info("regenerate quote");
     handleGenerateQuoteInternal(message, QEvents.REGENERATE, targetState);
+  }
+
+  private void handleAcceptQuote(
+      Message<QEvents> message,
+      QStates targetState,
+      StateMachine<QStates, QEvents> stateMachine) {
+    logger.info("User accepted the quote");
+    Map<String, Object> userData = this.getUserData(message);
+    Quotation userQuote = this.getQuoteFromUserInput(userData);
+    // handle if quote is expired
+    if (userQuote.hasExpired()) {
+      handleExpiredQuote(userQuote, stateMachine);
+      return;
+    }
+    String comments = (String) userData.get(QuotationConstants.USER_COMMENTS_KEY);
+    comments = Optional.of(comments).orElse("");
+    userQuote.userAccepted();
+    User loggedInUser = secHelper.getLoggedInUser();
+    //@formatter:off
+    EventHistory event = 
+        new EventHistory(
+            message.getPayload().toString(),
+            loggedInUser.getUserName(),
+            loggedInUser.getRole(),
+            comments);
+    //@formatter:off
+    userQuote.getHistory().add(event);
+    userQuote.setState(targetState);
+    this.quoteRepository.save(userQuote);
+    this.notificationHandler.handleQuotationAcceptedByUser(userQuote);
+  }
+
+  private void handleApproveQuote(Message<QEvents> message, QStates targetState) {
+    Map<String, Object> userData = this.getUserData(message);
+    Quotation userQuote = this.getQuoteFromUserInput(userData);
+    String comments = (String) userData.get(USER_COMMENTS_KEY);
+    comments = Optional.of(comments).orElse("");
+    User loggedInUser = secHelper.getLoggedInUser();
+    //@formatter:off
+    EventHistory eventObj = 
+        new EventHistory(
+            message.getPayload().toString(),
+            loggedInUser.getUserName(),
+            loggedInUser.getRole(),
+            comments);
+    //@formatter:on
+
+    userQuote.getHistory().add(eventObj);
+    userQuote.setState(targetState);
+    this.quoteRepository.save(userQuote);
+    this.notificationHandler.handleQuotationApprovedByAdmin(userQuote);
   }
 
   private void handleGenerateQuoteInternal(Message<QEvents> message, QEvents event, QStates nextState) {
@@ -287,7 +384,6 @@ public class QuotationActionHandler implements QuotationStateChangeListener {
     if (event.equals(QEvents.REGENERATE))
       quote.approveQuote();
     this.quoteRepository.save(quote);
-    notifyUser(quote);
   }
 
   private List<Tax> getApplicableTaxes() {
@@ -304,71 +400,4 @@ public class QuotationActionHandler implements QuotationStateChangeListener {
     userData = Optional.of(userData).orElse(new HashMap<String, Object>(1));
     return userData;
   }
-
-  private void handleApproveQuote(Message<QEvents> message, QStates targetState) {
-    Map<String, Object> userData = this.getUserData(message);
-    Quotation userQuote = this.getQuoteFromUserInput(userData);
-    String comments = (String) userData.get(USER_COMMENTS_KEY);
-    comments = Optional.of(comments).orElse("");
-    User loggedInUser = secHelper.getLoggedInUser();
-    //@formatter:off
-    EventHistory eventObj = 
-        new EventHistory(
-            message.getPayload().toString(),
-            loggedInUser.getUserName(),
-            loggedInUser.getRole(),
-            comments);
-    //@formatter:on
-
-    userQuote.getHistory().add(eventObj);
-    userQuote.setState(targetState);
-    this.quoteRepository.save(userQuote);
-  }
-
-  private void handleAcceptQuote(
-      Message<QEvents> message,
-      QStates targetState,
-      StateMachine<QStates, QEvents> stateMachine) {
-    logger.info("User accepted the quote");
-    Map<String, Object> userData = this.getUserData(message);
-    Quotation userQuote = this.getQuoteFromUserInput(userData);
-    // handle if quote is expired
-    if (userQuote.hasExpired()) {
-      handleExpiredQuotation(userQuote, stateMachine);
-      return;
-    }
-    String comments = (String) userData.get(QuotationConstants.USER_COMMENTS_KEY);
-    comments = Optional.of(comments).orElse("");
-    userQuote.userAccepted();
-    User loggedInUser = secHelper.getLoggedInUser();
-    //@formatter:off
-    EventHistory event = 
-        new EventHistory(
-            message.getPayload().toString(),
-            loggedInUser.getUserName(),
-            loggedInUser.getRole(),
-            comments);
-    //@formatter:off
-    userQuote.getHistory().add(event);
-    userQuote.setState(targetState);
-    this.quoteRepository.save(userQuote);
-  }
-
-  private void handleExpiredQuotation(Quotation userQuote, StateMachine<QStates, QEvents> stateMachine) {
-    logger.warn("Quotation with id {} has expired", userQuote.getId());
-    stateMachine.sendEvent(QEvents.EXPIRE);
-  }
-
-  private void handleGenerateQuote(Message<QEvents> message, QStates targetState) {
-    logger.info("Generate a quote");
-    if (logger.isDebugEnabled())
-      logger.debug("handleGenerateQuote  {}", message.getHeaders());
-    handleGenerateQuoteInternal(message, QEvents.SUBMITUSERDATA, targetState);
-  }
-
-  private void notifyUser(Quotation quote) {
-    // TODO: Complete this action
-
-  }
-
 }

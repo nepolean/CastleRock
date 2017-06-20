@@ -1,5 +1,6 @@
 package com.real.proj.amc.model;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -9,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "Services")
-public class AssetBasedService extends BaseService {
+public class AssetBasedService extends BaseService implements Serializable {
 
   private static final Logger logger = LoggerFactory.getLogger(AssetBasedService.class);
   // private static final String UOM = "SFT";
@@ -28,6 +29,10 @@ public class AssetBasedService extends BaseService {
   // Moreover we should extract the pricing details out.
 
   // Map<Rating, List<ServiceData>> pricing;
+
+  AssetBasedService() {
+
+  }
 
   public AssetBasedService(String name, String description, List<AssetType> applicableTo,
       List<String> amenities) {

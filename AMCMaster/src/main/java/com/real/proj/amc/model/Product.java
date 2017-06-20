@@ -10,12 +10,16 @@ public interface Product {
 
   public abstract boolean canRequestOneTime();
 
-  public abstract SubscriptionData getSubscriptionData();
+  public abstract SubscriptionData fetchSubscriptionData();
 
-  public abstract OneTimeData getOneTimeData();
+  public abstract OneTimeData fetchOneTimeData();
 
-  public abstract SubscriptionData getSubscriptionData(UserInput<String, Object> input);
+  public abstract SubscriptionData fetchSubscriptionData(UserInput<String, Object> input);
 
-  public abstract OneTimeData getOneTimeData(UserInput<String, Object> input);
+  public abstract OneTimeData fetchOneTimeData(UserInput<String, Object> input);
+
+  public abstract Object getCategory();
+
+  public abstract String getId();
 
 }

@@ -1,4 +1,4 @@
-package com.real.proj.amc.service;
+package com.real.proj.amc.repository;
 
 import java.util.List;
 

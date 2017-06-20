@@ -100,6 +100,7 @@ public class QuotationStateHandler extends LifecycleObjectSupport {
       logger.error("the user action has resulted in an error");
       throw exception.get(0);
     }
+
   }
 
 }

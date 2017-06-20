@@ -4,15 +4,17 @@ public class UserData {
 
   private double measuredArea;
   private int tenure;
-  private UserInput<String, Object> input;
+  private Rating rating;
+  // private UserInput<String, Object> input;
 
   public UserData() {
 
   }
 
-  public UserData(int rating, int tenure, double measuredArea) {
+  public UserData(int age, int tenure, double measuredArea) {
     this.measuredArea = measuredArea;
     this.tenure = tenure;
+    Rating rating = convertYearToRating(age);
     this.setRating(rating);
   }
 
@@ -33,17 +35,33 @@ public class UserData {
   }
 
   public Rating getRating() {
-    return (Rating) input.get(Rating.getKey());
+    return this.rating;
   }
 
-  public void setRating(int rating) {
-    UserInput<String, Object> userInput = new UserInput<String, Object>();
-    userInput.add(Rating.getKey(), Rating.values()[rating - 1]);
-    this.input = userInput;
+  public void setRating(Rating rating) {
+    this.rating = rating;
+  }
+
+  private Rating convertYearToRating(int age) {
+    if (age <= 3)
+      return Rating.ONE;
+    if (age <= 5)
+      return Rating.TWO;
+    if (age <= 7)
+      return Rating.THREE;
+    if (age <= 10)
+      return Rating.FOUR;
+    return Rating.FIVE;
   }
 
   public UserInput<String, Object> getInput() {
-    return this.input;
+    UserInput<String, Object> userInput = new UserInput<String, Object>();
+    userInput.add(Rating.getKey(), this.rating);
+    return userInput;
+  }
+
+  public int getTenureInMonths() {
+    return tenure * 3; // Minimum a quarter of subscription
   }
 
 }

@@ -29,12 +29,12 @@ public class QuotationSpringSMConfig extends EnumStateMachineConfigurerAdapter<Q
     transitions
       .withExternal()
         .source(QStates.INITIAL).target(QStates.NEW_QUOTATION_CREATED)
-        .event(QEvents.CREATE)
+        .event(QEvents.CREATE_QUOTE)
         //.action(action1())
       .and()
       .withExternal()
         .source(QStates.NEW_QUOTATION_CREATED).target(QStates.QUOTATION_GENERATED)
-        .event(QEvents.SUBMITUSERDATA)
+        .event(QEvents.GENERATE_QUOTE)
         //.action(action1())
       .and()
       .withExternal()
@@ -94,7 +94,7 @@ public class QuotationSpringSMConfig extends EnumStateMachineConfigurerAdapter<Q
         .event(QEvents.EXPIRE)
       .and()
       .withExternal()
-        .source(QStates.QUOTATION_EXPIRED)
+        .source(QStates.QUOTATION_EXPIRED).target(QStates.QUOTATION_REGENERATED)
         .event(QEvents.RENEW);        
   }
 

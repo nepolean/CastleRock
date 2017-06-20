@@ -32,11 +32,11 @@ public class AMCPackage extends BaseMasterEntity implements Product {
   // private List<ServiceInfo> serviceInfo;
   @Reference
   @DBRef
-  private List<BaseService> services;
+  private List<Product> services;
 
   private TenureBasedDiscount tenureBasedDisc;
 
-  private DeliveryMethod dm;
+  // private DeliveryMethod dm;
 
   private Category category;
 
@@ -44,7 +44,7 @@ public class AMCPackage extends BaseMasterEntity implements Product {
     this.category = category;
     this.name = name;
     this.description = description;
-    this.dm = DeliveryMethod.SUBSCRIPTION;
+    // this.dm = DeliveryMethod.SUBSCRIPTION;
     isActive = false;
   }
 
@@ -64,7 +64,7 @@ public class AMCPackage extends BaseMasterEntity implements Product {
     this.name = name;
   }
 
-  public void addServices(List<BaseService> services) {
+  public void addServices(List<Service> services) {
     if (logger.isDebugEnabled())
       logger.info("Add services to package");
     services = Objects.requireNonNull(services, "No services data provided.");
@@ -83,7 +83,7 @@ public class AMCPackage extends BaseMasterEntity implements Product {
       throw new IllegalArgumentException("The following services have failed to add. \n" + failedToAdd.toString());
   }
 
-  public List<BaseService> getServices() {
+  public List<Product> getServices() {
     return services;
   }
 
@@ -110,16 +110,16 @@ public class AMCPackage extends BaseMasterEntity implements Product {
    * }
    */
 
-  public void addService(BaseService service) {
+  public void addService(Product service) {
     if (logger.isInfoEnabled())
       logger.info("Adding new service to the package");
     service = validate(service);
     if (this.services == null)
-      this.services = new LinkedList<BaseService>();
+      this.services = new LinkedList<Product>();
     this.services.add(service);
   }
 
-  private BaseService validate(BaseService service) {
+  private Product validate(Product service) {
     service = Objects.requireNonNull(service, "Null value passed for service");
     if (!service.canSubscribe()) {
       String msg = String.format("The service, {}, does not support subscription model ", service.getName());
@@ -140,19 +140,19 @@ public class AMCPackage extends BaseMasterEntity implements Product {
   public SubscriptionData getActualPrice(UserInput<String, Object> input) {
     logger.info("getActualPrice -> {}", input);
     // this is sigma of all services defined under this package.
-    Iterable<BaseService> services = this.loadServiceData();
+    Iterable<Product> services = this.loadServiceData();
     if (logger.isDebugEnabled())
       logger.debug("Loaded service details from db");
     return getActualPriceFor(services, input);
   }
 
-  private Iterable<BaseService> loadServiceData() {
+  private Iterable<Product> loadServiceData() {
     // Iterable<BaseService> services =
     // this.repository.findAll(this.getServiceInfo());
     return services;
   }
 
-  private SubscriptionData getActualPriceFor(Iterable<BaseService> services, UserInput<String, Object> input) {
+  private SubscriptionData getActualPriceFor(Iterable<Product> services, UserInput<String, Object> input) {
     // PackageScheme scheme) {
     if (this.services == null) {
       if (logger.isErrorEnabled())
@@ -161,8 +161,8 @@ public class AMCPackage extends BaseMasterEntity implements Product {
     }
     double actualPrice = 0.0;
     int visitCount = 0;
-    for (BaseService service : services) {
-      SubscriptionData subsData = service.getSubscriptionData(input);
+    for (Product service : services) {
+      SubscriptionData subsData = service.fetchSubscriptionData(input);
       if (subsData == null) {
         if (logger.isErrorEnabled())
           logger.error("The service {} is not built ready", service.getName());
@@ -257,22 +257,22 @@ public class AMCPackage extends BaseMasterEntity implements Product {
   }
 
   @Override
-  public SubscriptionData getSubscriptionData() {
-    return this.getSubscriptionData(null);
+  public SubscriptionData fetchSubscriptionData() {
+    return this.fetchSubscriptionData(null);
   }
 
   @Override
-  public OneTimeData getOneTimeData() {
+  public OneTimeData fetchOneTimeData() {
     return null;
   }
 
   @Override
-  public SubscriptionData getSubscriptionData(UserInput<String, Object> input) {
+  public SubscriptionData fetchSubscriptionData(UserInput<String, Object> input) {
     return this.getActualPrice(input);
   }
 
   @Override
-  public OneTimeData getOneTimeData(UserInput<String, Object> input) {
+  public OneTimeData fetchOneTimeData(UserInput<String, Object> input) {
     return null;
   }
 
@@ -282,6 +282,11 @@ public class AMCPackage extends BaseMasterEntity implements Product {
 
   public void setTenureBasedDisc(TenureBasedDiscount tenureBasedDisc) {
     this.tenureBasedDisc = tenureBasedDisc;
+  }
+
+  @Override
+  public Category getCategory() {
+    return this.getCategory();
   }
 
 }

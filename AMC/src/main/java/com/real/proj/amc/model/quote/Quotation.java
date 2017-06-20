@@ -9,10 +9,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TimeZone;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.statemachine.annotation.WithStateMachine;
 import org.springframework.stereotype.Component;
@@ -21,7 +23,6 @@ import com.real.proj.amc.model.AMCPackage;
 import com.real.proj.amc.model.Asset;
 import com.real.proj.amc.model.Coupon;
 import com.real.proj.amc.model.EventHistory;
-import com.real.proj.amc.model.Location;
 import com.real.proj.amc.model.Product;
 import com.real.proj.amc.model.SubscriptionData;
 import com.real.proj.amc.model.Tax;
@@ -54,10 +55,12 @@ public class Quotation {
 
   Date validUpto;
 
-  private Location location;
+  @DBRef(lazy = true)
+  private Asset asset;
 
   private User createdFor;
 
+  @DBRef(lazy = true)
   private User createdBy;
 
   private boolean isNewUser;
@@ -94,10 +97,10 @@ public class Quotation {
 
   }
 
-  public Quotation(User createdFor, User createdBy, Location location) {
+  public Quotation(User createdFor, User createdBy, Asset location) {
     this.createdFor = createdFor;
     this.createdBy = createdBy;
-    this.location = location;
+    this.asset = location;
     isNewUser = Objects.isNull(createdFor.getUserName());
     createdByAgent = !Objects.equals(createdFor, createdBy);
   }
@@ -105,7 +108,7 @@ public class Quotation {
   public Quotation(Asset asset, User agent) {
     this.createdFor = asset.getOwner();
     this.createdBy = agent;
-    this.location = asset.getLocation();
+    this.asset = asset;
     isNewUser = false;
     createdByAgent = Objects.isNull(agent);
   }
@@ -113,7 +116,7 @@ public class Quotation {
   public Quotation(Quotation otherQuote) {
     this.createdFor = otherQuote.createdFor;
     this.createdBy = otherQuote.createdBy;
-    this.location = otherQuote.location;
+    this.asset = otherQuote.asset;
     this.data = otherQuote.data;
     this.applicableTaxes = otherQuote.applicableTaxes;
     this.applicableCoupons = otherQuote.applicableCoupons;
@@ -232,7 +235,7 @@ public class Quotation {
     double totalAmount = 0.0;
     double totalDiscount = 0.0;
     for (Product product : getSelectedItems()) {
-      SubscriptionData subsData = product.getSubscriptionData(input);
+      SubscriptionData subsData = product.fetchSubscriptionData(input);
       if (logger.isDebugEnabled())
         logger.debug("Product {}, subscription data {} ", product.getName(), subsData);
       double currentAmount = subsData.getSubscriptionPrice() * this.data.getTenure() * this.data.getMeasuredArea();
@@ -326,12 +329,8 @@ public class Quotation {
   }
 
   public boolean hasExpired() {
-    logger.info("Now {}", Calendar.getInstance().getTime());
-    logger.info("Valid {}", this.validUpto);
-    logger.info("Compare {}", Calendar.getInstance().getTime().after(this.validUpto));
-    logger.info("Quotation expired? {}",
-        (Objects.isNull(this.validUpto) ? false : System.currentTimeMillis() > this.validUpto.getTime()));
-    return Objects.isNull(this.validUpto) ? false : Calendar.getInstance().getTime().after(this.validUpto);
+    return Objects.isNull(this.validUpto) ? false
+        : Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime().after(this.validUpto);
   }
 
   @Override
@@ -464,5 +463,29 @@ public class Quotation {
 
   public boolean hasBeenApproved() {
     return this.quoteApproved;
+  }
+
+  public User getCreatedFor() {
+    return this.createdFor;
+  }
+
+  public void setCreatedFor(User createdFor) {
+    this.createdFor = createdFor;
+  }
+
+  public Asset getAsset() {
+    return this.asset;
+  }
+
+  public void setAsset(Asset asset) {
+    this.asset = asset;
+  }
+
+  public User getCreatedBy() {
+    return this.createdBy;
+  }
+
+  public void setCreatedBy(User createdBy) {
+    this.createdBy = createdBy;
   }
 }

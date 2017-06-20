@@ -66,7 +66,7 @@ public class SubscriptionOrderController {
     data.put(USER_KEY, userInput.getUserId());
     data.put(ASSET_KEY, userInput.getAssetId());
     data.put(QuotationConstants.PRODUCTS_KEY, userInput.getProductID());
-    fireEvent(QStates.INITIAL, QEvents.CREATE, data);
+    fireEvent(QStates.INITIAL, QEvents.CREATE_QUOTE, data);
   }
 
   @RequestMapping(path = "/quotation/{id}/generate", method = RequestMethod.POST, consumes = "application/json")
@@ -78,7 +78,7 @@ public class SubscriptionOrderController {
     userQuotation = Objects.requireNonNull(userQuotation, "Quotation with id " + id + " not found.");
     data.put(QUOTATION_OBJ_KEY, userQuotation);
     data.put(USER_DATA_KEY, userData);
-    fireEvent(userQuotation.getState(), QEvents.SUBMITUSERDATA, data);
+    fireEvent(userQuotation.getState(), QEvents.GENERATE_QUOTE, data);
   }
 
   @RequestMapping(path = "/quotation/{id}/decision", method = RequestMethod.POST, consumes = "application/json")
@@ -105,6 +105,17 @@ public class SubscriptionOrderController {
     userQuotation = Objects.requireNonNull(userQuotation, "Quotation with id " + id + " not found.");
     data.put(QUOTATION_OBJ_KEY, userQuotation);
     fireEvent(userQuotation.getState(), QEvents.INITIATE_PAY, data);
+  }
+
+  @RequestMapping(path = "/quotation/{id}/renew", method = RequestMethod.POST, consumes = "application/json")
+  public void renewQuotation(
+      @PathVariable String id) throws Exception {
+    logger.info("Renew quotation with id {}", id);
+    Map<String, Object> data = new HashMap<String, Object>();
+    Quotation userQuotation = this.quotationRepository.findOne(id);
+    userQuotation = Objects.requireNonNull(userQuotation, "Quotation with id " + id + " not found.");
+    data.put(QUOTATION_OBJ_KEY, userQuotation);
+    fireEvent(userQuotation.getState(), QEvents.RENEW, data);
   }
 
   protected void fireEvent(QStates source, QEvents event, Object data) throws Exception {

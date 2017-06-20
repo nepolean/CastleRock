@@ -13,12 +13,12 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 import com.real.proj.amc.model.AMCPackage;
 import com.real.proj.amc.model.Asset;
-import com.real.proj.amc.model.BaseService;
 import com.real.proj.amc.model.Category;
+import com.real.proj.amc.model.Service;
 import com.real.proj.amc.model.TenureBasedDiscount;
+import com.real.proj.amc.repository.AssetRepository;
 import com.real.proj.amc.repository.PackageRepository;
 import com.real.proj.amc.repository.ServiceRepository;
-import com.real.proj.amc.service.AssetRepository;
 import com.real.proj.amc.unit.test.ServiceTestHelper;
 import com.real.proj.user.model.User;
 import com.real.proj.user.service.UserRepository;
@@ -40,7 +40,7 @@ public class AMCServiceApp implements CommandLineRunner {
 
   private UserRepository userRepository;
 
-  private AssetRepository assetRepository;
+  private com.real.proj.amc.repository.AssetRepository assetRepository;
 
   private PackageRepository packageRepository;
 
@@ -86,10 +86,12 @@ public class AMCServiceApp implements CommandLineRunner {
   }
 
   private void createPackage() {
-    List<BaseService> services = ServiceTestHelper.createFewServices();
+    List<Service> services = ServiceTestHelper.createFewServices();
+    logger.info("before saved service with id {}", services);
     services = this.serviceRepository.save(services);
+    logger.info("saved service with id {}", services.get(0).getId());
     AMCPackage pkg = new AMCPackage(Category.ASSET, "GOOD PACKAGE", "Package");
-    pkg.addServices(services);
+    pkg.addService(services.get(0));
     pkg.setActive(true);
     TenureBasedDiscount disc = new TenureBasedDiscount();
     disc.addDiscount(1, 10);
@@ -109,7 +111,8 @@ public class AMCServiceApp implements CommandLineRunner {
     String id = newAsset.getId();
     logger.info("{}", id);
     newAsset = null;
-    Asset newQuote = this.assetRepository.findOne(id);
+    newAsset = this.assetRepository.findOne(id);
+    assert (newAsset != null);
   }
 
   private void createFewUsers() {

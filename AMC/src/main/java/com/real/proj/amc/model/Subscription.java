@@ -1,108 +1,130 @@
 package com.real.proj.amc.model;
 
-import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Reference;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.real.proj.amc.service.ServiceData;
+import com.real.proj.amc.model.quote.Quotation;
+import com.real.proj.user.model.User;
 
 @Document(collection = "Subscriptions")
-public class Subscription extends BaseMasterEntity implements Cloneable {
+public class Subscription extends BaseMasterEntity {
 
   private static Logger logger = LoggerFactory.getLogger(Subscription.class);
 
   @Id
   String id;
-  String assetId;
-  String userId;
-  Date startDate;
-  Date validUpto;
-
-  SubscriptionStatus status;
-  @Reference
-  List<Subscription> history;
-  @Reference
-  List<Coupon> coupons;
-
-  private String currentState;
-
+  String quotation_id;
+  @DBRef(lazy = true)
+  private Asset asset;
+  @DBRef
+  private User owner;
+  @DBRef(lazy = true)
+  private User agent;
+  private Date startDate;
+  private Date validUpto;
   private UserData userData;
+  private Set<Product> products;
+  private List<BaseService> services = new LinkedList<BaseService>();
 
-  public Subscription(String userId, String assetId, UserData data) {
-    this.userId = Objects.requireNonNull(userId, "UserId cannot be null");
-    this.assetId = Objects.requireNonNull(assetId, "Asset id cannot be null");
-    this.userData = Objects.requireNonNull(data, "UserData cannot be null");
+  public Subscription(Quotation quotation) {
+    logger.info("creating new subscription from quotation {}", quotation.getId());
+    this.quotation_id = quotation.getId();
+    this.owner = quotation.getCreatedFor();
+    this.asset = quotation.getAsset();
+    this.agent = quotation.getCreatedBy();
+    this.products = quotation.getSelectedItems();
+    saveServices();
+    this.userData = quotation.getUserData();
+    this.startDate = new Date();
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(startDate);
+    cal.add(Calendar.MONTH, userData.getTenureInMonths());
+    this.validUpto = cal.getTime();
+    logger.info("created new subscription");
   }
 
-  public Subscription(String assetId2, Map<String, ServiceData> serviceDetails) {
-    // TODO Auto-generated constructor stub
-  }
-
-  private List<Product> validateAndSet(List<Product> products) {
-    products = Objects.requireNonNull(products, "Product data cannot be null");
-    for (Product product : products) {
-      if (!product.canSubscribe()) {
-        if (logger.isErrorEnabled())
-          logger.error("The product {} does not support subscription model", product.getName());
-        throw new IllegalArgumentException(
-            String.format("The product {} does not support subscription model", product.getName()));
+  private void saveServices() {
+    for (Product p : products) {
+      if (p instanceof AMCPackage) {
+        AMCPackage pkg = (AMCPackage) p;
+        this.services.addAll(pkg.getServices());
+      } else {
+        this.services.add((BaseService) p);
       }
     }
-    return products;
   }
 
   public String getId() {
     return id;
   }
 
-  public void renew(Set<Product> services, List<Tax> taxes, List<Coupon> coupons) {
-    if (this.history == null)
-      this.history = new ArrayList<Subscription>();
-    Subscription old = (Subscription) this.clone();
-    this.history.add(old);
+  public void setId(String id) {
+    this.id = id;
   }
 
-  public String getState() {
-    return currentState;
+  public Asset getAsset() {
+    return asset;
   }
 
-  public Set<Product> getsubscribedProducts() {
-    return this.userData.getSelectedItems();
+  public void setAsset(Asset asset) {
+    this.asset = asset;
   }
 
-  public void setCoupons(List<Coupon> coupons) {
-    this.coupons = coupons;
+  public User getOwner() {
+    return owner;
   }
 
-  public List<Coupon> getCoupons() {
-    return this.coupons;
+  public void setOwner(User owner) {
+    this.owner = owner;
   }
 
-  public void addCoupon(Coupon coupon) {
-    if (this.coupons == null)
-      this.coupons = new ArrayList<Coupon>();
-    this.coupons.add(coupon);
+  public User getAgent() {
+    return agent;
   }
 
-  public Subscription clone() {
-    Subscription sb = new Subscription(userId, assetId, userData);
-    // sb.assetId = this.assetId;
-    sb.coupons = this.coupons;
-    sb.createdBy = this.createdBy;
-    sb.createdOn = this.createdOn;
-    sb.currentState = this.currentState;
-    sb.currentState = this.currentState;
-    sb.lastModified = this.lastModified;
-    sb.modifiedBy = this.modifiedBy;
-    return sb;
+  public void setAgent(User agent) {
+    this.agent = agent;
   }
+
+  public Date getStartDate() {
+    return startDate;
+  }
+
+  public void setStartDate(Date startDate) {
+    this.startDate = startDate;
+  }
+
+  public Date getValidUpto() {
+    return validUpto;
+  }
+
+  public void setValidUpto(Date validUpto) {
+    this.validUpto = validUpto;
+  }
+
+  public UserData getUserData() {
+    return userData;
+  }
+
+  public void setUserData(UserData userData) {
+    this.userData = userData;
+  }
+
+  public Set<Product> getProducts() {
+    return products;
+  }
+
+  public void setProducts(Set<Product> products) {
+    this.products = products;
+  }
+
 }

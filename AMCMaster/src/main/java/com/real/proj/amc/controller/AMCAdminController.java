@@ -1,20 +1,20 @@
 package com.real.proj.amc.controller;
 
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,12 +24,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.real.proj.amc.model.AMCPackage;
 import com.real.proj.amc.model.Amenity;
 import com.real.proj.amc.model.AssetBasedService;
-import com.real.proj.amc.model.BaseService;
+import com.real.proj.amc.model.Category;
 import com.real.proj.amc.model.Coupon;
-import com.real.proj.amc.model.PackageScheme;
+import com.real.proj.amc.model.Product;
+import com.real.proj.amc.model.RatingBasedSubscriptionMetadata;
+import com.real.proj.amc.model.Service;
+import com.real.proj.amc.model.SubscriptionMetadata;
 import com.real.proj.amc.model.Tax;
 import com.real.proj.amc.model.deleted.FixedPricingScheme;
-import com.real.proj.amc.model.deleted.PackagePriceInfo;
 import com.real.proj.amc.model.deleted.PriceData;
 import com.real.proj.amc.model.deleted.PricingStrategy;
 import com.real.proj.amc.model.deleted.RatingBasedPricingScheme;
@@ -43,7 +45,10 @@ import com.real.proj.amc.repository.TaxRepository;
 import com.real.proj.amc.service.GenericFCRUDService;
 
 @RestController
+@RequestMapping(path = "/api/v1/admin")
 public class AMCAdminController {
+
+  private static Logger logger = LoggerFactory.getLogger(AMCAdminController.class);
 
   GenericFCRUDService crudService;
 
@@ -82,26 +87,26 @@ public class AMCAdminController {
 
   /******************* coupon *****************************/
 
-  @RequestMapping(path = "/admin/coupons", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+  @RequestMapping(path = "/coupons", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Page<Coupon>> getCoupons(Pageable pageable) {
     Page<Coupon> coupons = this.couponRepo.findAll(pageable);
     return new ResponseEntity<Page<Coupon>>(coupons, HttpStatus.OK);
   }
 
-  @RequestMapping(path = "/admin/coupons/active", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+  @RequestMapping(path = "/coupons/active", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Page<Coupon>> getActiveCoupons(Pageable pageable) {
     Page<Coupon> coupons = this.couponRepo.findByIsActiveTrue(pageable);
     return new ResponseEntity<Page<Coupon>>(coupons, HttpStatus.OK);
   }
 
-  @RequestMapping(path = "/admin/coupon/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+  @RequestMapping(path = "/coupon/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Coupon> getCoupon(@PathVariable String id) {
     Coupon cpn = this.couponRepo.findOne(id);
     HttpStatus status = (cpn == null) ? HttpStatus.NOT_FOUND : HttpStatus.OK;
     return new ResponseEntity<Coupon>(cpn, HttpStatus.OK);
   }
 
-  @RequestMapping(path = "/admin/coupon", method = { RequestMethod.POST,
+  @RequestMapping(path = "/coupon", method = { RequestMethod.POST,
       RequestMethod.PUT }, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Coupon> createCoupon(@RequestBody @Valid Coupon coupon) {
     Coupon cpn = this.couponRepo.save(coupon);
@@ -109,19 +114,19 @@ public class AMCAdminController {
   }
 
   /******************* tax *****************************/
-  @RequestMapping(path = "/admin/tax", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+  @RequestMapping(path = "/tax", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Page<Tax>> getTax(Pageable pageable) {
     return new ResponseEntity<Page<Tax>>(this.taxRepo.findAll(pageable), HttpStatus.OK);
   }
 
-  @RequestMapping(path = "/admin/tax/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+  @RequestMapping(path = "/tax/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Tax> getTax(@PathVariable String id) {
     Tax tax = this.taxRepo.findOne(id);
     HttpStatus status = (tax == null) ? HttpStatus.NOT_FOUND : HttpStatus.OK;
     return new ResponseEntity<Tax>(tax, status);
   }
 
-  @RequestMapping(path = "/admin/tax", method = { RequestMethod.POST,
+  @RequestMapping(path = "/tax", method = { RequestMethod.POST,
       RequestMethod.PUT }, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Tax> createCoupon(@RequestBody @Valid Tax tax, Principal adminUser) {
     Tax tx = this.taxRepo.save(tax);
@@ -129,19 +134,19 @@ public class AMCAdminController {
   }
 
   /******************* Amenity *****************************/
-  @RequestMapping(path = "/admin/amenities", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+  @RequestMapping(path = "/amenities", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Page<Amenity>> getAminities(Pageable pageable) {
     return new ResponseEntity<Page<Amenity>>(this.amenityRepo.findAll(pageable), HttpStatus.OK);
   }
 
-  @RequestMapping(path = "/admin/amenities/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+  @RequestMapping(path = "/amenities/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Amenity> getAminities(@PathVariable String id) {
     Amenity amenity = this.amenityRepo.findOne(id);
     HttpStatus status = (amenity == null) ? HttpStatus.NOT_FOUND : HttpStatus.OK;
     return new ResponseEntity<Amenity>(amenity, status);
   }
 
-  @RequestMapping(path = "/admin/amenity", method = { RequestMethod.POST,
+  @RequestMapping(path = "/amenity", method = { RequestMethod.POST,
       RequestMethod.PUT }, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Amenity> createCoupon(@RequestBody @Valid Amenity category, Principal adminUser) {
     Amenity amenity = this.amenityRepo.save(category);
@@ -149,17 +154,47 @@ public class AMCAdminController {
   }
 
   /******************* Service *****************************/
-  @RequestMapping(path = "/admin/services", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Page<AssetBasedService>> getServices(Pageable pageable) {
-    Page<BaseService> services = this.serviceRepo.findAll(pageable);
-    return new ResponseEntity<Page<AssetBasedService>>(HttpStatus.OK);
+
+  @RequestMapping(path = "/services", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<AssetBasedService> createNewAssetService(AssetBasedService baseService, Category category) {
+    AssetBasedService newService = this.serviceRepo.save(baseService);
+    return new ResponseEntity<AssetBasedService>(newService, HttpStatus.OK);
   }
 
-  @RequestMapping(path = "/admin/services/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<AssetBasedService> getService(@PathVariable String id) {
-    AssetBasedService service = (AssetBasedService) this.serviceRepo.findOne(id);
+  @RequestMapping(path = "/services/{id}/subscription/scheme/rating", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Service> setRatingBasedSubscription(
+      @PathVariable @Validated String serviceId,
+      @RequestBody @Validated RatingBasedSubscriptionMetadata svcData) {
+    Service service = this.serviceRepo.findOne(serviceId);
+    service = Objects.requireNonNull(service, "Service with id" + serviceId + "not found");
+    service.setSubscriptionData(svcData);
+    return new ResponseEntity<Service>(service, HttpStatus.OK);
+  }
+
+  @RequestMapping(path = "/services/{id}/subscription/scheme/onetime", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Service> setBasicSubscriptionData(
+      @PathVariable @Validated String serviceId,
+      @RequestBody @Validated SubscriptionMetadata svcData) {
+    Service service = this.serviceRepo.findOne(serviceId);
+    service = Objects.requireNonNull(service, "Service with id" + serviceId + "not found");
+    service.setSubscriptionData(svcData);
+    return new ResponseEntity<Service>(service, HttpStatus.OK);
+  }
+
+  @RequestMapping(path = "/services", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Page<Service>> getServices(Pageable pageable) {
+    logger.info("Requested for services for page : {}", pageable.getPageNumber());
+    Page<Service> services = this.serviceRepo.findAll(pageable);
+    if (logger.isDebugEnabled())
+      logger.debug("Services loaded from DB -> {}", services);
+    return new ResponseEntity<Page<Service>>(services, HttpStatus.OK);
+  }
+
+  @RequestMapping(path = "/services/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Service> getService(@PathVariable String id) {
+    Service service = this.serviceRepo.findOne(id);
     HttpStatus status = Objects.isNull(service) ? HttpStatus.NOT_FOUND : HttpStatus.OK;
-    return new ResponseEntity<AssetBasedService>(service, status);
+    return new ResponseEntity<Service>(service, status);
   }
 
   @RequestMapping(path = "/admin/services/subscritpion", method = { RequestMethod.POST,
@@ -184,7 +219,7 @@ public class AMCAdminController {
       @RequestBody String scheme,
       @RequestBody PriceData price,
       @RequestBody Long date) {
-    BaseService svc = this.serviceRepo.findOne(id);
+    Product svc = this.serviceRepo.findOne(id);
     if (Objects.isNull(svc))
       return new ResponseEntity<AssetBasedService>(HttpStatus.NOT_FOUND);
     PricingStrategy priceStrategy = null;
@@ -195,7 +230,7 @@ public class AMCAdminController {
       priceStrategy = createPriceStrategy(scheme);
     Date wef = Objects.isNull(date) ? new Date() : new Date(date);
     priceStrategy.updatePrice(price, wef);
-    svc = this.serviceRepo.save(svc);
+    // svc = this.serviceRepo.save(svc);
     return new ResponseEntity<AssetBasedService>(HttpStatus.OK);
   }
 
@@ -204,7 +239,7 @@ public class AMCAdminController {
   public ResponseEntity<SubscriptionService> defineServiceLevelData(
       @PathVariable String id,
       @RequestBody ServiceData sld) {
-    BaseService service = this.serviceRepo.findOne(id);
+    Product service = this.serviceRepo.findOne(id);
     if (Objects.isNull(service))
       return new ResponseEntity<SubscriptionService>((SubscriptionService) null, HttpStatus.NOT_FOUND);
     else if (!(service instanceof SubscriptionService))
@@ -231,25 +266,6 @@ public class AMCAdminController {
   @RequestMapping(path = "/admin/package/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<AMCPackage> getPackage(@PathVariable String packageId) {
     return new ResponseEntity<AMCPackage>(this.packageRepo.findOne(packageId), HttpStatus.OK);
-  }
-
-  @RequestMapping(path = "/admin/package/{id}/variants", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Map<PackageScheme, PackagePriceInfo>> getPackageVariants(@PathVariable String packageId) {
-    AMCPackage pkg = this.packageRepo.findOne(packageId);
-    List<String> serviceIds = pkg.getServiceInfo();
-    List<SubscriptionService> services = new ArrayList<SubscriptionService>();
-    this.serviceRepo.findAll(serviceIds).forEach(service -> {
-      services.add((SubscriptionService) service);
-    });
-    // Map<PackageScheme, PackagePriceInfo> basicPriceDetails = pkg
-    // .getActualPrice(null);
-    return new ResponseEntity<Map<PackageScheme, PackagePriceInfo>>(HttpStatus.OK);
-  }
-
-  @RequestMapping(path = "/admin/package", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Page<AMCPackage>> getPackage(Pageable pageable, List<String> serviceID) {
-    Page<AMCPackage> pkgs = this.packageRepo.findByServicesServiceIdIn(pageable, serviceID);
-    return new ResponseEntity<Page<AMCPackage>>(pkgs, HttpStatus.OK);
   }
 
   @RequestMapping(path = "/admin/package", method = { RequestMethod.POST,

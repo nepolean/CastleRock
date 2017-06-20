@@ -4,10 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.util.Calendar;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.IntStream;
 
 import org.junit.Before;
@@ -23,8 +21,6 @@ import org.springframework.test.context.TestPropertySource;
 import org.statefulj.fsm.FSM;
 import org.statefulj.fsm.RetryException;
 import org.statefulj.fsm.TooBusyException;
-import org.statefulj.fsm.model.Action;
-import org.statefulj.fsm.model.State;
 import org.statefulj.persistence.memory.MemoryPersisterImpl;
 
 import com.real.proj.amc.model.AMCPackage;
@@ -35,14 +31,13 @@ import com.real.proj.amc.model.Tax;
 import com.real.proj.amc.model.UserData;
 import com.real.proj.amc.model.UserInput;
 import com.real.proj.amc.model.quote.Quotation;
-import com.real.proj.amc.model.quote.QuotationStateHandler;
 import com.real.proj.amc.model.quote.QuotationConfig;
-import com.real.proj.amc.model.quote.QuotationConfig.Event;
 import com.real.proj.amc.model.quote.QuotationConfig.States;
-import com.real.proj.amc.model.quote.QuotationSpringSMConfig.Events;
-import com.real.proj.amc.model.quote.QuotationSpringSMConfig.QuoteStates;
 import com.real.proj.amc.model.quote.QuotationRepository;
 import com.real.proj.amc.model.quote.QuotationSpringSMConfig;
+import com.real.proj.amc.model.quote.QuotationSpringSMConfig.Events;
+import com.real.proj.amc.model.quote.QuotationSpringSMConfig.QuoteStates;
+import com.real.proj.amc.model.quote.QuotationStateHandler;
 import com.real.proj.amc.unit.test.ServiceTestHelper;
 import com.real.proj.user.model.User;
 
@@ -73,7 +68,7 @@ public class QuotationTest {
     int tenure = 4;
     double measuredArea = 1000.0;
     Rating four = Rating.FOUR;
-    UserData data = new UserData(product, four, tenure, measuredArea);
+    UserData data = new UserData(3, tenure, measuredArea);
     quote.setUserData(data);
     quote.setApplicableTaxes(this.createTaxes());
     AMCPackage sampleProduct = ServiceTestHelper.createPackageWithDiscount();
@@ -98,7 +93,7 @@ public class QuotationTest {
   public void setUserModification() {
     Quotation quote = this.createQuotation();
     Product product = ServiceTestHelper.createPackageWithDiscount();
-    UserData data = new UserData(product, Rating.FIVE, 4, 1000.0);
+    UserData data = new UserData(30, 4, 1000.0);
     quote.setUserData(data);
     quote.setApplicableTaxes(this.createTaxes());
     quote.createQuote();
@@ -259,8 +254,8 @@ public class QuotationTest {
     return quote;
   }
 
-  private Set<Tax> createTaxes() {
-    Set<Tax> taxes = new HashSet<Tax>();
+  private List<Tax> createTaxes() {
+    List<Tax> taxes = new LinkedList<Tax>();
     taxes.add(new Tax("Service Tax", 12.0));
     taxes.add(new Tax("Service Charge", 5.0));
 

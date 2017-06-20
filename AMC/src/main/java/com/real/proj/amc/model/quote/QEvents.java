@@ -2,8 +2,8 @@ package com.real.proj.amc.model.quote;
 
 public enum QEvents {
 
-  CREATE,
-  SUBMITUSERDATA,
+  CREATE_QUOTE,
+  GENERATE_QUOTE,
   ACCEPT,
   REGENERATE,
   APPROVE,
