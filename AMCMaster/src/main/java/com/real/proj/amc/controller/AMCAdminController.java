@@ -1,7 +1,7 @@
 package com.real.proj.amc.controller;
 
 import java.security.Principal;
-import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import javax.validation.Valid;
@@ -24,19 +24,17 @@ import org.springframework.web.bind.annotation.RestController;
 import com.real.proj.amc.model.AMCPackage;
 import com.real.proj.amc.model.Amenity;
 import com.real.proj.amc.model.AssetBasedService;
-import com.real.proj.amc.model.Category;
+import com.real.proj.amc.model.BaseService;
 import com.real.proj.amc.model.Coupon;
-import com.real.proj.amc.model.Product;
+import com.real.proj.amc.model.GeneralService;
+import com.real.proj.amc.model.OneTimeData;
+import com.real.proj.amc.model.OneTimeMetadata;
 import com.real.proj.amc.model.RatingBasedSubscriptionMetadata;
 import com.real.proj.amc.model.Service;
+import com.real.proj.amc.model.SubscriptionData;
 import com.real.proj.amc.model.SubscriptionMetadata;
 import com.real.proj.amc.model.Tax;
-import com.real.proj.amc.model.deleted.FixedPricingScheme;
-import com.real.proj.amc.model.deleted.PriceData;
-import com.real.proj.amc.model.deleted.PricingStrategy;
-import com.real.proj.amc.model.deleted.RatingBasedPricingScheme;
-import com.real.proj.amc.model.deleted.ServiceData;
-import com.real.proj.amc.model.deleted.SubscriptionService;
+import com.real.proj.amc.model.TenureBasedDiscount;
 import com.real.proj.amc.repository.AmenityRepository;
 import com.real.proj.amc.repository.CouponRepository;
 import com.real.proj.amc.repository.PackageRepository;
@@ -85,6 +83,11 @@ public class AMCAdminController {
     this.serviceRepo = serviceRepo;
   }
 
+  @Autowired
+  public void setPackageRespository(PackageRepository packageRepo) {
+    this.packageRepo = packageRepo;
+  }
+
   /******************* coupon *****************************/
 
   @RequestMapping(path = "/coupons", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -102,7 +105,7 @@ public class AMCAdminController {
   @RequestMapping(path = "/coupon/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Coupon> getCoupon(@PathVariable String id) {
     Coupon cpn = this.couponRepo.findOne(id);
-    HttpStatus status = (cpn == null) ? HttpStatus.NOT_FOUND : HttpStatus.OK;
+    cpn = Objects.requireNonNull(cpn, "Coupon with id " + id + " nout found.");
     return new ResponseEntity<Coupon>(cpn, HttpStatus.OK);
   }
 
@@ -155,33 +158,93 @@ public class AMCAdminController {
 
   /******************* Service *****************************/
 
-  @RequestMapping(path = "/services", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<AssetBasedService> createNewAssetService(AssetBasedService baseService, Category category) {
+  @RequestMapping(path = "/service/asset", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<AssetBasedService> createNewAssetService(
+      @RequestBody @Validated AssetBasedService baseService) {
+    logger.info("Create new service with details {}", baseService);
     AssetBasedService newService = this.serviceRepo.save(baseService);
     return new ResponseEntity<AssetBasedService>(newService, HttpStatus.OK);
   }
 
-  @RequestMapping(path = "/services/{id}/subscription/scheme/rating", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Service> setRatingBasedSubscription(
-      @PathVariable @Validated String serviceId,
-      @RequestBody @Validated RatingBasedSubscriptionMetadata svcData) {
-    Service service = this.serviceRepo.findOne(serviceId);
-    service = Objects.requireNonNull(service, "Service with id" + serviceId + "not found");
-    service.setSubscriptionData(svcData);
-    return new ResponseEntity<Service>(service, HttpStatus.OK);
+  @RequestMapping(path = "/service/general", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<GeneralService> createNewGeneralService(
+      @RequestBody @Validated GeneralService baseService) {
+    logger.info("Create new service with details {}, category {}", baseService, baseService.getCategory());
+    GeneralService newService = this.serviceRepo.save(baseService);
+    return new ResponseEntity<GeneralService>(newService, HttpStatus.OK);
   }
 
-  @RequestMapping(path = "/services/{id}/subscription/scheme/onetime", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Service> setBasicSubscriptionData(
-      @PathVariable @Validated String serviceId,
-      @RequestBody @Validated SubscriptionMetadata svcData) {
-    Service service = this.serviceRepo.findOne(serviceId);
-    service = Objects.requireNonNull(service, "Service with id" + serviceId + "not found");
-    service.setSubscriptionData(svcData);
-    return new ResponseEntity<Service>(service, HttpStatus.OK);
+  @RequestMapping(path = "/service/{id}/general/subscription", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Service> setSubscriptionData(
+      @PathVariable @Validated String id,
+      @RequestBody @Validated SubscriptionData ratingBasedMetadata) {
+    logger.info("Set subscription data for the general service {}", id);
+    return updateServiceData(id, ratingBasedMetadata);
   }
 
-  @RequestMapping(path = "/services", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+  @RequestMapping(path = "/service/{id}/asset/subscription", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Service> setAssetSubscriptionData(
+      @PathVariable @Validated String id,
+      @RequestBody @Validated RatingBasedSubscriptionMetadata ratingBasedMetadata) {
+    logger.info("Set subscription data for the asset based service {}", id);
+    return this.updateServiceData(id, ratingBasedMetadata);
+  }
+
+  private ResponseEntity<Service> updateServiceData(String id, SubscriptionMetadata ratingBasedMetadata) {
+    Service assetService = this.getServiceObject(id);
+    if (logger.isDebugEnabled())
+      logger.debug("Subscription Metadata \n {}", ratingBasedMetadata);
+    assetService.setSubscriptionData(ratingBasedMetadata);
+    Service newService = this.serviceRepo.save(assetService);
+    return new ResponseEntity<Service>(newService, HttpStatus.OK);
+  }
+
+  @RequestMapping(path = "/service/{id}/general/onetime", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Service> setOneTimeData(
+      @PathVariable @Validated String id,
+      @RequestBody @Validated OneTimeData oneTimeData) {
+    logger.info("Set OneTime data for the general service {}", id);
+    return updateOneTimeData(id, oneTimeData);
+  }
+
+  @RequestMapping(path = "/service/{id}/asset/onetime", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Service> setAssetOneTimeData(
+      @PathVariable @Validated String id,
+      @RequestBody @Validated OneTimeMetadata ratingBasedMetadata) {
+    logger.info("Set OneTime data for asset based service {}", id);
+    return this.updateOneTimeData(id, ratingBasedMetadata);
+  }
+
+  private ResponseEntity<Service> updateOneTimeData(String id, OneTimeMetadata oneTimeData) {
+    Service assetService = getServiceObject(id);
+    if (logger.isDebugEnabled())
+      logger.debug("Onetime Metadata \n {}", oneTimeData);
+    assetService.setOneTimeData(oneTimeData);
+    Service newService = this.serviceRepo.save(assetService);
+    return new ResponseEntity<Service>(newService, HttpStatus.OK);
+  }
+
+  @RequestMapping(path = "/service/enable", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<String> enableServices(@RequestBody @Validated List<String> services) {
+    logger.info("Enable services ({})", services.size());
+    Iterable<Service> allServices = this.serviceRepo.findAll(services);
+    for (Service eachService : allServices)
+      ((BaseService) eachService).setActive(true);
+    this.serviceRepo.save(allServices);
+    return new ResponseEntity<String>("Successfully enabled all the services.", HttpStatus.OK);
+  }
+
+  @RequestMapping(path = "/service/disable", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<String> disableServices(@RequestBody @Validated List<String> services) {
+    logger.info("Disable services ({})", services.size());
+    Iterable<Service> allServices = this.serviceRepo.findAll(services);
+    for (Service eachService : allServices)
+      ((BaseService) eachService).setActive(false);
+    this.serviceRepo.save(allServices);
+    return new ResponseEntity<String>("Successfully disabled all the services.", HttpStatus.OK);
+  }
+
+  @RequestMapping(path = "/service", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Page<Service>> getServices(Pageable pageable) {
     logger.info("Requested for services for page : {}", pageable.getPageNumber());
     Page<Service> services = this.serviceRepo.findAll(pageable);
@@ -192,87 +255,72 @@ public class AMCAdminController {
 
   @RequestMapping(path = "/services/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Service> getService(@PathVariable String id) {
+    Service service = getServiceObject(id);
+    return new ResponseEntity<Service>(service, HttpStatus.OK);
+  }
+
+  private Service getServiceObject(String id) {
     Service service = this.serviceRepo.findOne(id);
-    HttpStatus status = Objects.isNull(service) ? HttpStatus.NOT_FOUND : HttpStatus.OK;
-    return new ResponseEntity<Service>(service, status);
-  }
-
-  @RequestMapping(path = "/admin/services/subscritpion", method = { RequestMethod.POST,
-      RequestMethod.PUT }, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<SubscriptionService> creteService(SubscriptionService service) {
-    SubscriptionService svc = this.serviceRepo.save(service);
-    return new ResponseEntity<SubscriptionService>(svc, HttpStatus.OK);
-  }
-
-  // There are multiple cases here
-  // - Defining the price for the first time
-  // - Updating the price
-  // - Updating the strategy
-  // - The challenges are many fold:
-  // - How to deal with strategy change?
-  // - How to deal with whether a given strategy applies to the given service or
-  // not?
-  @RequestMapping(path = "/admin/service/{id}/price", method = { RequestMethod.POST,
-      RequestMethod.PUT }, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<AssetBasedService> definePrice(
-      @PathVariable String id,
-      @RequestBody String scheme,
-      @RequestBody PriceData price,
-      @RequestBody Long date) {
-    Product svc = this.serviceRepo.findOne(id);
-    if (Objects.isNull(svc))
-      return new ResponseEntity<AssetBasedService>(HttpStatus.NOT_FOUND);
-    PricingStrategy priceStrategy = null;
-    if (priceStrategy == null)
-      priceStrategy = createPriceStrategy(scheme);
-    // changing the scheme?
-    else if (!priceStrategy.getName().equals(scheme))
-      priceStrategy = createPriceStrategy(scheme);
-    Date wef = Objects.isNull(date) ? new Date() : new Date(date);
-    priceStrategy.updatePrice(price, wef);
-    // svc = this.serviceRepo.save(svc);
-    return new ResponseEntity<AssetBasedService>(HttpStatus.OK);
-  }
-
-  @RequestMapping(path = "/admin/service/subscritpion/{id}/data", method = { RequestMethod.POST,
-      RequestMethod.PUT }, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<SubscriptionService> defineServiceLevelData(
-      @PathVariable String id,
-      @RequestBody ServiceData sld) {
-    Product service = this.serviceRepo.findOne(id);
-    if (Objects.isNull(service))
-      return new ResponseEntity<SubscriptionService>((SubscriptionService) null, HttpStatus.NOT_FOUND);
-    else if (!(service instanceof SubscriptionService))
-      return new ResponseEntity<SubscriptionService>((SubscriptionService) null,
-          HttpStatus.UNPROCESSABLE_ENTITY);
-    SubscriptionService subsService = (SubscriptionService) service;
-    // subsService.addServiceLevelData(sld);
-    return new ResponseEntity<SubscriptionService>(subsService, HttpStatus.OK);
-  }
-
-  private PricingStrategy createPriceStrategy(String scheme) {
-    PricingStrategy strategy = null;
-    if ("Fixed".equals(scheme))
-      strategy = new FixedPricingScheme();
-    else if ("RATING_BASED".equals(scheme))
-      strategy = new RatingBasedPricingScheme();
-    else
-      throw new IllegalArgumentException("Invalid scheme specified");
-    return strategy;
+    service = Objects.requireNonNull(service, "Service with id " + id + " not found.");
+    return service;
   }
 
   /******************* package *****************************/
 
-  @RequestMapping(path = "/admin/package/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<AMCPackage> getPackage(@PathVariable String packageId) {
-    return new ResponseEntity<AMCPackage>(this.packageRepo.findOne(packageId), HttpStatus.OK);
+  @RequestMapping(path = "/package", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Page<AMCPackage>> getPackages(Pageable page) {
+    logger.info("Get packages");
+    Page<AMCPackage> pkgs = this.packageRepo.findAll(page);
+    return new ResponseEntity<Page<AMCPackage>>(pkgs, HttpStatus.OK);
   }
 
-  @RequestMapping(path = "/admin/package", method = { RequestMethod.POST,
+  @RequestMapping(path = "/package/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<AMCPackage> getPackage(@PathVariable String id) {
+    logger.info("Get package with id {}", id);
+    AMCPackage pkg = this.packageRepo.findOne(id);
+    pkg = Objects.requireNonNull(pkg, "Package with id " + id + " not found.");
+    return new ResponseEntity<AMCPackage>(pkg, HttpStatus.OK);
+  }
+
+  @RequestMapping(path = "/package", method = { RequestMethod.POST,
       RequestMethod.PUT }, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<AMCPackage> createPackage(@RequestBody @Valid AMCPackage pkg, Principal adminUser) {
+  public ResponseEntity<AMCPackage> createPackage(@RequestBody @Validated AMCPackage pkg) {
+    logger.info("Create new package for category {}", pkg.getCategory());
     AMCPackage newPkg = this.packageRepo.save(pkg);
     return new ResponseEntity<AMCPackage>(newPkg, HttpStatus.OK);
+  }
+
+  @RequestMapping(path = "/package/{id}", method = {
+      RequestMethod.POST }, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<AMCPackage> setTenureBasedDiscount(
+      @PathVariable @Validated String id,
+      @RequestBody @Validated TenureBasedDiscount discount) {
+    logger.info("Set discount for the package with id {}", id);
+    AMCPackage pkg = this.packageRepo.findOne(id);
+    pkg = Objects.requireNonNull(pkg, "Package with id " + id + " not found.");
+    pkg.setTenureBasedDisc(discount);
+    pkg = this.packageRepo.save(pkg);
+    return new ResponseEntity<AMCPackage>(pkg, HttpStatus.OK);
+  }
+
+  @RequestMapping(path = "/package/enable", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<String> enablePackages(@RequestBody @Validated List<String> packages) {
+    logger.info("Enable packages ({})", packages.size());
+    Iterable<AMCPackage> allPackages = this.packageRepo.findAll(packages);
+    for (AMCPackage eachPkg : allPackages)
+      eachPkg.setActive(true);
+    this.packageRepo.save(allPackages);
+    return new ResponseEntity<String>("Successfully enabled all the packages.", HttpStatus.OK);
+  }
+
+  @RequestMapping(path = "/package/disable", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<String> disablePackages(@RequestBody @Validated List<String> packages) {
+    logger.info("Disable packages ({})", packages.size());
+    Iterable<AMCPackage> allPackages = this.packageRepo.findAll(packages);
+    for (AMCPackage eachPkg : allPackages)
+      eachPkg.setActive(false);
+    this.packageRepo.save(allPackages);
+    return new ResponseEntity<String>("Successfully disabled all the packages.", HttpStatus.OK);
   }
 
 }

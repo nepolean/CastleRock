@@ -45,7 +45,7 @@ public class AMCPackageTest {
     disc.addDiscount(1, 10.0);
     disc.addDiscount(2, 12.0);
     pkg.setTenureBasedDisc(disc);
-    assertEquals(2, pkg.getTenureBasedDisc().getAllTenures().size());
+    assertEquals(2, pkg.getTenureBasedDisc().fetchAllTenures().size());
     assert (Double.valueOf(pkg.getTenureBasedDisc().getDiscountFor(1)).compareTo(10.0) == 0.0);
   }
 

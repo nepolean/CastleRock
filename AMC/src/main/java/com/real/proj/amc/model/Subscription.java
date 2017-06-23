@@ -33,7 +33,7 @@ public class Subscription extends BaseMasterEntity {
   private Date validUpto;
   private UserData userData;
   private Set<Product> products;
-  private List<BaseService> services = new LinkedList<BaseService>();
+  private List<Service> services = new LinkedList<Service>();
 
   public Subscription(Quotation quotation) {
     logger.info("creating new subscription from quotation {}", quotation.getId());
@@ -49,6 +49,7 @@ public class Subscription extends BaseMasterEntity {
     cal.setTime(startDate);
     cal.add(Calendar.MONTH, userData.getTenureInMonths());
     this.validUpto = cal.getTime();
+    scheduleTasks();
     logger.info("created new subscription");
   }
 

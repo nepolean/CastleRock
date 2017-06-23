@@ -19,10 +19,11 @@ public abstract class BaseService extends BaseMasterEntity implements Service, P
   private static Logger logger = LoggerFactory.getLogger(BaseService.class);
   @Id
   private String id;
-  @NotNull
   protected Category category;
+  @NotNull
   @NotBlank
   protected String name;
+  @NotNull
   @NotBlank
   protected String description;
 
@@ -55,6 +56,7 @@ public abstract class BaseService extends BaseMasterEntity implements Service, P
   }
 
   public void setName(String name) {
+    logger.info("Service Name -> {}", name);
     this.name = name;
   }
 
@@ -72,6 +74,10 @@ public abstract class BaseService extends BaseMasterEntity implements Service, P
 
   public void setCategory(Category category) {
     this.category = category;
+  }
+
+  public void setCategory(String category) {
+    this.category = Category.valueOf(category);
   }
 
   public void setSubscriptionData(ServiceMetadata subcriptionData) {
@@ -167,7 +173,7 @@ public abstract class BaseService extends BaseMasterEntity implements Service, P
 
   public OneTimeMetadata getOneTimeServiceData() {
     try {
-      return (RatingBasedOneTimeMetadata) this.doGetCurrentSubscriptionData(DeliveryMethod.TRANSACTIONAL);
+      return (OneTimeMetadata) this.doGetCurrentSubscriptionData(DeliveryMethod.TRANSACTIONAL);
     } catch (Exception ex) {
 
     }

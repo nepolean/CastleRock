@@ -18,9 +18,14 @@ public class Tax extends BaseMasterEntity {
   @Max(100)
   private double percentage;
 
+  public Tax() {
+
+  }
+
   public Tax(String type, double percentage) {
     this.type = type;
     this.percentage = percentage;
+    this.isActive = true;
   }
 
   public String getId() {

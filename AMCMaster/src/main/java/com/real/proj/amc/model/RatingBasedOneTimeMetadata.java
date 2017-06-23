@@ -17,7 +17,7 @@ public class RatingBasedOneTimeMetadata extends OneTimeMetadata implements Seria
   /* holds pricing & other service specific details */
   Map<Rating, OneTimeData> oneTimeData;
 
-  RatingBasedOneTimeMetadata() {
+  public RatingBasedOneTimeMetadata() {
 
   }
 

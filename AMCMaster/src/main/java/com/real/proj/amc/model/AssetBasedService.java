@@ -31,7 +31,8 @@ public class AssetBasedService extends BaseService implements Serializable {
   // Map<Rating, List<ServiceData>> pricing;
 
   AssetBasedService() {
-
+    super();
+    this.setCategory(Category.ASSET);
   }
 
   public AssetBasedService(String name, String description, List<AssetType> applicableTo,
@@ -39,6 +40,11 @@ public class AssetBasedService extends BaseService implements Serializable {
     super(Category.ASSET, name, description);
     this.applicableTo = applicableTo;
     this.amenities = amenities;
+  }
+
+  public void setName(String name) {
+    logger.info("Service Name -> {}", name);
+    this.name = name;
   }
 
   public List<AssetType> getApplicableTo() {
@@ -86,6 +92,12 @@ public class AssetBasedService extends BaseService implements Serializable {
     for (String str : errorHolder)
       sb.append(str + "\\n");
     return sb.toString();
+  }
+
+  @Override
+  public String toString() {
+    return "AssetBasedService [applicableTo=" + applicableTo + ", amenities=" + amenities + ", category=" + category
+        + ", name=" + name + ", description=" + description + "]";
   }
 
 }

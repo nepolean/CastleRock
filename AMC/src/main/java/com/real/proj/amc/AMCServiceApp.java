@@ -79,7 +79,6 @@ public class AMCServiceApp implements CommandLineRunner {
 
   public void run(String... args) throws Exception {
     System.setProperty("ENVIRONMENT", "TEST");
-
     createFewUsers();
     // createAsset();
     createPackage();

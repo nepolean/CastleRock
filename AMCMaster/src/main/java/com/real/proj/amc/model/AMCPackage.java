@@ -5,11 +5,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
+import javax.validation.constraints.NotNull;
+
 import org.hibernate.validator.constraints.NotBlank;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Reference;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -24,21 +25,27 @@ public class AMCPackage extends BaseMasterEntity implements Product {
 
   @Id
   private String id;
+  @NotNull
   @NotBlank
   private String name;
+  @NotNull
   @NotBlank
   private String description;
   // @NotNull
   // private List<ServiceInfo> serviceInfo;
-  @Reference
   @DBRef
-  private List<Product> services;
+  private List<Service> services;
 
   private TenureBasedDiscount tenureBasedDisc;
 
   // private DeliveryMethod dm;
 
+  @NotNull
   private Category category;
+
+  public AMCPackage() {
+
+  }
 
   public AMCPackage(Category category, String name, String description) {
     this.category = category;
@@ -64,6 +71,18 @@ public class AMCPackage extends BaseMasterEntity implements Product {
     this.name = name;
   }
 
+  public void setCategory(Category category) {
+    this.category = category;
+  }
+
+  public void setCategory(String category) {
+    try {
+      this.category = Category.valueOf(category);
+    } catch (Exception ex) {
+      throw new IllegalArgumentException("Invalid category specified.");
+    }
+  }
+
   public void addServices(List<Service> services) {
     if (logger.isDebugEnabled())
       logger.info("Add services to package");
@@ -83,8 +102,12 @@ public class AMCPackage extends BaseMasterEntity implements Product {
       throw new IllegalArgumentException("The following services have failed to add. \n" + failedToAdd.toString());
   }
 
-  public List<Product> getServices() {
-    return services;
+  public void setServices(List<Service> services) {
+    this.services = services;
+  }
+
+  public List<Service> getServices() {
+    return this.services;
   }
 
   public String getDescription() {
@@ -110,16 +133,16 @@ public class AMCPackage extends BaseMasterEntity implements Product {
    * }
    */
 
-  public void addService(Product service) {
+  public void addService(Service service) {
     if (logger.isInfoEnabled())
       logger.info("Adding new service to the package");
     service = validate(service);
     if (this.services == null)
-      this.services = new LinkedList<Product>();
+      this.services = new LinkedList<Service>();
     this.services.add(service);
   }
 
-  private Product validate(Product service) {
+  private Service validate(Service service) {
     service = Objects.requireNonNull(service, "Null value passed for service");
     if (!service.canSubscribe()) {
       String msg = String.format("The service, {}, does not support subscription model ", service.getName());
@@ -140,19 +163,19 @@ public class AMCPackage extends BaseMasterEntity implements Product {
   public SubscriptionData getActualPrice(UserInput<String, Object> input) {
     logger.info("getActualPrice -> {}", input);
     // this is sigma of all services defined under this package.
-    Iterable<Product> services = this.loadServiceData();
+    Iterable<Service> services = this.loadServiceData();
     if (logger.isDebugEnabled())
       logger.debug("Loaded service details from db");
     return getActualPriceFor(services, input);
   }
 
-  private Iterable<Product> loadServiceData() {
+  private Iterable<Service> loadServiceData() {
     // Iterable<BaseService> services =
     // this.repository.findAll(this.getServiceInfo());
     return services;
   }
 
-  private SubscriptionData getActualPriceFor(Iterable<Product> services, UserInput<String, Object> input) {
+  private SubscriptionData getActualPriceFor(Iterable<Service> services, UserInput<String, Object> input) {
     // PackageScheme scheme) {
     if (this.services == null) {
       if (logger.isErrorEnabled())
@@ -161,7 +184,7 @@ public class AMCPackage extends BaseMasterEntity implements Product {
     }
     double actualPrice = 0.0;
     int visitCount = 0;
-    for (Product service : services) {
+    for (Service service : services) {
       SubscriptionData subsData = service.fetchSubscriptionData(input);
       if (subsData == null) {
         if (logger.isErrorEnabled())
@@ -286,7 +309,7 @@ public class AMCPackage extends BaseMasterEntity implements Product {
 
   @Override
   public Category getCategory() {
-    return this.getCategory();
+    return this.category;
   }
 
 }
