@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th-fragment="head(metaDescription,title,links,scripts)">
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content="" th:attr="content=${metaDescription}"/>
+    <meta name="author" content=""/>
+    <title th:text="${'Company - ' + title}">Company - Home</title>
+	<!-- core CSS -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="/css/font-awesome.min.css" rel="stylesheet"/>
+    <link href="/css/main.css" rel="stylesheet"/>
+    <!--[if lt IE 9]>
+    <script src="js/html5shiv.js"></script>
+    <script src="js/respond.min.js"></script>
+    <![endif]-->       
+    <link rel="shortcut icon" href="/images/ico/favicon.ico"/>
+    
+    <th:block th:replace="__${links}__" />
+    <th:block th:replace="__${scripts}__" />
+</head>
+<body>
+    <header th-fragment="header(activeLink,containerType)">
+    
+      <nav class="navbar navbar-inverse" role="banner">
+        <div class="container" th:style="${containerType == 'fluid' ? 'width: auto;' : ''}">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/index">
+            	<i class = "fa fa-home fa-md" style="padding: 5px"></i>
+            	<span style="font-family: cursive">Company</span>
+            </a>
+          </div>
+
+          <div class="collapse navbar-collapse navbar-right">
+            <ul class="nav navbar-nav">
+				<li th:class="${activeLink == 'Home' ? 'active' : ''}"><a href="/index"><i class = "fa fa-home" style="padding-right: 5px"></i>Home</a></li>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+						<i class = "fa fa-group" style="padding-right: 5px"></i>Services <i class="fa fa-angle-down"></i>
+					</a>
+					<ul class="dropdown-menu">
+						<li><a href="#"><i class = "fa fa-legal fa-md" style="padding-right: 5px"></i>Legal Services</a></li>
+						<li><a href="#"><i class = "fa fa-money fa-md" style="padding-right: 5px"></i>Utility Bill Payments</a></li>
+						<li><a href="#"><i class = "fa fa-clock-o fa-md" style="padding-right: 5px"></i>Periodic Maintenance</a></li>
+						<li><a href="#"><i class = "fa fa-lightbulb-o fa-md" style="padding-right: 5px"></i>Emergency Service</a></li>
+						<li><a href="#"><i class = "fa fa-wrench fa-md" style="padding-right: 5px"></i>Appliance Service</a></li>
+					</ul>
+				</li>
+				<li th:class="${activeLink == 'Packages' ? active : ''}"><a href="#"><i class = "fa fa-inr" style="padding-right: 5px"></i>Packages</a></li>
+				<li th:class="${activeLink == 'FAQ' ? active : ''}"><a href=""><i class = "fa fa-question-circle" style="padding-right: 5px"></i>FAQ</a></li>
+				<li sec:authorize="!isAuthenticated()">
+					<a href="/login" style="color:#f4c20d"><i class = "fa fa-sign-in" style="padding-right: 5px"></i>Login</a>
+				</li>
+				<li sec:authorize="isAuthenticated()" class="dropdown">
+				  <a class="dropdown-toggle info-number" data-toggle="dropdown" style="color:#f4c20d;">                	
+				  	<i class = "fa fa-user" style="padding-right: 5px;"></i><span sec:authentication="name">User</span>
+					<!--<span class="notification-badge bg-green">6</span>-->
+				  </a>
+				  <ul class="dropdown-menu notification-dropdown-menu">
+				  	<li><a href="/home"><i class = "fa fa-home fa-md" style="padding-right: 5px"></i>Dashboard</a></li>
+					<li><a href="/logout"><i class = "fa fa-sign-out fa-md" style="padding-right: 5px"></i>Logout</a></li>
+				  </ul>
+				</li>
+            </ul>
+          </div>
+        </div><!--/.container-->
+      </nav><!--/nav-->
+		
+    </header><!--/header-->
+</body>
+</html>

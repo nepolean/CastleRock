@@ -1,0 +1,85 @@
+<div class="row">
+	<div class="col-xs-12">
+		<div>
+			<h1 class="dashboard-heading">Packages</h1>
+		</div>
+		<form class="form-inline dashboard-action-form">
+			<a routerLink="/admin-dashboard/packages/add" class="btn btn-primary" title="Add Package"><i class="fa fa-plus fa-lg"></i></a>
+		</form>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-xs-12">
+		<div class="dashboard-widget">
+			<div class="dashboard-widget-title">
+				<div class="row">
+					<h2 class="col-xs-12 col-sm-4" style="margin-top:10px">All packages</h2>
+					<div class="form-inline col-xs-12 col-sm-5">
+						<!--<div class="dashboard-widget-title-form">
+							<label style="font-weight: bold">Filter by type:</label>
+							<select id="selectedType" class="form-control" [(ngModel)]="selectedType" name="selectedType" (change)="getPackagesByType()">
+								<option value="ALL">ALL</option>
+								<option value="USER">USER</option>
+								<option value="CUSTOMER">CUSTOMER</option>
+							</select>
+							<div class="clearfix"></div>
+						</div>-->
+					</div>
+					<div class="form-inline col-xs-12 col-sm-3">
+						<form role="form" #searchForm="ngForm" (ngSubmit)="searchPackage(searchFilter.value);">
+						<div class="input-group">
+							<input type="text" class="form-control" placeholder="Search Package" id="searchFilter" name="searchFilter" #searchFilter required>
+							<span class="input-group-btn">
+								<button class="btn btn-danger" type="submit" [disabled]="!searchForm.valid"><i class="fa fa-search fa-lg"></i></button>
+							</span>
+						</div>
+						</form>
+					</div>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="dashboard-widget-content">
+				<div class="dashboard-paginator-top-div">
+					<package-paginator [paginator]="paginator" (pageChange)="handlePageSelection($event)"></package-paginator>
+				</div>
+				<div class="table-responsive">
+				<table class="table table-striped table-hover">
+					<thead class="thead-default" style="background: black; color: white">
+						<tr>
+							<th>ID</th>
+							<th>Type</th>
+							<th>Percentage</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr *ngFor="let amcPackage of packages" (click)="selectPackage(amcPackage)"
+							[class.selected]="amcPackage === selectedPackage">
+							<th scope="row">
+								<a routerLink="/admin-dashboard/packages/view/{{amcPackage.id}}" title="View Package">{{amcPackage.id}}</a>
+							</th>									
+							<td>{{amcPackage.type}}</td>
+							<td>{{amcPackage.percentage}}</td>
+							<td>
+								<package-action-buttons 
+									[amcPackage]="selectedPackage" [listPage]="true" (editPackage)="editPackage($event)">
+								</package-action-buttons>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				</div>
+				<div class="dashboard-paginator-bottom-div">
+					<package-paginator [paginator]="paginator" (pageChange)="handlePageSelection($event)"></package-paginator>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!--/.row-->
+
+
+<package-action-modals 
+	[amcPackage]="selectedPackage" (deletePackage)="deletePackage($event)"
+></package-action-modals>

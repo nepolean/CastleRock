@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	th:replace="_fragments/info::html(
+		meta='Company user account unblocked',
+		heading='Account unblocked',
+		type='success',
+		greeting='Good to go',
+		content='::content',
+		buttons='::buttons')">
+		<div th:fragment="content">
+			You have successfully unblocked your account. You may now login.
+		</div>
+		<div th:fragment="buttons">
+			<div class="col-xs-6 col-sm-6 col-md-6">
+				<a th:href="@{/index}" href="/index" class="btn btn-lg btn-primary-login btn-block">Home</a>
+			</div>
+			<div class="col-xs-6 col-sm-6 col-md-6">
+				<a th:href="@{/login}" href="/login" class="btn btn-lg btn-primary-login btn-block">Login</a>
+			</div>
+		</div>
+</html>

@@ -1,0 +1,126 @@
+<div class="dashboard-widget">
+	<app-account-subscription-begin></app-account-subscription-begin>
+	<div class="dashboard-widget-content">
+		<div class="panel panel-default">
+			<div class="panel-heading active">
+				<h3 class="panel-title">
+					<a style="font-size: 14px">
+						<strong [hidden]="subscriptionId === 1">Electricity and plumbing maintenance</strong>
+						<strong [hidden]="subscriptionId === 2">Lift maintenance</strong>
+					</a>
+				</h3>
+			</div>
+			<div class="panel-collapse">
+				<div class="panel-body">
+					<form class="form-inline pull-right" style="margin-bottom: 10px">
+						<span [hidden]="subscriptionId === 2">
+							<a routerLink="/dashboard/subscription-renewal/1" class="btn btn-danger" title="Renew">Renew now</a>
+						</span>
+					</form>
+					<table [hidden]="subscriptionId === 1" class="table table-hover table-striped" style="overflow: hidden">
+						<tbody>
+							<tr>
+								<td>
+									<div class="row">
+										<div class="col-sm-4 col-xs-12"><strong>Property applicable to</strong></div>
+										<div class="col-sm-8 col-xs-12">Ramaiah Enclave</div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="row">
+										<div class="col-sm-4 col-xs-12"><strong>Subscription start date</strong></div>
+										<div class="col-sm-8 col-xs-12">10 March 2016</div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="row">
+										<div class="col-sm-4 col-xs-12"><strong>Subscription renewal date</strong></div>
+										<div class="col-sm-8 col-xs-12">10 March 2017</div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="row">
+										<div class="col-sm-4 col-xs-12"><strong>Subscription amount</strong></div>
+										<div class="col-sm-8 col-xs-12"><i class="fa fa-rupee"></i>12500 anually</div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="row">
+										<div class="col-sm-4 col-xs-12"><strong>Subscription details</strong></div>
+										<div class="col-sm-8 col-xs-12">
+											<p>
+												As part of this subscription, you will be entitled to 6 bimonthly visits by our service personnel.
+												The service involves repair and replacement of malfunctioning electrical appliances in the common area.
+												Blabla.
+											</p>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<table [hidden]="subscriptionId === 2" class="table table-hover table-striped" style="overflow: hidden">
+						<tbody>
+							<tr>
+								<td>
+									<div class="row">
+										<div class="col-sm-4 col-xs-12"><strong>Property applicable to</strong></div>
+										<div class="col-sm-8 col-xs-12">Ramaiah Enclave</div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="row">
+										<div class="col-sm-4 col-xs-12"><strong>Subscription start date</strong></div>
+										<div class="col-sm-8 col-xs-12">10 February 2016</div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="row">
+										<div class="col-sm-4 col-xs-12"><strong>Subscription renewal date</strong></div>
+										<div class="col-sm-8 col-xs-12">10 February 2017</div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="row">
+										<div class="col-sm-4 col-xs-12"><strong>Subscription amount</strong></div>
+										<div class="col-sm-8 col-xs-12"><i class="fa fa-rupee"></i>24200 anually</div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="row">
+										<div class="col-sm-4 col-xs-12"><strong>Subscription details</strong></div>
+										<div class="col-sm-8 col-xs-12">
+											<p>
+												As part of this subscription, you will be entitled to 6 regular visits by our service personnel.
+												The service involves maintenance of the lift shaft, lift assembly and the car. Basic spare parts
+												like nuts and bolts will be replaced if found damaged. You will be notified before hand for replacement
+												of any part if found damaged. Cost of any visit in addition to the six visits will have to be borne
+												by you. More blabla. 
+											</p>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

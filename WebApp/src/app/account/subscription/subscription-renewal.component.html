@@ -1,0 +1,278 @@
+<div class="dashboard-widget">
+	<app-account-subscription-begin></app-account-subscription-begin>
+	<div class="dashboard-widget-content">
+		<div class="panel panel-default">
+			<div class="panel-heading active">
+				<h3 class="panel-title">
+					<a style="font-size: 14px">
+						<strong>Renew subscription</strong>
+					</a>
+				</h3>
+			</div>
+			<div class="panel-collapse">
+				<div class="panel-body">
+					<div id="wizard" class="form_wizard wizard_horizontal">
+						<ul class="wizard_steps anchor dashboard-mobile-display-hider">
+							<li>
+								<a [attr.class]="getWizardStepCircleClass(1)">
+									<span class="step_no">1</span>
+									<span class="step_descr">Step 1<br><small>Check package details</small></span>
+								</a>
+							</li>
+							<li>
+								<a [attr.class]="getWizardStepCircleClass(2)">
+									<span class="step_no">2</span>
+									<span class="step_descr">Step 2<br><small>Check subscription details</small></span>
+								</a>
+							</li>
+							<li>
+								<a [attr.class]="getWizardStepCircleClass(3)">
+									<span class="step_no">3</span>
+									<span class="step_descr">Step 3<br><small>View summary</small></span>
+								</a>
+							</li>
+							<li>
+								<a [attr.class]="getWizardStepCircleClass(4)">
+									<span class="step_no">4</span>
+									<span class="step_descr">Step 4<br><small>Make payment</small></span>
+								</a>
+							</li>
+						</ul>
+						<div class="stepContainer">
+							<div id="step1" class="content" [hidden]="currentStep!=1">
+								<div class="col-sm-12 col-xs-12">
+									<div class="dashboard-widget" style="min-height: 225px">
+										<div class="dashboard-widget-title">
+											<div class="row">
+												<h2 class="col-xs-10 col-sm-8" style="margin-top:10px">
+													Lift maintenance
+												</h2>
+												<div class="col-xs-2 col-sm-4">
+													<div class="dashboard-widget-title-mobile-menu btn-group">
+														<button class="btn btn-default" data-toggle="dropdown" style="background:#d9534f;color:white" title="Choose Package" type="button">
+															<i class="fa fa-check fa-lg"></i>
+														</button>
+													</div>
+													<div class="dashboard-widget-title-desktop-menu pull-right">
+														<button class="btn btn-danger" data-toggle="dropdown" (click)="goToNext()" title="Choose Package" type="button">
+															Choose Package
+														</button>
+													</div>
+												</div>
+											</div>
+											<div class="clearfix"></div>
+										</div>
+
+										<div class="dashboard-widget-content">
+											<p class="excerpt" style="text-align: justify">
+												As part of this subscription, you will be entitled to 6 bimonthly visits by our service personnel. The service involves repair
+												and replacement of malfunctioning electrical appliances in the common area. Blabla. Pricing starts from XXXXX
+												blabla.
+											</p>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div id="step2" class="content" [hidden]="currentStep!=2">
+								<div class="col-sm-12 col-xs-12">
+									<div class="dashboard-widget" style="min-height: 225px">
+										<div class="dashboard-widget-title">
+											<div class="row">
+												<h2 class="col-xs-10 col-sm-8" style="margin-top:10px">
+													Subscription details
+												</h2>
+											</div>
+											<div class="clearfix"></div>
+										</div>
+
+										<div class="dashboard-widget-content">
+											<form class="form-horizontal form-label-left">
+												<div class="form-group">
+													<label class="control-label col-md-4 col-sm-4 col-xs-12" for="title">Property applicable to<span class="required">*</span></label>
+													<div class="col-md-6 col-sm-6 col-xs-12">
+														<select name="property" class="form-control col-md-7 col-xs-12">
+															<option value="890">412 Purva Supreme</option>
+															<option value="890">Ramaiah Enclave</option>
+														</select>
+													</div>
+												</div>
+												<div class="form-group">
+													<label class="control-label col-md-4 col-sm-4 col-xs-12" for="title">Subscription period<span class="required">*</span></label>
+													<div class="col-md-6 col-sm-6 col-xs-12">
+														<select name="period" class="form-control col-md-7 col-xs-12">
+															<option value="890">1 year</option>
+															<!--<option value="890">6 months</option>-->
+														</select>
+													</div>
+												</div>
+												<div class="form-group">
+													<label class="control-label col-md-4 col-sm-4 col-xs-12" for="title">Subscription amount</label>
+													<div class="col-md-6 col-sm-6 col-xs-12">
+														<i class="fa fa-rupee fa-lg"></i>24500
+													</div>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-12 col-xs-12">
+									<div class="dashboard-widget" style="min-height: 225px">
+										<div class="dashboard-widget-title">
+											<div class="row">
+												<h2 class="col-xs-10 col-sm-8" style="margin-top:10px">
+													Lift details
+												</h2>
+											</div>
+											<div class="clearfix"></div>
+										</div>
+
+										<div class="dashboard-widget-content">
+											<form class="form-horizontal form-label-left">
+												<div class="form-group">
+													<label class="control-label col-md-4 col-sm-4 col-xs-12" for="title">Manufacturer<span class="required">*</span></label>
+													<div class="col-md-6 col-sm-6 col-xs-12">
+														<select name="property" class="form-control col-md-7 col-xs-12">
+															<option value="890">Johnson Elevators</option>
+															<option value="890">OTIS</option>
+															<option value="890">Thysenkrupp</option>
+														</select>
+													</div>
+												</div>
+												<div class="form-group">
+													<label class="control-label col-md-4 col-sm-4 col-xs-12">Installation year<span class="required">*</span></label>
+													<div class="col-md-6 col-sm-6 col-xs-12">
+														<input id="birthday" value="2013" class="date-picker form-control col-md-7 col-xs-12" required="required" type="number">
+													</div>
+												</div>
+												<div class="form-group">
+													<label class="control-label col-md-4 col-sm-4 col-xs-12">Passenger capacity<span class="required">*</span></label>
+													<div class="col-md-6 col-sm-6 col-xs-12">
+														<input id="capacity" value="6" class="date-picker form-control col-md-7 col-xs-12" required="required" type="number">
+													</div>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div id="step3" class="content" [hidden]="currentStep!=3">
+								<div class="col-xs-12">
+									<div class="dashboard-widget">
+										<div class="dashboard-widget-title">
+											<div class="row">
+												<h2 class="col-xs-10 col-sm-8" style="margin-top:10px">Summary</h2>
+											</div>
+											<div class="clearfix"></div>
+										</div>
+
+										<div class="dashboard-widget-content">
+											<table class="table table-hover table-striped" style="overflow: hidden">
+												<tbody>
+													<tr>
+														<td>
+															<div class="row">
+																<div class="col-sm-4 col-xs-12"><strong>Package chosen</strong></div>
+																<div class="col-sm-8 col-xs-6"><a>Lift maintenance</a></div>
+															</div>
+														</td>
+													</tr>
+													<tr>
+														<td>
+															<div class="row">
+																<div class="col-sm-4 col-xs-12"><strong>Subscription fee</strong></div>
+																<div class="col-sm-8 col-xs-6"><a><i class="fa fa-rupee">24500</i></a></div>
+															</div>
+														</td>
+													</tr>
+													<tr>
+														<td>
+															<div class="row">
+																<div class="col-sm-4 col-xs-12"><strong>Subscription start date</strong></div>
+																<div class="col-sm-8 col-xs-6"><a>22 Feb 2017</a></div>
+															</div>
+														</td>
+													</tr>
+													<tr>
+														<td>
+															<div class="row">
+																<div class="col-sm-4 col-xs-12"><strong>Subscription end date</strong></div>
+																<div class="col-sm-8 col-xs-6"><a>22 Feb 2018</a></div>
+															</div>
+														</td>
+													</tr>
+													<tr>
+														<td>
+															<div class="row">
+																<div class="col-sm-4 col-xs-12"><strong>Property applicable to</strong></div>
+																<div class="col-sm-8 col-xs-6"><a>Ramaiah Enclave</a></div>
+															</div>
+														</td>
+													</tr>
+													<tr>
+														<td>
+															<div class="row">
+																<div class="col-sm-4 col-xs-12"><strong>Lift details</strong></div>
+																<div class="col-sm-8 col-xs-6">
+																	<table class="table" style="overflow: hidden">
+																		<tbody>
+																			<tr>
+																				<td>Manufacturer</td><td>OTIS</td>
+																			</tr>
+																			<tr>
+																				<td>Passenger Capacity</td><td>6 persons</td>
+																			</tr>
+																			<tr>
+																				<td>Year of installation</td><td>2013</td>
+																			</tr>
+																		</tbody>
+																	</table>
+																</div>
+															</div>
+														</td>
+													</tr>
+													<tr>
+														<td>
+															<div class="row">
+																<div class="col-sm-4 col-xs-12"><strong>Subscription details</strong></div>
+																<div class="col-sm-8 col-xs-6">
+																	<p>
+																		As part of this subscription, you will be entitled to 6 regular visits by our service personnel. 
+																		The service involves maintenance of the lift shaft, lift assembly and the car. 
+																		Basic spare parts like nuts and bolts will be replaced if found damaged. 
+																		You will be notified before hand for replacement of any part if found damaged. 
+																		Cost of any visit in addition to the six visits will have to be borne by you. More blabla.
+																	</p>
+																</div>
+															</div>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+
+											<div class="checkbox">
+												<label style="font-weight: bold"><input type="checkbox" value="">I agree to terms and conditions*</label>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div id="step4" class="content" [hidden]="currentStep!=4" style="text-align: center">
+								Request a quote or make payment. Depends.
+							</div>
+						</div>
+						<div class="actionBar">
+							<div class="msgBox">
+								<div class="content"></div>
+								<a href="#" class="close">X</a>
+							</div>
+							<div class="loader">Loading</div>
+							<a (click)='goToPrevious()' [attr.class]="getPreviousButtonClass()"><i class="fa fa-angle-left fa-lg"></i></a>
+							<a (click)='goToNext()' [attr.class]="getNextButtonClass()"><i class="fa fa-angle-right fa-lg"></i></a>
+							<a (click)='submitForm()' [attr.class]="getFinishButtonClass()">Finish</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

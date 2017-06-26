@@ -1,0 +1,51 @@
+<div class="row">
+	<div class="col-xs-12">
+		<div style="border-bottom: 1px solid black;">
+			<h1 class="dashboard-heading">Add User</h1>
+		</div>
+		<form class="form-inline dashboard-action-form">
+			<div class="btn-group">
+				<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" title="Action menu">
+					<i class="fa fa-list fa-lg"></i>
+				</button>
+				<ul class="dropdown-menu">
+					<li><a routerLink="/admin-dashboard/users"><i class="fa fa-list" style="padding-right: 5px"></i>List Users</a></li>
+				</ul>
+			</div>
+		</form>
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-12">
+		<form role="form" #userForm="ngForm" (ngSubmit)="onSubmit()">
+			<fieldset>
+				<div id="message" *ngIf="response.flags.available" [attr.class]="response.flags.error ? 'error col-sm-12' : 'col-sm-12'">
+					<div id="message-icon" [attr.class]="response.flags.error ? 'glyphicon glyphicon-remove error' : 'glyphicon glyphicon-chevron-right'"></div>
+					<div id="message-text">
+						<span>{{response.message}}</span>
+						<ul *ngIf="response.fieldErrors.length > 0">
+							<li *ngFor="let fieldError of response.fieldErrors">{{fieldError}}</li>
+						</ul>
+					</div>
+				</div>
+				<div class="clearfix"></div>
+				<br/>
+
+				<user-profile-fields [(user)]="user" [editMode]="editMode"></user-profile-fields>
+
+				<div class="form-group">
+					<div>
+						<button type="submit" class="btn btn-primary-dashboard"
+							[disabled]="!userForm.form.valid || (user.confirmPassword != user.password) || response.flags.loading">
+							<i class="fa fa-save" style="padding-right: 5px"></i>Save User
+						</button>
+						<button type="button" class="btn btn-primary-dashboard" (click)="addUser();userForm.reset();"
+							[disabled]="!userForm.form.valid || (user.confirmPassword != user.password) || response.flags.loading">
+							<i class="fa fa-save" style="padding-right: 5px"></i>Save and add another user
+						</button>
+					</div>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+</div>

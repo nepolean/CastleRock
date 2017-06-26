@@ -1,0 +1,21 @@
+<!-- Tax Delete Modal -->
+<div id="taxDeleteModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content modal-sm">
+      <div class="modal-header" style="background: #c52d2f">
+        <button type="button" class="close" data-dismiss="modal" style="color: #fff">&times;</button>
+        <h4 class="modal-title" style="color: #fff">Delete Tax</h4>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete <b>{{tax.id}}</b>?</p>
+      </div>
+      <div class="modal-footer">
+		    <button type="button" class="btn btn-danger" (click)="delete();" data-dismiss="modal" style="font-weight: bold">Delete</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal" style="font-weight: bold">Cancel</button>
+      </div>
+    </div>
+
+  </div>
+</div>

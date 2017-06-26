@@ -1,0 +1,133 @@
+<div class="row">
+	<div class="col-xs-12">
+		<div>
+			<h1 class="dashboard-heading">{{profile.firstName}} {{profile.middleName}} {{profile.lastName}}</h1>
+			<span style="margin-left: 2px;">Email: {{profile.email}}</span>
+		</div>
+		<form class="form-inline dashboard-action-form">
+			<a routerLink="/admin-dashboard/profile-edit" class="btn btn-primary" title="Edit Profile"><i class="fa fa-edit fa-lg"></i></a>
+		</form>
+	</div>
+</div>
+
+<div class="row" style="margin-top: 20px;">
+	<div class="col-sm-6 col-xs-12">
+		<div class="dashboard-widget" style="min-height: 225px">
+			<div class="dashboard-widget-title">
+				<h2 style="margin-top:10px">Quick Links</h2>
+				<div class="clearfix"></div>
+			</div>
+			<div class="dashboard-widget-content">
+				<div class="bs-glyphicons">
+					<ul class="bs-glyphicons-list">
+						<li [attr.class]="router.url.indexOf('/admin-dashboard/users') != -1 ? 'active' : ''" (click)="goToLink('/admin-dashboard/users')">
+							<span class="fa fa-lg">6</span>
+							<span class="dashboard-tile-title">Users</span>
+						</li>
+						<li [attr.class]="router.url.indexOf('/admin-dashboard/packages') != -1 ? 'active' : ''" (click)="goToLink('/admin-dashboard/packages')">
+							<span class="fa fa-lg">8</span>
+							<span class="dashboard-tile-title">Packages</span>
+						</li>
+						<li [attr.class]="router.url.indexOf('/admin-dashboard/services') != -1 ? 'active' : ''" (click)="goToLink('/admin-dashboard/services')">
+							<span class="fa fa-lg">8</span>
+							<span class="dashboard-tile-title">Services</span>
+						</li>
+						<li>
+							<span class="fa fa-lg">101</span>
+							<span class="dashboard-tile-title">Subscripts</span>
+						</li>
+						<li>
+							<span class="fa fa-lg">90</span>
+							<span class="dashboard-tile-title">Properties</span>
+						</li>
+						<li>
+							<span class="fa fa-lg">12</span>
+							<span class="dashboard-tile-title">Communities</span>
+						</li>
+						<li>
+							<span class="fa fa-lg">8</span>
+							<span class="dashboard-tile-title">Technicians</span>
+						</li>
+						<li>
+							<span class="fa fa-lg">32</span>
+							<span class="dashboard-tile-title">Jobs</span>
+						</li>
+						<li>
+							<span class="fa fa-money fa-lg"></span>
+							<span class="dashboard-tile-title">Payments</span>
+						</li>
+						<li>
+							<span class="fa fa-lg">90</span>
+							<span class="dashboard-tile-title">Tickets</span>
+						</li>
+						<li [attr.class]="router.url.indexOf('/admin-dashboard/coupons') != -1 ? 'active' : ''" (click)="goToLink('/admin-dashboard/coupons')">
+							<span class="fa fa-ticket fa-lg"></span>
+							<span class="dashboard-tile-title">Coupons</span>
+						</li>
+						<li [attr.class]="router.url.indexOf('/admin-dashboard/taxes') != -1 ? 'active' : ''" (click)="goToLink('/admin-dashboard/taxes')">
+							<span class="fa fa-rupee fa-lg"></span>
+							<span class="dashboard-tile-title">Taxes</span>
+						</li>
+					</ul>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-6 col-xs-12">
+		<div class="dashboard-widget" style="min-height: 225px">
+			<div class="dashboard-widget-title">
+				<h2 style="margin-top:10px">Action center</h2>
+				<div class="clearfix"></div>
+			</div>
+			<div class="dashboard-widget-content">
+				<div class="bs-glyphicons">
+					<ul class="bs-glyphicons-list">
+						<li>
+							<span class="fa fa-lg">3</span>
+							<span class="dashboard-tile-title">Leads(N)</span>
+						</li>
+						<li>
+							<span class="fa fa-lg">9</span>
+							<span class="dashboard-tile-title">Service requests(N)</span>
+						</li>
+						<li>
+							<span class="fa fa-lg">8</span>
+							<span class="dashboard-tile-title">Subscription requests(N)</span>
+						</li>
+						<li>
+							<span class="fa fa-lg">10</span>
+							<span class="dashboard-tile-title">Properties (N)</span>
+						</li>
+						<li>
+							<span class="fa fa-lg">8</span>
+							<span class="dashboard-tile-title">Communities (N)</span>
+						</li>
+						<li>
+							<span class="fa fa-lg">6</span>
+							<span class="dashboard-tile-title">Jobs ongoing</span>
+						</li>
+						<li>
+							<span class="fa fa-lg">3</span>
+							<span class="dashboard-tile-title">Jobs on hold</span>
+						</li>
+						<li>
+							<span class="fa fa-lg">9</span>
+							<span class="dashboard-tile-title">Jobs awaiting payment</span>
+						</li>
+						<li>
+							<span class="fa fa-lg">9</span>
+							<span class="dashboard-tile-title">Tickets (N)</span>
+						</li>
+					</ul>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-12">
+		<router-outlet></router-outlet>
+	</div>
+</div>

@@ -1,0 +1,140 @@
+<div class="dashboard-widget">
+	<app-account-ticket-begin></app-account-ticket-begin>
+	<div class="dashboard-widget-content">
+		<div class="accordion">
+			<div class="panel-group" id="accordion1">
+				<div class="panel panel-default">
+					<div class="panel-heading active">
+						<h3 class="panel-title">
+						<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#collapseThree1" style="font-size: 14px">
+							<strong>Title: Unsatisfactory service</strong><span class="dashboard-mobile-display-hider"></span>
+							<i class="fa fa-angle-right pull-right"></i>
+						</a>
+						</h3>
+					</div>
+					<div id="collapseThree1" class="panel-collapse collapse in">
+						<div class="panel-body">
+							<form class="form-inline pull-right" style="margin-bottom: 10px">
+								<div class="btn-group">
+									<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#ticketUpdateModal">
+										Update ticket
+									</button>
+								</div>
+							</form>
+							<ul class="list-unstyled timeline" style="margin-top: 10px;">
+								<li>
+									<div class="block">
+										<div class="tags">
+											<span class="tag">CREATED</span>
+										</div>
+										<div class="block_content">
+											<h2 class="title"><a>Unsatisfactory service</a></h2>
+											<div class="byline">
+												<span>On 10th January 2017</span> by <a>Arun</a>
+											</div>
+											<p class="excerpt">I am totally unhappy with the service end to end blabla</p>
+										</div>
+									</div>
+								</li>
+								<li>
+									<div class="block">
+										<div class="tags" style="display:none">
+											<span class="tag"></span>
+										</div>
+										<div class="block_content">
+											<h2 class="title"></h2>
+											<div class="byline">
+												<span>On 10th January 2017</span> by <a>Support</a>
+											</div>
+											<p class="excerpt">Sir, we are very sorry to hear about your bad experience...</p>
+										</div>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Ticket Update Modal -->
+<div id="ticketUpdateModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content modal-sm">
+      <div class="modal-header" style="background: #c52d2f">
+        <button type="button" class="close" data-dismiss="modal" style="color: white">&times;</button>
+        <h4 class="modal-title" style="color: white">Update Ticket</h4>
+      </div>
+	  <form role="form">
+		<div class="modal-body">
+			<fieldset>
+				<div class="form-group row">
+					<label for="message" class="col-xs-2 control-label">Message</label>
+					<div class="col-xs-10">
+						<textarea class="form-control" style="resize: none;" rows="5" id="comment" maxlength="500"></textarea>
+					</div>
+					<div class="col-xs-offset-2 col-xs-10 form-control-error-message">
+						(Upto 500 characters allowed.)
+					</div>
+				</div>
+			</fieldset>
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-danger" data-dismiss="modal" style="font-weight: bold">Update</button>
+			<button type="button" class="btn btn-default" data-dismiss="modal" style="font-weight: bold">Cancel</button>
+		</div>
+	  </form>
+    </div>
+  </div>
+</div>
+
+<!-- Ticket Create Modal -->
+<div id="ticketCreateModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content modal-sm">
+      <div class="modal-header" style="background: #c52d2f">
+        <button type="button" class="close" data-dismiss="modal" style="color: white">&times;</button>
+        <h4 class="modal-title" style="color: white">Report a problem</h4>
+      </div>
+	  <div class="modal-body">
+		<fieldset>
+			<div class="form-group row">
+				<label for="reason" class="col-xs-2 control-label">Title *</label>
+				<div class="col-xs-10">
+					<input type="text" class="form-control" name="title"/>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="reason" class="col-xs-2 control-label">Category *</label>
+				<div class="col-xs-10">
+					<select class="form-control" name="reason" required>
+						<option value="">Select a reason</option>
+						<option value="DELAY">I am not happy with the technician</option>
+						<option value="NOTHAPPY">I am not happy with the service</option>
+						<option value="EXPENSIVE">I find the service expensive</option>
+						<option value="OTHER">Other issue</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="message" class="col-xs-2 control-label">Message</label>
+				<div class="col-xs-10">
+					<textarea class="form-control" style="resize: none;" rows="5" id="comment" maxlength="500"></textarea>
+				</div>
+				<div class="col-xs-offset-2 col-xs-10 form-control-error-message">
+					(Upto 500 characters allowed.)
+				</div>
+			</div>
+		</fieldset>
+	  </div>
+      <div class="modal-footer">
+			<button type="button" class="btn btn-danger" data-dismiss="modal" style="font-weight: bold">YES</button>
+			<button type="button" class="btn btn-default" data-dismiss="modal" style="font-weight: bold">NO</button>
+      </div>
+    </div>
+  </div>
+</div>

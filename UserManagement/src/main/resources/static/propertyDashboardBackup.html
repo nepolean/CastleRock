@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Home | Company</title>
+
+    <!-- core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/font-awesome.min.css" rel="stylesheet">
+    <link href="css/animate.min.css" rel="stylesheet">
+    <link href="css/prettyPhoto.css" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet">
+    <link href="css/user.css" rel="stylesheet">
+    <link href="css/sidebar.css" rel="stylesheet">
+    <link href="css/responsive.css" rel="stylesheet">
+
+    <style type="text/css">
+      .project--container.project--container--link, .project--container.project--container--link--active, .project--container.project--container--link--selected {
+        transition: all .2s;
+        -webkit-transition: all .2s;
+        -moz-transition: all .2s;
+        -ms-transition: all .2s;
+        -o-transition: all .2s;
+        margin: 5px;
+      }
+
+      .project--container.project--container--link--active {
+        color: #fff;
+        background-color: #c52d2f;
+        border: 1px solid #c52d2f;
+      }
+
+      .project--container.project--container--link {
+        color: #c52d2f;
+        background-color: #fff;
+        border: 1px solid #c52d2f;
+      }
+
+      .project--container.project--container--link--selected {
+        color: #f4c20d;
+        background-color: #c52d2f;
+        border: 1px solid #c52d2f;
+      }
+
+      .project--container {
+        border: 1px solid #34302d;
+        display: inline-block;
+        width: 100px;
+        height: 100px;
+        vertical-align: top;
+        text-align: center;
+      }
+
+      .project--container .project-logo--container {
+        margin-bottom: 15px;
+        vertical-align: middle;
+      }
+
+      .project--container .project--logo {
+        display: inline-block;
+        vertical-align: middle;
+      }
+
+      .project--container .project--title {
+        line-height: 16px;
+      }
+
+      .new-noteworthy-box p.title, .project--container .project--title {
+        font-size: 14px;
+        font-family: Montserrat, sans-serif;
+      }
+
+      /* *********  timeline  **************************** */
+
+      ul.timeline li {
+        position: relative;
+        border-bottom: 1px solid #e8e8e8;
+        clear: both;
+      }
+
+      .timeline .block {
+        margin: 0;
+        border-left: 3px solid #e8e8e8;
+        overflow: visible;
+        padding: 10px 15px;
+        margin-left: 150px;
+      }
+
+      .timeline.widget {
+        min-width: 0;
+        max-width: inherit;
+      }
+
+      .timeline.widget .block {
+        margin-left: 5px;
+      }
+
+      .timeline .tags {
+        position: absolute;
+        top: 15px;
+        left: 0;
+        width: 125px;
+      }
+
+      .timeline .tag {
+        display: block;
+        height: 30px;
+        font-size: 13px;
+        padding: 8px;
+      }
+
+      .timeline .tag span {
+        display: block;
+        overflow: hidden;
+        width: 100%;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+
+      .tag {
+        line-height: 1;
+        background: #000;
+        color: #fff !important;
+      }
+
+      .tag:after {
+        content: " ";
+        height: 30px;
+        width: 0;
+        position: absolute;
+        left: 100%;
+        top: 0;
+        margin: 0;
+        pointer-events: none;
+        border-top: 14px solid transparent;
+        border-bottom: 14px solid transparent;
+        border-left: 11px solid #000;
+      }
+
+      .timeline h2.title {
+        position: relative;
+        font-size: 16px;
+        margin: 0;
+      }
+
+      .timeline h2.title:before {
+        content: "";
+        position: absolute;
+        left: -23px;
+        top: 3px;
+        display: block;
+        width: 14px;
+        height: 14px;
+        border: 3px solid #d2d3d2;
+        border-radius: 14px;
+        background: #f9f9f9;
+      }
+
+      .timeline .byline {
+        padding: .25em 0;
+      }
+
+      .byline {
+        -webkit-font-smoothing: antialiased;
+        font-style: italic;
+        font-size: .9375em;
+        line-height: 1.3;
+        color: #aab6aa;
+      }
+
+      ul.social li {
+        border: 0;
+      }
+      /***************** Timeline *************/
+
+      .x_panel {
+        position: relative;
+        width: 100%;
+        margin-bottom: 10px;
+        padding: 10px 17px;
+        display: inline-block;
+        background: #fff;
+        border: 1px solid #000;
+        -webkit-column-break-inside: avoid;
+        -moz-column-break-inside: avoid;
+        column-break-inside: avoid;
+        opacity: 1;
+        color: #000;
+      }
+
+      .x_title {
+        border-bottom: 2px solid #000;
+        padding: 1px 5px 6px;
+        margin-bottom: 10px;
+      }
+
+      .x_title .filter {
+        width: 40%;
+        float: right;
+      }
+
+      .x_title h2 {
+        margin: 5px 0 6px;
+        float: left;
+        display: block;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+
+      .x_title h2 small {
+        margin-left: 10px;
+      }
+
+      .x_title span {
+        color: #BDBDBD;
+      }
+
+      .x_content {
+        padding: 0 5px 6px;
+        position: relative;
+        width: 100%;
+        float: left;
+        clear: both;
+        margin-top: 5px;
+      }
+    </style>
+
+    <!--[if lt IE 9]>
+    <script src="js/html5shiv.js"></script>
+    <script src="js/respond.min.js"></script>
+    <![endif]-->
+    <link rel="shortcut icon" href="images/ico/favicon.ico">
+  </head><!--/head-->
+
+  <body class="homepage">
+
+    <header id="header">
+      <nav class="navbar navbar-inverse" role="banner">
+        <div class="container" style="width: auto">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="index.html"><i class = "fa fa-home fa-md" style="padding-right: 5px"> Company </i></a>
+          </div>
+
+          <div class="collapse navbar-collapse navbar-right">
+            <ul class="nav navbar-nav">
+              <li class="active">
+                <a href="index.html"><i class = "fa fa-home fa-lg" style="padding-right: 5px"></i>Home</a>
+              </li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <i class = "fa fa-group fa-lg" style="padding-right: 5px"></i>Services <i class="fa fa-angle-down"></i> </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a href="#"><i class = "fa fa-legal fa-md" style="padding-right: 5px"></i>Legal Services</a>
+                  </li>
+                  <li>
+                    <a href="#"><i class = "fa fa-money fa-md" style="padding-right: 5px"></i>Utility Bill Payments</a>
+                  </li>
+                  <li>
+                    <a href="#"><i class = "fa fa-clock-o fa-md" style="padding-right: 5px"></i>Periodic Maintenance</a>
+                  </li>
+                  <li>
+                    <a href="#"><i class = "fa fa-lightbulb-o fa-md" style="padding-right: 5px"></i>Emergency Service</a>
+                  </li>
+                  <li>
+                    <a href="#"><i class = "fa fa-wrench fa-md" style="padding-right: 5px"></i>Appliance Service</a>
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <a href="#"><i class = "fa fa-inr fa-lg" style="padding-right: 5px"></i>Packages</a>
+              </li>
+              <li>
+                <a href="#"><i class = "fa fa-question-circle fa-lg" style="padding-right: 5px"></i>FAQ</a>
+              </li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="color:#f4c20d"> <i class = "fa fa-user fa-lg" style="padding-right: 5px;"></i>Arun Kumar Yathiraj <i class="fa fa-angle-down"></i> </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a href="#"><i class = "fa fa-legal fa-md" style="padding-right: 5px"></i>Legal Services</a>
+                  </li>
+                </ul>
+              </li>
+              <!--<a href="#" style="color:#f4c20d"><i class = "fa fa-sign-out fa-lg" style="padding-right: 5px"></i>Logout</a>
+              <!--|<a href="#" style="color:#f4c20d"><i class = "fa fa-user fa-lg" style="padding-right: 5px"></i>New User</a>-->
+            </ul>
+          </div>
+        </div><!--/.container-->
+      </nav><!--/nav-->
+
+    </header><!--/header-->
+
+    <section id="portfolio" style="padding: 0px">
+      <div id="dashboard-container">
+        <!-- Sidebar -->
+        <div id="sidebar">
+          <ul id="sidebar-menu" class="sidebar-nav">
+            <li class="sidebar-brand">
+              <a id="sidebar-menu-toggle" href="#">Arun Kumar Yathiraj<span id="sidebar-main-icon" class="glyphicon glyphicon-align-justify"></span></a>
+            </li>
+          </ul>
+          <ul class="sidebar-nav">
+            <li>
+              <a>Notifications/Messages<span class="sidebar-sub-icon glyphicon fa fa-bell fa-lg"></span></a>
+            </li>
+            <li>
+              <a>Properties<span class="sidebar-sub-icon glyphicon fa fa-building-o fa-lg"></span></a>
+            </li>
+            <li>
+              <a>Account information<span class="sidebar-sub-icon glyphicon fa fa-user fa-lg"></span></a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Page content -->
+        <div id="page-content-wrapper">
+
+          <div class="container" style="width: auto">
+            <div class="row" style="margin-top: 20px">
+              <div class="col-sm-12 col-md-12">
+                <div class="media wow fadeInDown">
+                  <div class="row">
+                    <div class="media-body">
+                      <div class="col-md-6 col-sm-12 col-xs-12 col-lg-6">
+                        <div class="pull-left">
+                          <!--<img class="img-responsive" src="images/services/legal-assistant.png">-->
+                        </div>
+                        <div style="margin-left: 2px">
+                          <h1 class="media-heading" style="font-size:32px; color: black">Purva Supreme</h1>
+                          <span style="margin-left: 2px;">Property type: Apartment Building</span>
+                          <br>
+                          <span style="margin-left: 2px; text-align: justify">Plot no. 32, Kyathmaranahalli cross, Nelamangala, Bangalore - 89</span>
+                        </div>
+                      </div>
+                      <div class="col-md-6 col-sm-12 col-xs-12 col-lg-6 pull-right">
+                        <form class="form-inline">
+                          <div class="form-group pull-right">
+                            <select class="form-control" style="text-align:center">
+                              <option selected="true">Choose another property</option>
+                              <option>Shobha Prime</option>
+                              <option>Brigade Boulevard</option>
+                              <option>Something Else</option>
+                            </select>
+                            <button type="button" class="btn btn-primary" style="margin-top: 0px">
+                              EDIT PROPERTY
+                            </button>
+                            <button type="button" class="btn btn-primary" style="margin-top: 0px">
+                              ADD NEW PRPOERTY
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row" style="margin-top: 20px">
+                    <div class="col-md-6 col-lg-6 col-xs-6">
+                      <div class="x_panel">
+                        <div class="x_title">
+                          <h2 style="margin-top:10px">Property Amenities</h2>
+                          <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+                          Select all the amenities that are available in your property
+                          <div>
+                            <a class="project--container project--container--link--active" href="#">
+                            <div class="project-logo--container">
+                              <div class="icon project--logo">
+                                <i class = "fa fa-bolt fa-lg" style="font-size: 30px; margin-top: 20px"></i>
+                              </div>
+                            </div>
+                            <div class="project--title">
+                              Electricity and Cabling
+                            </div> </a>
+                            <a class="project--container project--container--link--active" href="#">
+                            <div class="project-logo--container">
+                              <div class="icon project--logo">
+                                <i class = "fa fa-tint fa-lg" style="font-size: 30px; margin-top: 20px"></i>
+                              </div>
+                            </div>
+                            <div class="project--title">
+                              Water
+                            </div> </a>
+                            <a class="project--container project--container--link--active" href="#">
+                            <div class="project-logo--container">
+                              <div class="icon project--logo">
+                                <i class = "fa fa-elevator-o fa-lg" style="font-size: 30px; margin-top: 20px"></i>
+                              </div>
+                            </div>
+                            <div class="project--title">
+                              Lift
+                            </div> </a>
+                            <a class="project--container project--container--link" href="#">
+                            <div class="project-logo--container">
+                              <div class="icon project--logo">
+                                <i class = "fa fa-tree fa-lg" style="font-size: 30px; margin-top: 20px"></i>
+                              </div>
+                            </div>
+                            <div class="project--title">
+                              Garden
+                            </div> </a>
+                            <a class="project--container project--container--link" href="#">
+                            <div class="project-logo--container">
+                              <div class="icon project--logo">
+                                <i class = "fa fa-support fa-lg" style="font-size: 30px; margin-top: 20px"></i>
+                              </div>
+                            </div>
+                            <div class="project--title">
+                              Swimming Pool
+                            </div> </a>
+                            <a class="project--container project--container--link" href="#">
+                            <div class="project-logo--container">
+                              <div class="icon project--logo">
+                                <i class = "fa fa-video-camera fa-lg" style="font-size: 30px; margin-top: 20px"></i>
+                              </div>
+                            </div>
+                            <div class="project--title">
+                              CCTV
+                            </div> </a>
+                            <a class="project--container project--container--link" href="#">
+                            <div class="project-logo--container">
+                              <div class="icon project--logo">
+                                <i class = "fa fa-fire-extinguisher fa-lg" style="font-size: 30px; margin-top: 20px"></i>
+                              </div>
+                            </div>
+                            <div class="project--title">
+                              Fire Safety
+                            </div> </a>
+                            <a class="project--container project--container--link" href="#">
+                            <div class="project-logo--container">
+                              <div class="icon project--logo">
+                                <i class = "fa fa-child fa-lg" style="font-size: 30px; margin-top: 20px"></i>
+                              </div>
+                            </div>
+                            <div class="project--title">
+                              Play Area
+                            </div> </a>
+                            <a class="project--container project--container--link" href="#">
+                            <div class="project-logo--container">
+                              <div class="icon project--logo">
+                                <i class = "fa fa-nil fa-lg" style="font-size: 30px; margin-top: 20px"></i>
+                              </div>
+                            </div>
+                            <div class="project--title">
+                              Tennis Court
+                            </div> </a>
+                            <a class="project--container project--container--link" href="#">
+                            <div class="project-logo--container">
+                              <div class="icon project--logo">
+                                <i class = "fa fa-nil fa-lg" style="font-size: 30px; margin-top: 20px"></i>
+                              </div>
+                            </div>
+                            <div class="project--title">
+                              Badminton Court
+                            </div> </a>
+                            <a class="project--container project--container--link" href="#">
+                            <div class="project-logo--container">
+                              <div class="icon project--logo">
+                                <i class = "fa fa-soccer-ball-o fa-lg" style="font-size: 30px; margin-top: 20px"></i>
+                              </div>
+                            </div>
+                            <div class="project--title">
+                              Basketball Court
+                            </div> </a>
+                            <a class="project--container project--container--link" href="#">
+                            <div class="project-logo--container">
+                              <div class="icon project--logo">
+                                <i class = "fa fa-home fa-lg" style="font-size: 30px; margin-top: 20px"></i>
+                              </div>
+                            </div>
+                            <div class="project--title">
+                              Club House
+                            </div> </a>
+                          </div>
+
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-6 col-lg-6 col-xs-6 pull-right">
+                      <div class="x_panel">
+                        <div class="x_title">
+                          <h2 style="margin-top:10px">Suggested Packages</h2>
+                          <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+
+                          <table class="table table-hover table-striped">
+                            <tbody>
+                              <tr>
+                                <th scope="row">1</th>
+                                <td>Electric Maintenance</td>
+                                <td>Starts from 900<i class="fa fa-rupee"></i>/Month</td>
+                                <td><a href="#">View Details</a></td>
+                                <td><a href="#">Subscribe</a></td>
+                              </tr>
+                              <tr>
+                                <th scope="row">2</th>
+                                <td>Plumbing and Sanitation Maintenance</td>
+                                <td>Starts from 900<i class="fa fa-rupee"></i>/Month</td>
+                                <td><a href="#">View Details</a></td>
+                                <td><a href="#">Subscribe</a></td>
+                              </tr>
+                              <tr>
+                                <th scope="row">3</th>
+                                <td>Basic Lift Maintenance</td>
+                                <td>Starts from 900<i class="fa fa-rupee"></i>/Month</td>
+                                <td><a href="#">View Details</a></td>
+                                <td><a href="#">Subscribe</a></td>
+                              </tr>
+                              <tr>
+                                <th scope="row">4</th>
+                                <td>Comprehensive Lift Maintenance</td>
+                                <td>Starts from 900<i class="fa fa-rupee"></i>/Month</td>
+                                <td><a href="#">View Details</a></td>
+                                <td><a href="#">Subscribe</a></td>
+                              </tr>
+                              <tr>
+                                <th scope="row">5</th>
+                                <td>Sump and Tank cleaning</td>
+                                <td>Starts from 900<i class="fa fa-rupee"></i>/Month</td>
+                                <td><a href="#">View Details</a></td>
+                                <td><a href="#">Subscribe</a></td>
+                              </tr>
+                              <tr>
+                                <th scope="row">6</th>
+                                <td>Painting</td>
+                                <td>Starts from 900<i class="fa fa-rupee"></i>/Month</td>
+                                <td><a href="#">View Details</a></td>
+                                <td><a href="#">Subscribe</a></td>
+                              </tr>
+                            </tbody>
+                          </table>
+
+                        </div>
+                      </div>
+                    </div>
+
+
+                    <!--</div>-->
+
+                    <div class="col-md-6 col-md-6 col-xs-6">
+                      <div class="x_panel">
+                        <div class="x_title">
+                          <h2 style="margin-top:10px">Service Schedule</h2>
+                          <div class="pull-right">
+                            <ul class="nav nav-pills">
+                              <li>
+                                <a href="#">Ongoing</a>
+                              </li>
+                              <li>
+                                <a href="#">Upcoming</a>
+                              </li>
+                              <li>
+                                <a href="#">Completed</a>
+                              </li>
+                              <li>
+                                <a href="#" class="btn btn-primary" style="margin-top: 0px">Request New Service</a>
+                              </li>
+                            </ul>
+                          </div>
+                          <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+                          <h3 style="color: black; font-size: 15px; font-weight: bold; margin: 10px 0;">Upcoming</h3>
+                          <ul class="list-unstyled timeline">
+                            <li>
+                              <div class="block">
+                                <div class="tags">
+                                  <a href="" class="tag"> <span>22 October 2016</span> </a>
+                                </div>
+                                <div class="block_content">
+                                  <div class="byline"></div>
+                                  <p class="excerpt">
+                                    Lift Maintenance &nbsp; &nbsp;<a href="#">View</a>&nbsp; &nbsp;<a href="#">Modify</a></span>
+                                  </p>
+                                </div>
+                              </div>
+                            </li>
+                            <li>
+                              <div class="block">
+                                <div class="tags">
+                                  <a href="" class="tag"> <span>22 October 2016</span> </a>
+                                </div>
+                                <div class="block_content">
+                                  <div class="byline"></div>
+                                  <p class="excerpt">
+                                    Change Sanitary Pipes &nbsp; &nbsp;<a href="#">View</a>&nbsp; &nbsp;<a href="#">Modify</a></span>
+                                  </p>
+                                </div>
+                              </div>
+                            </li>
+                            <li>
+                              <div class="block">
+                                <div class="tags">
+                                  <a href="" class="tag"> <span>28 October 2016</span> </a>
+                                </div>
+                                <div class="block_content">
+                                  <div class="byline"></div>
+                                  <p class="excerpt">
+                                    Exterior Painting &nbsp; &nbsp;<a href="#">View</a>&nbsp; &nbsp;<a href="#">Modify</a></span>
+                                  </p>
+                                </div>
+                              </div>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-6 col-xs-6 pull-right">
+                      <div class="x_panel">
+                        <div class="x_title">
+                          <h2 style="margin-top:10px">Current Subscriptions</h2>
+                          <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+
+                          <table class="table table-hover table-striped">
+                            <tbody>
+                              <tr>
+                                <th scope="row">1</th>
+                                <td>Electric Maintenance</td>
+                                <td>1800<i class="fa fa-rupee"></i>/Month</td>
+                                <td><a href="#">View Details</a></td>
+                                <td><a href="#">Change Plan</a></td>
+                              </tr>
+                              <tr>
+                                <th scope="row">2</th>
+                                <td>Window Maintenance</td>
+                                <td>1200<i class="fa fa-rupee"></i>/Month</td>
+                                <td><a href="#">View Details</a></td>
+                                <td><a href="#">Change Plan</a></td>
+                              </tr>
+                            </tbody>
+                          </table>
+
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+                <!--/.row-->
+              </div>
+            </div>
+            <!--/.container-->
+    </section><!--/#portfolio-item-->
+
+    <section id="bottom">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-3 col-sm-6">
+            <div class="widget">
+              <h3>Company</h3>
+              <ul>
+                <li>
+                  <a href="#">About us</a>
+                </li>
+                <li>
+                  <a href="#">We are hiring</a>
+                </li>
+                <li>
+                  <a href="#">Meet the team</a>
+                </li>
+                <li>
+                  <a href="#">Copyright</a>
+                </li>
+                <li>
+                  <a href="#">Terms of use</a>
+                </li>
+                <li>
+                  <a href="#">Privacy policy</a>
+                </li>
+              </ul>
+            </div>
+          </div><!--/.col-md-3-->
+
+          <div class="col-md-3 col-sm-6">
+            <div class="widget">
+              <h3>Support</h3>
+              <ul>
+                <li>
+                  <a href="#">FAQ</a>
+                </li>
+                <li>
+                  <a href="#">Feedback</a>
+                </li>
+                <li>
+                  <a href="#">Refund policy</a>
+                </li>
+              </ul>
+            </div>
+          </div><!--/.col-md-3-->
+
+          <div class="col-md-3 col-sm-6">
+            <div class="widget">
+              <h3>Services</h3>
+              <ul>
+                <li>
+                  <a href="#">Legal Service</a>
+                </li>
+                <li>
+                  <a href="#">Utility Bill Payments</a>
+                </li>
+                <li>
+                  <a href="#">Periodic Maintenance</a>
+                </li>
+                <li>
+                  <a href="#">Emergency Service</a>
+                </li>
+                <li>
+                  <a href="#">Appliance Service</a>
+                </li>
+              </ul>
+            </div>
+          </div><!--/.col-md-3-->
+
+          <div class="col-md-3 col-sm-6">
+            <div class="widget">
+              <h3>Contact us</h3>
+              <ul>
+                <li>
+                  <a href="#">Email</a>
+                </li>
+                <li>
+                  <a href="#">Facebook</a>
+                </li>
+                <li>
+                  <a href="#">Twitter</a>
+                </li>
+              </ul>
+            </div>
+          </div><!--/.col-md-3-->
+        </div>
+      </div>
+    </section><!--/#bottom-->
+
+    <!-- BEGIN # MODAL LOGIN -->
+    <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header" align="center">
+            <a href="index.html"><i class = "fa fa-building-o fa-lg" style="padding-right: 5px; font-size: 36px;"></i></a>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: yellow">
+              <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+            </button>
+          </div>
+
+          <!-- Begin # DIV Form -->
+          <div id="div-forms">
+
+            <!-- Begin # Login Form -->
+            <form id="login-form">
+              <div class="modal-body">
+                <div id="div-login-msg">
+                  <div id="icon-login-msg" class="glyphicon glyphicon-chevron-right"></div>
+                  <span id="text-login-msg">Type your username and password.</span>
+                </div>
+                <input id="login_username" class="form-control" type="text" placeholder="Username (type ERROR for error effect)" required>
+                <input id="login_password" class="form-control" type="password" placeholder="Password" required>
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox">
+                    Remember me </label>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <div>
+                  <button type="submit" class="btn btn-primary btn-lg btn-block">
+                    Login
+                  </button>
+                </div>
+                <div>
+                  <button id="login_lost_btn" type="button" class="btn btn-link">
+                    Lost Password?
+                  </button>
+                  <button id="login_register_btn" type="button" class="btn btn-link">
+                    Register
+                  </button>
+                </div>
+              </div>
+            </form>
+            <!-- End # Login Form -->
+
+            <!-- Begin | Lost Password Form -->
+            <form id="lost-form" style="display:none;">
+              <div class="modal-body">
+                <div id="div-lost-msg">
+                  <div id="icon-lost-msg" class="glyphicon glyphicon-chevron-right"></div>
+                  <span id="text-lost-msg">Type your e-mail.</span>
+                </div>
+                <input id="lost_email" class="form-control" type="text" placeholder="E-Mail (type ERROR for error effect)" required>
+              </div>
+              <div class="modal-footer">
+                <div>
+                  <button type="submit" class="btn btn-primary btn-lg btn-block">
+                    Send
+                  </button>
+                </div>
+                <div>
+                  <button id="lost_login_btn" type="button" class="btn btn-link">
+                    Log In
+                  </button>
+                  <button id="lost_register_btn" type="button" class="btn btn-link">
+                    Register
+                  </button>
+                </div>
+              </div>
+            </form>
+            <!-- End | Lost Password Form -->
+
+            <!-- Begin | Register Form -->
+            <form id="register-form" style="display:none;">
+              <div class="modal-body">
+                <div id="div-register-msg">
+                  <div id="icon-register-msg" class="glyphicon glyphicon-chevron-right"></div>
+                  <span id="text-register-msg">Register an account.</span>
+                </div>
+                <input id="register_username" class="form-control" type="text" placeholder="Username (type ERROR for error effect)" required>
+                <input id="register_email" class="form-control" type="text" placeholder="E-Mail" required>
+                <input id="register_password" class="form-control" type="password" placeholder="Password" required>
+              </div>
+              <div class="modal-footer">
+                <div>
+                  <button type="submit" class="btn btn-primary btn-lg btn-block">
+                    Register
+                  </button>
+                </div>
+                <div>
+                  <button id="register_login_btn" type="button" class="btn btn-link">
+                    Log In
+                  </button>
+                  <button id="register_lost_btn" type="button" class="btn btn-link">
+                    Lost Password?
+                  </button>
+                </div>
+              </div>
+            </form>
+            <!-- End | Register Form -->
+
+          </div>
+          <!-- End # DIV Form -->
+
+        </div>
+      </div>
+    </div>
+    <!-- END # MODAL LOGIN -->
+
+    <footer id="footer" class="midnight-blue">
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-6">
+            &copy; 2016 <a target="_blank" href="#" title="Free Twitter Bootstrap WordPress Themes and HTML templates">COMPANY</a>. All Rights Reserved.
+          </div>
+        </div>
+      </div>
+    </footer><!--/#footer-->
+
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.prettyPhoto.js"></script>
+    <script src="js/jquery.isotope.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/user.js"></script>
+    <script src="js/wow.min.js"></script>
+  </body>
+</html>

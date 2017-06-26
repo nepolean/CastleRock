@@ -1,0 +1,97 @@
+<!-- User Disable Modal -->
+<div id="userDisableModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content modal-sm">
+      <div class="modal-header" style="background: #c52d2f">
+        <button type="button" class="close" data-dismiss="modal" style="color: #fff">&times;</button>
+        <h4 class="modal-title" style="color: #fff">Disable User</h4>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to disable <b>{{user.username}}</b>?</p>
+      </div>
+      <div class="modal-footer">
+		<button type="button" class="btn btn-danger" (click)="disable();" data-dismiss="modal" style="font-weight: bold">Disable</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal" style="font-weight: bold">Cancel</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- User Delete Modal -->
+<div id="userDeleteModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content modal-sm">
+      <div class="modal-header" style="background: #c52d2f">
+        <button type="button" class="close" data-dismiss="modal" style="color: #fff">&times;</button>
+        <h4 class="modal-title" style="color: #fff">Delete User</h4>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete <b>{{user.username}}</b>?</p>
+      </div>
+      <div class="modal-footer">
+		<button type="button" class="btn btn-danger" (click)="delete();" data-dismiss="modal" style="font-weight: bold">Delete</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal" style="font-weight: bold">Cancel</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- User Lock Modal -->
+<div id="userLockModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content modal-sm">
+      <div class="modal-header" style="background: #c52d2f">
+        <button type="button" class="close" data-dismiss="modal" style="color: #fff">&times;</button>
+        <h4 class="modal-title" style="color: #fff">Lock User</h4>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to lock <b>{{user.username}}</b>?</p>
+      </div>
+      <div class="modal-footer">
+		<button type="button" class="btn btn-danger" (click)="lock();" data-dismiss="modal" style="font-weight: bold">Lock</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal" style="font-weight: bold">Cancel</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- User Roles Modal -->
+<div id="userRolesModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content modal-sm">
+      <div class="modal-header" style="background: #c52d2f">
+        <button type="button" class="close" data-dismiss="modal" style="color: #fff">&times;</button>
+        <h4 class="modal-title" style="color: #fff">Set Roles</h4>
+      </div>
+	  <form role="form" #rolesForm="ngForm">
+      <div class="modal-body">
+			<fieldset>
+				<!-- Roles -->
+				<div class="form-group row has-success has-error has-feedback">
+					<label for="roles" class="col-sm-2 control-label">Roles</label>
+					<div class="col-sm-5">
+						<select id="roles" class="form-control" [(ngModel)]="selectedRoles" multiple required name="roles">
+							<option *ngFor="let role of allAvailableRoles" [value]="role.name">{{role.name}}</option>
+						</select>
+					</div>
+				</div>
+			</fieldset>
+      </div>
+      <div class="modal-footer">
+		<button type="button" class="btn btn-danger" [disabled]="!rolesForm.form.valid" (click)="setTheRoles();rolesForm.reset();" data-dismiss="modal" style="font-weight: bold">Set Roles</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal" style="font-weight: bold">Cancel</button>
+      </div>
+	  </form>
+    </div>
+  </div>
+</div>

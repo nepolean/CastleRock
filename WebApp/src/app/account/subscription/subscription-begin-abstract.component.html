@@ -1,0 +1,30 @@
+<div class="dashboard-widget-title">
+	<div class="row">
+		<h2 class="col-xs-10 col-sm-4" style="margin-top:10px">Subscriptions</h2>
+		<div class="col-xs-2 col-sm-8">
+			<div class="dashboard-widget-title-mobile-menu btn-group">
+				<button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" 
+					title="Property actions" style="background:#d9534f;color:white">
+					<i class="fa fa-list fa-lg"></i>&nbsp;&nbsp;<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu">
+					<li [attr.class]="router.url=='/dashboard/subscriptions' ? 'dashboard-mobile-display-hider' : ''">
+						<a routerLink="/dashboard/subscriptions">List</a>
+					</li>
+					<li [attr.class]="router.url=='/dashboard/subscription-new' ? 'dashboard-mobile-display-hider' : ''">
+						<a routerLink="/dashboard/subscription-new" style="margin-top: 0px">Create New</a>
+					</li>
+				</ul>
+			</div>
+			<ul class="dashboard-widget-title-desktop-menu nav nav-pills pull-right">
+				<li [attr.class]="router.url=='/dashboard/subscription' ? 'active' : ''">
+					<a routerLink="/dashboard/subscription">List</a>
+				</li>
+				<li [attr.class]="router.url=='/dashboard/subscription-new' ? 'active' : ''">
+					<a routerLink="/dashboard/subscription-new">Create New</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div class="clearfix"></div>
+</div>

@@ -1,0 +1,11 @@
+<div id="dashboard-container" [ngClass]="sidebarClasses">
+	<app-admin-account-sidebar-section (sideBarToggle)="handleSideBarToggle($event)"></app-admin-account-sidebar-section>
+	<!-- Dashboard content -->
+	<div class="container" style="width: auto">
+		<div class="row" style="margin-top: 20px">
+			<div class="col-sm-12 col-md-12" style="padding: 0px 30px;">
+				<router-outlet></router-outlet>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:include="_fragments/header::head(metaDescription='User Dashboard',title='User Dashboard',links='user/dashboard::link',scripts='_')">
+	<link href="/css/dashboard.css" rel="stylesheet"/>
+</head><!--/head-->
+
+<body class="homepage">
+
+	<header id="header" th:include="_fragments/header::header(activeLink='User', containerType='fluid')"></header>
+
+	<section id="dashboard" style="padding: 0px">
+		<div th:include="_fragments/dashboardContainer::dashboard"></div>
+	</section>
+	<!--/#dashboard-->
+
+	<footer id="footer">
+		<div th:replace="_fragments/footer::footer(containerType='fluid')"></div>
+	</footer>
+	<!--/#footer-->
+
+	<div th:include="_fragments/footer::scripts(extras='user/dashboard::script')">
+		<script src="/js/sidebar.js"></script>
+	</div>
+</body>
+</html>

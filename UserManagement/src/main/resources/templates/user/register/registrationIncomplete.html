@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	th:replace="_fragments/info::html(
+		meta='Company user registration incomplete',
+		heading='Registration incomplete',
+		type='error',
+		greeting='Sorry',
+		content='::content',
+		buttons='::buttons')">
+		<div th:fragment="content">
+			We are sorry to inform you that your registration didn't complete successfully due to an internal problem.
+			Please contact the administrator or try again.
+		</div>
+		<div th:fragment="buttons">
+			<div class="col-xs-6 col-sm-6 col-md-6">
+				<a th:href="@{/index}" href="/index" class="btn btn-lg btn-primary-login btn-block">Home</a>
+			</div>
+			<div class="col-xs-6 col-sm-6 col-md-6">
+				<a th:href="@{/contact}" href="/contact" class="btn btn-lg btn-primary-login btn-block">Contact us</a>
+			</div>
+		</div>
+</html>

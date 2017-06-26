@@ -1,0 +1,50 @@
+<!-- ID -->
+<div>
+	<input type="hidden" class="form-control" id="id" name="id" [ngModel]="tax.id"/>
+</div>
+
+<!-- Type -->
+<div class="form-group row has-success has-error has-feedback">
+	<label for="type" class="col-sm-2 control-label">Type *</label>
+	<div class="col-sm-5">
+		<input type="text" class="form-control" id="type" name="type"
+			class="form-control" placeholder="Type" required maxlength="31"
+			[(ngModel)]="tax.type" #type="ngModel">
+
+		<div *ngIf="type.errors && (type.dirty || type.touched)">
+			<span [hidden]="type.valid || type.pristine"
+				class="glyphicon glyphicon-remove form-control-feedback form-control-feedback-dashboard">
+			</span>
+			<div class="form-control-error-message">
+				({{
+					type.errors.required ? FormValidationMessageService.getRequiredMessage("Type")
+					:type.errors.maxlength ? FormValidationMessageService.getMaxLengthMessage("Type",31)
+					:""
+				}})
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Percentage -->
+<div class="form-group row has-success has-error has-feedback">
+	<label for="percentage" class="col-sm-2 control-label">Percentage *</label>
+	<div class="col-sm-5">
+		<input type="number" class="form-control" id="percentage" name="percentage"
+			class="form-control" placeholder="0.00" required min="0" max="100" step="0.001"
+			[(ngModel)]="tax.percentage" #percentage="ngModel">
+
+		<div *ngIf="(percentage.value < 0 || percentage.value > 100 || percentage.errors) && (percentage.dirty || percentage.touched)">
+			<span [hidden]="percentage.valid || percentage.pristine"
+				class="glyphicon glyphicon-remove form-control-feedback form-control-feedback-dashboard">
+			</span>
+			<div class="form-control-error-message">
+				({{
+					percentage.value < 0 ? FormValidationMessageService.getMinimumValueMessage("Percentage",0)
+					:percentage.value > 100 ? FormValidationMessageService.getMaximumValueMessage("Percentage",100)
+					:FormValidationMessageService.getRequiredMessage("Percentage")
+				}})
+			</div>
+		</div>
+	</div>
+</div>

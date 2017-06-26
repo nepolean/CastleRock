@@ -1,0 +1,100 @@
+h1 {
+    font-size:32px;
+    color: black
+}
+
+#message {
+    line-height: 28px;
+    transition: all ease-in-out 500ms;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    background: black;
+    padding: 0px !important;
+}
+
+#message ul {
+    list-style: none;
+    margin-left: -40px;
+}
+
+#message.success {
+    border: 1px solid #3cba54;
+    background-color: #3cba54;
+}
+
+#message.error {
+    border: 1px solid #c52d2f;
+    background-color: #c52d2f;
+	color: #fff;
+}
+
+#message-icon {
+    width: 30px;
+    float: left;
+    line-height: 25px;
+    text-align: center;
+    background-color: black;
+    color: #f4c20d;
+    margin-right: 5px;
+    transition: all ease-in-out 500ms;
+}
+
+#message-text {
+	color: #fff;
+	text-transform:capitalize;
+	margin-left: 35px;
+	font-size: small;
+}
+
+#message-icon.success {
+    background-color: #3cba54 !important;
+}
+
+#message-icon.error {
+    background-color: #c52d2f !important;
+	color: #fff;
+}
+
+.btn-primary-dashboard {
+    color: #fff;
+    background-color: #000;
+    border-color: #000;
+    margin-top: 10px;
+    padding: 6px 20px;
+    border-radius: 3px;
+}
+
+.btn {
+    border-radius: 2px;
+}
+
+.btn-primary-dashboard:hover, .btn-primary-dashboard:focus {
+    color: #f4c20d;
+}
+
+.btn-primary-dashboard:disabled {
+    background-color: #111;
+}
+
+.form-control-feedback-dashboard {
+    top: 0px !important;
+}
+
+.control-label {
+    color: black;
+}
+
+/* Date Picker and Date Range Picker overrides */
+.mydp, .mydp .headertodaybtn, .mydp .monthinput, .mydp .yearinput {
+    border: 1px solid #3c763d !important;
+}
+
+.mydrp, .mydrp .footerbtn, .mydrp .headerclearbtn, .mydrp .monthinput, .mydrp .yearinput {
+    border: 1px solid #3c763d !important;
+}
+
+.mydrp .selection {
+    font-size: 14px !important;
+    text-align: left !important;
+    padding: 6px 12px !important;
+}

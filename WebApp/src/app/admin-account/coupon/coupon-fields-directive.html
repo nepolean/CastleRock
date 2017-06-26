@@ -1,0 +1,68 @@
+<!-- ID -->
+<div>
+	<input type="hidden" class="form-control" id="id" name="id" [ngModel]="coupon.id"/>
+</div>
+
+<!-- Name -->
+<div class="form-group row has-success has-error has-feedback">
+	<label for="name" class="col-sm-2 control-label">Name *</label>
+	<div class="col-sm-5">
+		<input type="text" class="form-control" id="name" name="name"
+			class="form-control" placeholder="Coupon Name" required maxlength="31"
+			[(ngModel)]="coupon.name" #name="ngModel">
+
+		<div *ngIf="name.errors && (name.dirty || name.touched)">
+			<span [hidden]="name.valid || name.pristine"
+				class="glyphicon glyphicon-remove form-control-feedback form-control-feedback-dashboard">
+			</span>
+			<div class="form-control-error-message">
+				({{
+					name.errors.required ? FormValidationMessageService.getRequiredMessage("Name")
+					:name.errors.maxlength ? FormValidationMessageService.getMaxLengthMessage("Name",31)
+					:""
+				}})
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Validity Period -->
+<div class="form-group row has-success has-error has-feedback">
+	<label for="validFrom" class="col-sm-2 control-label">Validity Period *</label>
+	<div class="col-sm-5">
+		<my-date-range-picker [options]="myDateRangePickerOptions" (dateRangeChanged)="onDateRangeChanged($event)"
+        	 [(ngModel)]="dateRange" required></my-date-range-picker>
+	</div>
+</div>
+
+<!-- Valid To -->
+<!--<div class="form-group row has-success has-error has-feedback">
+	<label for="validTo" class="col-sm-2 control-label">Valid To *</label>
+	<div class="col-sm-5">
+		<my-date-picker [options]="myDatePickerOptions" (dateChanged)="onValidToChanged($event)" 
+			[placeholder]="coupon.validTo ? coupon.validTo : 'Select a date'"></my-date-picker>
+	</div>
+</div>-->
+
+<!-- Discount Percentage -->
+<div class="form-group row has-success has-error has-feedback">
+	<label for="discPct" class="col-sm-2 control-label">Discount Percentage *</label>
+	<div class="col-sm-5">
+		<input type="number" class="form-control" id="discPct" name="discPct"
+			class="form-control" placeholder="0.00" required min="0" max="100" step="0.001"
+			[(ngModel)]="coupon.discPct" #discPct="ngModel">
+
+		<div *ngIf="(discPct.value < 0 || discPct.value > 100 || discPct.errors) && (discPct.dirty || discPct.touched)">
+			<span [hidden]="discPct.valid || discPct.pristine"
+				class="glyphicon glyphicon-remove form-control-feedback form-control-feedback-dashboard">
+			</span>
+			<div class="form-control-error-message">
+				({{
+					discPct.value < 0 ? FormValidationMessageService.getMinimumValueMessage("Percentage",0)
+					:discPct.value > 100 ? FormValidationMessageService.getMaximumValueMessage("Percentage",100)
+					:FormValidationMessageService.getRequiredMessage("Percentage")
+				}})
+			</div>
+		</div>
+	</div>
+</div>

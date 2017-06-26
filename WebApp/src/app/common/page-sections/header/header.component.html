@@ -1,0 +1,50 @@
+	<header id="header">
+    
+      <nav class="navbar navbar-inverse" role="banner">
+        <div class="container" style="width: auto;">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/index">
+            	<i class = "fa fa-home fa-md" style="padding: 5px"></i>
+            	<span style="font-family: cursive">Company</span>
+            </a>
+          </div>
+
+          <div class="collapse navbar-collapse navbar-right">
+            <ul class="nav navbar-nav">
+				<li><a href="/index"><i class = "fa fa-home" style="padding-right: 5px"></i>Home</a></li>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+						<i class = "fa fa-group" style="padding-right: 5px"></i>Services <i class="fa fa-angle-down"></i>
+					</a>
+					<ul class="dropdown-menu">
+						<li><a href="#"><i class = "fa fa-legal fa-md" style="padding-right: 5px"></i>Legal Services</a></li>
+						<li><a href="#"><i class = "fa fa-money fa-md" style="padding-right: 5px"></i>Utility Bill Payments</a></li>
+						<li><a href="#"><i class = "fa fa-clock-o fa-md" style="padding-right: 5px"></i>Periodic Maintenance</a></li>
+						<li><a href="#"><i class = "fa fa-lightbulb-o fa-md" style="padding-right: 5px"></i>Emergency Service</a></li>
+						<li><a href="#"><i class = "fa fa-wrench fa-md" style="padding-right: 5px"></i>Appliance Service</a></li>
+					</ul>
+				</li>
+				<li><a href="#"><i class = "fa fa-inr" style="padding-right: 5px"></i>Packages</a></li>
+				<li><a href=""><i class = "fa fa-question-circle" style="padding-right: 5px"></i>FAQ</a></li>
+				
+				<li class="dropdown">
+				  <a href="#" class="dropdown-toggle info-number" data-toggle="dropdown" style="color:#f4c20d;">                	
+						<i class = "fa fa-user" style="padding-right: 5px;"></i><span>{{profile.username}}</span>
+						<!--<span class="notification-badge bg-green">6</span>-->
+				  </a>
+				  <ul class="dropdown-menu notification-dropdown-menu">
+					<li><a href="/logout"><i class = "fa fa-sign-out fa-md" style="padding-right: 5px"></i>Logout</a></li>
+				  </ul>
+				</li>
+            </ul>
+          </div>
+        </div><!--/.container-->
+      </nav><!--/nav-->
+		
+  </header>

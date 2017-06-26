@@ -1,0 +1,98 @@
+<div class="row">
+	<div class="col-xs-12">
+		<div>
+			<h1 class="dashboard-heading">Users</h1>
+		</div>
+		<form class="form-inline dashboard-action-form">
+			<a routerLink="/admin-dashboard/users/add" class="btn btn-primary" title="Add User"><i class="fa fa-plus fa-lg"></i></a>
+		</form>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-xs-12">
+		<div class="dashboard-widget">
+			<div class="dashboard-widget-title">
+				<div class="row">
+					<h2 class="col-xs-12 col-sm-4" style="margin-top:10px">All users</h2>
+					<div class="form-inline col-xs-12 col-sm-5">
+						<div class="dashboard-widget-title-form">
+							<label style="font-weight: bold">Filter by type:</label>
+							<select id="selectedType" class="form-control" [(ngModel)]="selectedType" name="selectedType" (change)="getUsersByType()">
+								<option value="ALL">ALL</option>
+								<option value="USER">USER</option>
+								<option value="CUSTOMER">CUSTOMER</option>
+							</select>
+							<div class="clearfix"></div>
+						</div>
+					</div>
+					<div class="form-inline col-xs-12 col-sm-3">
+						<form role="form" #searchForm="ngForm" (ngSubmit)="searchUser(searchFilter.value);">
+						<div class="input-group">
+							<input type="text" class="form-control" placeholder="Search User" id="searchFilter" name="searchFilter" #searchFilter required>
+							<span class="input-group-btn">
+								<button class="btn btn-danger" type="submit"><i class="fa fa-search fa-lg"></i></button>
+							</span>
+						</div>
+						</form>
+					</div>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="dashboard-widget-content">
+				<div class="dashboard-paginator-top-div">
+					<user-paginator [paginator]="paginator" (pageChange)="handlePageSelection($event)"></user-paginator>
+				</div>
+				<div class="table-responsive">
+				<table class="table table-striped table-hover">
+					<thead class="thead-default" style="background: black; color: white">
+						<tr>
+							<th>Username</th>
+							<th>Name</th>
+							<th>Email</th>
+							<th>Status</th>
+							<th>Type</th>
+							<th>Roles</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr *ngFor="let user of users" (click)="selectUser(user)"
+							[class.selected]="user === selectedUser">
+							<th scope="row">
+								<a routerLink="/admin-dashboard/users/view/{{user.username}}" title="View User">{{user.username}}</a>
+							</th>									
+							<td>{{user.firstName}} {{user.middleName}} {{user.lastName}}</td>
+							<td>{{user.email}}</td>
+							<td>
+								<i *ngIf="user.enabled" class="fa fa-lg fa-flash"></i>
+								<i *ngIf="!user.enabled" class="fa fa-lg fa-ban" style="color: #d9534f"></i>
+								<i *ngIf="!user.accountLocked" class="fa fa-lg fa-unlock"></i>
+								<i *ngIf="user.accountLocked" class="fa fa-lg fa-lock" style="color: #d9534f"></i>
+							</td>
+							<td>{{user.userType}}</td>
+							<td><span *ngFor="let role of user.roles">{{role.name ? role.name : role}}&nbsp;</span></td>
+							<td>
+								<user-action-buttons 
+									[user]="selectedUser" [listPage]="true" (editUser)="editUser($event)" (enableUser)="enableUser($event)"
+									(unlockUser)="unlockUser($event)" (sendPasswordResetLink)="sendPasswordResetLink($event)">
+								</user-action-buttons>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				</div>
+				<div class="dashboard-paginator-bottom-div">
+					<user-paginator [paginator]="paginator" (pageChange)="handlePageSelection($event)"></user-paginator>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!--/.row-->
+
+
+<user-action-modals 
+	[user]="selectedUser" (disableUser)="disableUser($event)" (deleteUser)="deleteUser($event)"
+	(lockUser)="lockUser($event)" (setRoles)="setRoles($event)"
+></user-action-modals>

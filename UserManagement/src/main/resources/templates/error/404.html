@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	th:replace="_fragments/info::html(
+		meta='PAGE NOT FOUND',
+		heading='404',
+		type='error',
+		greeting='Oops',
+		content='::content',
+		buttons='::buttons')">
+		<div th:fragment="content">
+			<span th:if="${!message.equals('No message available')}" 
+				th:with="errorMsg=${'We are sorry to tell you that the ' + message}"
+				th:text="${errorMsg}">
+				We are sorry to tell you that the page you are looking for is not found.
+			</span>
+			<span th:if="${message.equals('No message available')}">
+				We are sorry to tell you that the page you are looking for is not found.
+			</span>
+		</div>
+		<div th:fragment="buttons">
+			<div class="col-xs-6 col-sm-6 col-md-6">
+				<a th:href="@{/index}" href="/index" class="btn btn-lg btn-primary-login btn-block">Home</a>
+			</div>
+			<div class="col-xs-6 col-sm-6 col-md-6">
+				<a th:href="@{/contact}" href="/contact" class="btn btn-lg btn-primary-login btn-block">Contact</a>
+			</div>
+		</div>
+</html>

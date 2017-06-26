@@ -1,0 +1,11 @@
+<div class="btn-group">
+	<button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" 
+		title="Action menu" style="background:#d9534f;color:white">
+		<i class="fa fa-list fa-lg"></i>&nbsp;&nbsp;<span class="caret"></span>
+	</button>
+	<ul class="dropdown-menu">
+		<li *ngIf="!listPage"><a routerLink="/admin-dashboard/packages"><i class="fa fa-list" style="padding-right: 5px"></i>List Packages</a></li>
+		<li (click)="edit()"><a><i class="fa fa-edit" style="padding-right: 5px"></i>Edit Package</a></li>
+		<li data-toggle="modal" data-target="#packageDeleteModal"><a><i class="fa fa-close" style="padding-right: 5px"></i>Delete Package</a></li>
+	</ul>
+</div>

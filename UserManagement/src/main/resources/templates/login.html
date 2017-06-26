@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head th:include="_fragments/header::head(metaDescription='Company login page',title='Login',links='login::link',scripts='_')">
+	<link href="/css/user.css" rel="stylesheet"/>
+</head><!--/head-->
+
+<body>
+
+	<header id="header" th:include="_fragments/header::header(activeLink='User')"></header>
+
+	<div class="container">
+		<div class="row wow fadeInDown user-container">
+			<div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
+				<form role="form" th:action="@{/login}" method="post">
+					<fieldset>
+						<div class="userpage-logo">
+							<span><i class="fa fa-user fa-lg"></i></span>
+						</div>
+						<h1 class="userpage-heading">Login</h1>
+						
+						<div id="message" th:class="${session!=null and session['SPRING_SECURITY_LAST_EXCEPTION']!=null ? 'error' : ''}">
+							<div id="message-icon" th:class="${session!=null and session['SPRING_SECURITY_LAST_EXCEPTION']!=null ? 'glyphicon glyphicon-remove error' : 'glyphicon glyphicon-chevron-right'}"></div>
+							<div id="message-text">
+								<span th:if="${session!=null and session['SPRING_SECURITY_LAST_EXCEPTION']!=null}" th:with="errorMsg=${session['SPRING_SECURITY_LAST_EXCEPTION'].message + '.'} " th:text="${errorMsg}">
+									Invalid username and password.
+								</span>
+								<span th:if="${session!=null and session['SPRING_SECURITY_LAST_EXCEPTION']!=null and session['SPRING_SECURITY_LAST_EXCEPTION'].message.contains('locked') }">
+									<a style="color: #f4c20d" href="/sendUnblockLink">UNBLOCK YOUR ACCOUNT</a>
+								</span>
+								<span th:if="${param.logout}">You have been logged out. </span>
+								<span th:if="${session == null or session['SPRING_SECURITY_LAST_EXCEPTION'] == null}">Please enter your credentials</span>
+							</div>
+						</div>
+						<div class="form-group has-success has-error has-feedback">
+						  <input type="text" name="username" id="username" class="form-control input-lg" placeholder="Username" required="true"/>
+						  <span id="username-feedback" aria-hidden="true"></span>
+						</div>
+						<div class="form-group has-success has-error has-feedback">
+						  <input type="password" name="password" id="password" class="form-control input-lg" placeholder="Password" required="true"/>
+						  <span id="password-feedback" aria-hidden="true"></span>
+						</div>
+						<div class="checkbox">
+							<label>
+								<input type="checkbox" name="remember-me"/> Remember Me
+							</label>
+							<a href="/forgotPassword" class="pull-right"><b>Forgot Password?</b></a>
+						</div>
+						<hr class="black-line"/>
+						<div class="row">
+							<div class="col-xs-6 col-sm-6 col-md-6">
+								<input type="submit" class="btn btn-lg btn-primary-login btn-block"
+									value="Sign In"/>
+							</div>
+							<div class="col-xs-6 col-sm-6 col-md-6">
+								<a th:href="@{/register}" href="/register" class="btn btn-lg btn-primary-login btn-block">Register</a>
+							</div>
+						</div>
+					</fieldset>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<footer id="footer">
+		<div th:replace="_fragments/footer::footer(containerType='')"></div>
+	</footer>
+	<!--/#footer-->
+
+	<div th:include="_fragments/footer::scripts(extras='login::script')">
+		<script src="/js/user.js"></script>
+	</div>
+</body>
+</html>
