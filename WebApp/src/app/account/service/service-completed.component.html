@@ -1,0 +1,48 @@
+<div class="dashboard-widget">
+	<app-user-service-begin></app-user-service-begin>
+	<div class="dashboard-widget-content">
+		<div class="row">
+			<div class="form-inline col-xs-12">
+				<div class="dashboard-widget-title-form">
+					<label style="font-weight: bold">Show tasks completed in:</label>
+					<select id="selectedType" class="form-control" name="selectedType">
+						<option value="30">Last 30 days</option>
+						<option value="90" selected>Last 90 days</option>
+						<option value="365">Last year</option>
+					</select>
+					<div class="clearfix"></div>
+				</div>
+			</div>
+		</div>
+		<table class="table table-hover table-striped" style="overflow: hidden">
+			<tbody>
+				<tr>
+					<td>
+						<div class="row">
+							<div class="col-sm-5 col-xs-12">1. <strong><a routerLink="/dashboard/service-completed-detail/1">Electric work</a></strong></div>
+							<div class="col-sm-4 col-xs-12">Completed on 09 Dec 2016</div>
+							<div class="col-sm-3 col-xs-6 pull-right dashboard-mobile-display-hider">
+								<a routerLink="/dashboard/service-completed-detail/1">View Details</a>
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="row">
+							<div class="col-sm-5 col-xs-12">2. <strong><a routerLink="/dashboard/service-completed-detail/2">Sewage block repair</a></strong></div>
+							<div class="col-sm-4 col-xs-12">Completed on 08 Oct 2016</div>
+							<div class="col-sm-3 col-xs-6 pull-right dashboard-mobile-display-hider">
+								<a routerLink="/dashboard/service-completed-detail/2">View Details</a>
+							</div>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="clearfix"></div>
+		<div class="dashboard-paginator-bottom-div">
+			<account-paginator [paginator]="paginator" (pageChange)="handlePageSelection($event)"></account-paginator>
+		</div>
+	</div>
+</div>

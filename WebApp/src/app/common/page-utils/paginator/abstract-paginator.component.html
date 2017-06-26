@@ -1,0 +1,11 @@
+<span class="dashboard-paginator-title">
+	Showing {{paginator.size*paginator.currentPage}} to {{paginator.size*paginator.currentPage + paginator.numberOfElements}}
+	 of {{paginator.totalElements}} {{paginator.entity}}
+</span>
+<ul class = "pagination pagination-sm pull-right dashboard-paginator-buttons">
+	<li [attr.class]="paginator.first ? 'paginator-prev-button disabled' : 'paginator-prev-button'" (click)="goToPreviousPage()"><a>&laquo;</a></li>
+	<li [attr.class]="getButtonClass(firstButtonNumber)" (click)="selectPage(firstButtonNumber)"><a>{{firstButtonNumber}}</a></li>
+	<li [attr.class]="getButtonClass(firstButtonNumber+1)" (click)="selectPage(firstButtonNumber+1)"><a>{{firstButtonNumber+1}}</a></li>
+	<li [attr.class]="getButtonClass(firstButtonNumber+2)" (click)="selectPage(firstButtonNumber+2)"><a>{{firstButtonNumber+2}}</a></li>
+	<li [attr.class]="paginator.last ? 'paginator-next-button disabled' : 'paginator-next-button'" (click)="goToNextPage()"><a>&raquo;</a></li>
+</ul>

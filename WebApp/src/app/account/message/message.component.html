@@ -1,0 +1,42 @@
+<div class="dashboard-widget">
+	<app-account-message-begin></app-account-message-begin>
+	<div class="dashboard-widget-content">
+		<table class="table table-hover table-striped" style="overflow: hidden">
+			<tbody>
+				<tr>
+					<td>
+						<div class="row">
+							<div class="col-sm-7 col-xs-12"><strong>1. Lift maintenance subscription</strong> is pending renewal.</div>
+							<div class="col-sm-2 col-xs-6"><a>Renew now</a></div>
+							<div class="col-sm-2 col-xs-6 pull-right"><a>View Details</a></div>
+						</div>
+					</td>
+				</tr>
+
+				<tr>
+					<td>
+						<div class="row">
+							<div class="col-sm-7 col-xs-12"><strong>2. Painting task</strong> is awaiting payment for further process</div>
+							<div class="col-sm-2 col-xs-6"><a>Pay now</a></div>
+							<div class="col-sm-2 col-xs-6 pull-right"><a>View Details</a></div>
+						</div>
+					</td>
+				</tr>
+
+				<tr>
+					<td>
+						<div class="row">
+							<div class="col-sm-7 col-xs-12"><strong>3. Appliance maintenance</strong> is available now</div>
+							<div class="col-sm-2 col-xs-6"><a>Go FOR IT!</a></div>
+							<div class="col-sm-2 col-xs-6 pull-right"><a>View Details</a></div>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="clearfix"></div>
+		<div class="dashboard-paginator-bottom-div">
+			<account-paginator [paginator]="paginator" (pageChange)="handlePageSelection($event)"></account-paginator>
+		</div>
+	</div>
+</div>

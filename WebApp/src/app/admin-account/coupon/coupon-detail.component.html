@@ -1,0 +1,79 @@
+<div class="row">
+	<div class="col-xs-12">
+		<div style="border-bottom: 1px solid black;">
+			<h1 class="dashboard-heading">View Coupon</h1>
+		</div>
+		<form class="form-inline dashboard-action-form" style="margin-top: 10px">
+			<coupon-action-buttons 
+				[coupon]="coupon" (editCoupon)="editCoupon($event)"
+			></coupon-action-buttons>
+		</form>
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-12">
+		<div id="message" *ngIf="response.flags.available" [attr.class]="response.flags.error ? 'error col-sm-12' : 'col-sm-12'">
+			<div id="message-icon" [attr.class]="response.flags.error ? 'glyphicon glyphicon-remove error' : 'glyphicon glyphicon-chevron-right'"></div>
+			<div id="message-text">
+				<span>{{response.message}}</span>
+			</div>
+		</div>
+		<div class="clearfix"></div>
+		<br/>
+
+		<!-- Coupon ID -->
+		<div class="form-group row">
+			<label for="id" class="col-sm-2 control-label">ID</label>
+			<div class="col-sm-5">
+				{{coupon.id}}
+			</div>
+		</div>
+
+		<!-- Coupon Name -->
+		<div class="form-group row">
+			<label for="type" class="col-sm-2 control-label">Name</label>
+			<div class="col-sm-5">
+				{{coupon.name}}
+			</div>
+		</div>
+
+		<!-- Coupon Valid From -->
+		<div class="form-group row">
+			<label for="type" class="col-sm-2 control-label">Valid From</label>
+			<div class="col-sm-5">
+				{{coupon.validFrom}}
+			</div>
+		</div>
+
+		<!-- Coupon Valid Till -->
+		<div class="form-group row">
+			<label for="type" class="col-sm-2 control-label">Valid Till</label>
+			<div class="col-sm-5">
+				{{coupon.validTo}}
+			</div>
+		</div>
+
+		<!-- Coupon Discount Percentage -->
+		<div class="form-group row">
+			<label for="discPct" class="col-sm-2 control-label">Discount Percentage</label>
+			<div class="col-sm-5">
+				{{coupon.discPct}}
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div>
+				<button type="button" class="btn btn-primary-dashboard" (click)="editCoupon(coupon)">
+					<i class="fa fa-edit" style="padding-right: 5px"></i>Edit Coupon
+				</button>
+				<a routerLink="/admin-dashboard/coupons" class="btn btn-primary-dashboard" title="GO TO COUPON LIST">
+					<i class="fa fa-list" style="padding-right: 5px"></i>List Coupons
+				</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+<coupon-action-modals 
+	[coupon]="coupon" (deleteCoupon)="deleteCoupon($event)"
+></coupon-action-modals>

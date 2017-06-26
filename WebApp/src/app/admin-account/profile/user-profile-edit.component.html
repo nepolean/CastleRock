@@ -1,0 +1,109 @@
+<div class="row">
+	<div class="col-xs-12">
+		<div style="border-bottom: 1px solid black;">
+			<h1 class="dashboard-heading">Edit Profile</h1>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-12">
+		<form role="form" #profileForm="ngForm" (ngSubmit)="onSubmit()">
+			<fieldset>
+				<div id="message" *ngIf="response.flags.available" style="margin-top: 0"
+					[attr.class]="response.flags.error ? 'error col-sm-8' : 'col-sm-8'">
+					<div id="message-icon" [attr.class]="response.flags.error ? 'glyphicon glyphicon-remove error' : 'glyphicon glyphicon-chevron-right'"></div>
+					<div id="message-text">
+						<span>{{response.message}}</span>
+						<ul *ngIf="response.fieldErrors.length > 0">
+							<li *ngFor="let fieldError of response.fieldErrors">{{fieldError}}</li>
+						</ul>
+					</div>
+				</div>
+				<div class="clearfix"></div>
+				<br/>
+				<!-- First name -->
+				<div class="form-group row has-success has-error has-feedback">
+					<label for="firstName" class="col-sm-2 control-label">First Name *</label>
+					<div class="col-sm-5">
+						<input type="text" class="form-control" id="firstName" name="firstName"
+							class="form-control" placeholder="First Name"
+							required maxlength="31" pattern="^([a-zA-Z])+$"
+							[(ngModel)]="profile.firstName" #firstName="ngModel">
+
+						<div *ngIf="firstName.errors && (firstName.dirty || firstName.touched)">
+							<span [hidden]="firstName.valid || firstName.pristine"
+								class="glyphicon glyphicon-remove form-control-feedback form-control-feedback-dashboard">
+							</span>
+							<div class="form-control-error-message">
+								({{
+									firstName.errors.required ? FormValidationMessageService.getRequiredMessage("First name")
+									:firstName.errors.maxlength ? FormValidationMessageService.getMaxLengthMessage("First name",31)
+									:firstName.errors.pattern ? FormValidationMessageService.getSpecialCharactersNotAllowedMessage()
+									:""
+								}})
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Middle name -->
+				<div class="form-group row has-success has-error has-feedback">
+					<label for="middleName" class="col-sm-2 control-label">Middle Name</label>
+					<div class="col-sm-5">
+						<input type="text" class="form-control" id="middleName" name="middleName"
+							class="form-control" placeholder="Middle Name" maxlength="31" pattern="^([a-zA-Z])+$"
+							[(ngModel)]="profile.middleName" #middleName="ngModel">
+
+						<div *ngIf="middleName.errors && (middleName.dirty || middleName.touched)">
+							<span [hidden]="middleName.valid || middleName.pristine"
+								class="glyphicon glyphicon-remove form-control-feedback form-control-feedback-dashboard">
+							</span>
+							<div class="form-control-error-message">
+								({{
+									middleName.errors.maxlength ? FormValidationMessageService.getMaxLengthMessage("Middle name",31)
+									:middleName.errors.pattern ? FormValidationMessageService.getSpecialCharactersNotAllowedMessage()
+									:""
+								}})
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Last name -->
+				<div class="form-group row has-success has-error has-feedback">
+					<label for="lastName" class="col-sm-2 control-label">Last name *</label>
+					<div class="col-sm-5">
+						<input type="text" class="form-control" id="lastName" name="lastName"
+							class="form-control" placeholder="Last name"
+							required maxlength="31" pattern="^([a-zA-Z])+$"
+							[(ngModel)]="profile.lastName" #lastName="ngModel">
+
+						<div *ngIf="lastName.errors && (lastName.dirty || lastName.touched)">
+							<span [hidden]="lastName.valid || lastName.pristine"
+								class="glyphicon glyphicon-remove form-control-feedback form-control-feedback-dashboard">
+							</span>
+							<div class="form-control-error-message">
+								({{
+									lastName.errors.required ? FormValidationMessageService.getRequiredMessage("Last name")
+									:lastName.errors.maxlength ? FormValidationMessageService.getMaxLengthMessage("Last name",31)
+									:lastName.errors.pattern ? FormValidationMessageService.getSpecialCharactersNotAllowedMessage()
+									:""
+								}})
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<div>
+						<button type="submit" class="btn btn-primary-dashboard"
+							[disabled]="!profileForm.form.valid || response.flags.loading">
+							<i class="fa fa-save" style="padding-right: 5px"></i>Save Profile
+						</button>
+						<a routerLink="/admin-dashboard/profile-change-password" class="btn btn-primary-dashboard">Change Password</a>
+					</div>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+</div>

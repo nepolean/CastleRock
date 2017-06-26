@@ -1,0 +1,63 @@
+<div class="row">
+	<div class="col-xs-12">
+		<div style="border-bottom: 1px solid black;">
+			<h1 class="dashboard-heading">View Tax</h1>
+		</div>
+		<form class="form-inline dashboard-action-form" style="margin-top: 10px">
+			<tax-action-buttons 
+				[tax]="tax" (editTax)="editTax($event)"
+			></tax-action-buttons>
+		</form>
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-12">
+		<div id="message" *ngIf="response.flags.available" [attr.class]="response.flags.error ? 'error col-sm-12' : 'col-sm-12'">
+			<div id="message-icon" [attr.class]="response.flags.error ? 'glyphicon glyphicon-remove error' : 'glyphicon glyphicon-chevron-right'"></div>
+			<div id="message-text">
+				<span>{{response.message}}</span>
+			</div>
+		</div>
+		<div class="clearfix"></div>
+		<br/>
+
+		<!-- Tax ID -->
+		<div class="form-group row">
+			<label for="id" class="col-sm-2 control-label">ID</label>
+			<div class="col-sm-5">
+				{{tax.id}}
+			</div>
+		</div>
+
+		<!-- Tax Type -->
+		<div class="form-group row">
+			<label for="type" class="col-sm-2 control-label">Type</label>
+			<div class="col-sm-5">
+				{{tax.type}}
+			</div>
+		</div>
+
+		<!-- Tax Percentage -->
+		<div class="form-group row">
+			<label for="percentage" class="col-sm-2 control-label">Percentage</label>
+			<div class="col-sm-5">
+				{{tax.percentage}}
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div>
+				<button type="button" class="btn btn-primary-dashboard" (click)="editTax(tax)">
+					<i class="fa fa-edit" style="padding-right: 5px"></i>Edit Tax
+				</button>
+				<a routerLink="/admin-dashboard/taxes" class="btn btn-primary-dashboard" title="GO TO TAX LIST">
+					<i class="fa fa-list" style="padding-right: 5px"></i>List Taxes
+				</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+<tax-action-modals 
+	[tax]="tax" (deleteTax)="deleteTax($event)"
+></tax-action-modals>

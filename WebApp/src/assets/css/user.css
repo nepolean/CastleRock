@@ -1,0 +1,136 @@
+@import url(http://fonts.googleapis.com/css?family=Roboto);
+
+* {
+    font-family: 'Roboto', sans-serif;
+}
+
+.userpage {
+	 background: #f4c20d url(/images/services/slider-bg.png);
+}
+
+.userpage-heading {
+	color: black;
+	font-family:'Roboto', sans-serif; 
+	font-size: 30px; 
+	text-align: center;
+}
+
+.userpage-logo {
+	color: black;
+	font-size: 40px;
+	text-align: center;
+}
+
+#message {
+    line-height: 28px;
+    transition: all ease-in-out 500ms;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    background: black;
+}
+
+#message ul {
+    list-style: none;
+    margin-left: -40px;
+}
+
+#message.success {
+    border: 1px solid #3cba54;
+    background-color: #3cba54;
+}
+
+#message.error {
+    border: 1px solid #c52d2f;
+    background-color: #c52d2f;
+	color: #fff;
+}
+
+#message-icon {
+    width: 30px;
+    float: left;
+    line-height: 28px;
+    text-align: center;
+    background-color: black;
+    color: #f4c20d;
+    margin-right: 5px;
+    transition: all ease-in-out 500ms;
+}
+
+#message-text {
+	color: #fff;
+	text-transform:capitalize;
+	margin-left: 35px;
+	font-size: medium;
+}
+
+#message-icon.success {
+    background-color: #3cba54 !important;
+}
+
+#message-icon.error {
+    background-color: #c52d2f !important;
+	color: #fff;
+}
+
+#img_logo {
+    max-height: 100px;
+    max-width: 100px;
+}
+
+
+/*
+   #############################
+	Override bootstrap defaults
+   #############################
+*/
+
+.checkbox {
+    margin-bottom: 0px;
+	color: #000;
+}
+
+.glyphicon {
+    top: 0px;
+}
+
+.form-control {
+  border-radius: 0px;
+}
+
+.col-form-label {
+	margin-top: 10px;
+	font-size: medium;
+}
+.fixed-footer {
+	position:absolute;
+	bottom: 0px;
+}
+
+.user-container {
+	margin-top: 40px;
+}
+
+.message-panel {
+	position: relative;
+	margin-top: -20px;
+	margin-bottom: 10px;
+	padding: 10px 17px;
+	display: inline-block;
+	background: #fff;
+	border: 1px solid #E6E9ED;
+	-webkit-column-break-inside: avoid;
+	-moz-column-break-inside: avoid;
+	column-break-inside: avoid;
+	opacity: 1;
+	color: #000;
+	width: 100%;
+}
+
+.message-content {
+	padding: 0 5px 6px;
+	position: relative;
+	float: left;
+	clear: both;
+	margin-top: 5px;
+ 	font-size: medium;
+}

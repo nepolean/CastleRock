@@ -1,0 +1,55 @@
+<div class="dashboard-widget">
+	<app-account-subscription-begin></app-account-subscription-begin>
+	<div class="dashboard-widget-content">
+		<table class="table table-hover table-striped" style="overflow: hidden">
+			<thead>
+				<tr>
+					<th>
+						<div class="row">
+							<div class="col-sm-5 col-xs-12">Package name</div>
+							<div class="col-sm-3 col-xs-12">Property applicable to</div>
+							<div class="col-sm-2 col-xs-12">Expires on</div>
+							<div class="col-sm-2 col-xs-12">Action</div>
+						</div>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<div class="row">
+							<div class="col-sm-5 col-xs-12">1. <strong><a routerLink="/dashboard/subscription-detail/1">Lift maintenance</a></strong></div>
+							<div class="col-sm-3 col-xs-12">Ramaiah Enclave</div>
+							<div class="col-sm-2 col-xs-12">10 February 2017</div>
+							<div class="col-sm-2 col-xs-12"><a class="btn btn-danger" routerLink="/dashboard/subscription-renewal/1">Renew now</a></div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="row">
+							<div class="col-sm-5 col-xs-12">2. <strong><a routerLink="/dashboard/subscription-detail/2">Electricity and plumbing maintenance</a></strong></div>
+							<div class="col-sm-3 col-xs-12">Ramaiah Enclave</div>
+							<div class="col-sm-2 col-xs-12">10 March 2017</div>
+							<div class="col-sm-2 col-xs-12"><a routerLink="/dashboard/subscription-detail/1">View Details</a></div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="row">
+							<div class="col-sm-5 col-xs-12">3. <strong><a routerLink="/dashboard/subscription-detail/3">Housekeeping</a></strong></div>
+							<div class="col-sm-3 col-xs-12">412 Purva Supreme</div>
+							<div class="col-sm-2 col-xs-12">10 March 2017</div>
+							<div class="col-sm-2 col-xs-12"><a routerLink="/dashboard/subscription-detail/3">View Details</a></div>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="clearfix"></div>
+		<div class="dashboard-paginator-bottom-div">
+			<account-paginator [paginator]="paginator" (pageChange)="handlePageSelection($event)"></account-paginator>
+		</div>
+	</div>
+</div>

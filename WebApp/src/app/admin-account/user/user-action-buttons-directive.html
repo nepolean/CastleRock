@@ -1,0 +1,23 @@
+<div class="btn-group">
+	<button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" 
+		title="Action menu" style="background:#d9534f;color:white">
+		<i class="fa fa-list fa-lg"></i>&nbsp;&nbsp;<span class="caret"></span>
+	</button>
+	<ul class="dropdown-menu">
+		<li *ngIf="!listPage"><a routerLink="/admin-dashboard/users"><i class="fa fa-list" style="padding-right: 5px"></i>List Users</a></li>
+		<li (click)="edit()"><a><i class="fa fa-edit" style="padding-right: 5px"></i>Edit Profile</a></li>
+		<li (click)="sendPasswordReset()"><a><i class="fa fa-envelope" style="padding-right: 5px"></i>Send Password Reset Link</a></li>
+
+		<li role="separator" class="divider"></li>
+		
+		<li *ngIf="user.enabled" data-toggle="modal" data-target="#userDisableModal"><a><i class="fa fa-ban" style="padding-right: 5px"></i>Disable User</a></li>
+		<li *ngIf="!user.enabled" (click)="enable()"><a><i class="fa fa-flash" style="padding-right: 5px"></i>Enable User</a></li>
+		<li *ngIf="user.accountLocked" (click)="unlock()"><a><i class="fa fa-unlock" style="padding-right: 5px"></i>Unlock User</a></li>
+		<li *ngIf="!user.accountLocked" data-toggle="modal" data-target="#userLockModal"><a><i class="fa fa-lock" style="padding-right: 5px"></i>Lock User</a></li>
+		<li data-toggle="modal" data-target="#userDeleteModal"><a><i class="fa fa-close" style="padding-right: 5px"></i>Delete User</a></li>
+
+		<li role="separator" class="divider"></li>
+
+		<li data-toggle="modal" data-target="#userRolesModal"><a><i class="fa fa-user" style="padding-right: 5px"></i>Set Roles</a></li>
+	</ul>
+</div>

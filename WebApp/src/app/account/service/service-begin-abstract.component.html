@@ -1,0 +1,42 @@
+<div class="dashboard-widget-title">
+	<div class="row">
+		<h2 class="col-xs-10 col-sm-3" style="margin-top:10px">Services</h2>
+		<div class="col-xs-2 col-sm-9">
+			<div class="dashboard-widget-title-mobile-menu btn-group">
+				<button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" 
+					title="Service Type" style="background:#d9534f;color:white">
+					<i class="fa fa-list fa-lg"></i>&nbsp;&nbsp;<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu">
+					<li [attr.class]="router.url=='/dashboard/service-new' ? 'dashboard-mobile-display-hider' : ''">
+						<a routerLink="/dashboard/service-new" style="margin-top: 0px">REQUEST NEW</a>
+					</li>
+					<li [attr.class]="router.url=='/dashboard/service' ? 'dashboard-mobile-display-hider' : ''">
+						<a routerLink="/dashboard/service">Ongoing</a>
+					</li>
+					<li [attr.class]="router.url=='/dashboard/service-upcoming' ? 'dashboard-mobile-display-hider' : ''">
+						<a routerLink="/dashboard/service-upcoming">Upcoming</a>
+					</li>
+					<li [attr.class]="router.url=='/dashboard/service-completed' ? 'dashboard-mobile-display-hider' : ''">
+						<a routerLink="/dashboard/service-completed">Completed</a>
+					</li>
+				</ul>
+			</div>
+			<ul class="dashboard-widget-title-desktop-menu nav nav-pills pull-right">
+				<li [attr.class]="router.url=='/dashboard/service' ? 'active' : ''">
+					<a routerLink="/dashboard/service">Ongoing</a>
+				</li>
+				<li [attr.class]="router.url=='/dashboard/service-upcoming' ? 'active' : ''">
+					<a routerLink="/dashboard/service-upcoming">Upcoming</a>
+				</li>
+				<li [attr.class]="router.url=='/dashboard/service-completed' ? 'active' : ''">
+					<a routerLink="/dashboard/service-completed">Completed</a>
+				</li>
+				<li [attr.class]="router.url=='/dashboard/service-new' ? 'active' : ''">
+					<a routerLink="/dashboard/service-new" style="margin-top: 0px">REQUEST NEW</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div class="clearfix"></div>
+</div>

@@ -1,0 +1,121 @@
+<div class="row">
+	<div class="col-xs-12">
+		<div style="border-bottom: 1px solid black;">
+			<h1 class="dashboard-heading">View User</h1>
+		</div>
+		<form class="form-inline dashboard-action-form" style="margin-top: 10px">
+			<user-action-buttons 
+				[user]="user" (editUser)="editUser($event)" (enableUser)="enableUser($event)"
+				(unlockUser)="unlockUser($event)" (sendPasswordResetLink)="sendPasswordResetLink($event)"
+			></user-action-buttons>
+		</form>
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-12">
+		<div id="message" *ngIf="response.flags.available" [attr.class]="response.flags.error ? 'error col-sm-12' : 'col-sm-12'">
+			<div id="message-icon" [attr.class]="response.flags.error ? 'glyphicon glyphicon-remove error' : 'glyphicon glyphicon-chevron-right'"></div>
+			<div id="message-text">
+				<span>{{response.message}}</span>
+			</div>
+		</div>
+		<div class="clearfix"></div>
+		<br/>
+
+		<!-- Username -->
+		<div class="form-group row">
+			<label for="username" class="col-sm-2 control-label">Username</label>
+			<div class="col-sm-5">
+				{{user.username}}
+			</div>
+		</div>
+
+		<!-- Email -->
+		<div class="form-group row">
+			<label for="email" class="col-sm-2 control-label">Email</label>
+			<div class="col-sm-5">
+				{{user.email}}
+			</div>
+		</div>
+
+		<!-- First name -->
+		<div class="form-group row">
+			<label for="firstName" class="col-sm-2 control-label">First Name</label>
+			<div class="col-sm-5">
+				{{user.firstName}}
+			</div>
+		</div>
+
+		<!-- Middle name -->
+		<div class="form-group row">
+			<label for="middleName" class="col-sm-2 control-label">Middle Name</label>
+			<div class="col-sm-5">
+				{{user.middleName}}
+			</div>
+		</div>
+
+		<!-- Last name -->
+		<div class="form-group row">
+			<label for="lastName" class="col-sm-2 control-label">Last name</label>
+			<div class="col-sm-5">
+				{{user.lastName}}
+			</div>
+		</div>
+
+		<!-- Enabled -->
+		<div class="form-group row">
+			<label for="enabled" class="col-sm-2 control-label">Account Enabled</label>
+			<div class="col-sm-5">
+				{{user.enabled}}
+			</div>
+		</div>
+
+		<!-- Locked -->
+		<div class="form-group row">
+			<label for="accountLocked" class="col-sm-2 control-label">Account Locked</label>
+			<div class="col-sm-5">
+				{{user.accountLocked}}
+			</div>
+		</div>
+
+		<!-- Account Expired -->
+		<div class="form-group row">
+			<label for="accountExpired" class="col-sm-2 control-label">Account Expired</label>
+			<div class="col-sm-5">
+				{{user.accountExpired}}
+			</div>
+		</div>
+
+		<!-- Password Expired -->
+		<div class="form-group row">
+			<label for="passwordExpired" class="col-sm-2 control-label">Password Expired</label>
+			<div class="col-sm-5">
+				{{user.passwordExpired}}
+			</div>
+		</div>
+
+		<!-- Roles -->
+		<div class="form-group row">
+			<label for="roles" class="col-sm-2 control-label">Roles</label>
+			<div class="col-sm-5">
+				<span *ngFor="let role of user.roles">{{role.name ? role.name : role}}&nbsp;</span>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div>
+				<button type="button" class="btn btn-primary-dashboard" (click)="editUser(user)">
+					<i class="fa fa-edit" style="padding-right: 5px"></i>Edit Profile
+				</button>
+				<a routerLink="/admin-dashboard/users" class="btn btn-primary-dashboard" title="GO TO USER LIST">
+					<i class="fa fa-list" style="padding-right: 5px"></i>List Users
+				</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+<user-action-modals 
+	[user]="user" (disableUser)="disableUser($event)" (deleteUser)="deleteUser($event)"
+	(lockUser)="lockUser($event)" (setRoles)="setRoles($event)"
+></user-action-modals>

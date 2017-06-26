@@ -1,0 +1,122 @@
+<!-- Username -->
+<div *ngIf="!editMode" class="form-group row has-success has-error has-feedback">
+	<label for="username" class="col-sm-2 control-label">Username *</label>
+	<div class="col-sm-5">
+		<input type="text" class="form-control" id="username" name="username"
+			class="form-control" placeholder="Username"
+			required minlength="8" maxlength="15" pattern="^([_a-zA-Z0-9])+$"
+			[(ngModel)]="user.username" #username="ngModel">
+
+		<div *ngIf="username.errors && (username.dirty || username.touched)">
+			<span [hidden]="username.valid || username.pristine"
+				class="glyphicon glyphicon-remove form-control-feedback form-control-feedback-dashboard">
+			</span>
+			<div class="form-control-error-message">
+				({{
+					username.errors.required ? FormValidationMessageService.getRequiredMessage("Username")
+					:username.errors.minlength ? FormValidationMessageService.getMinLengthMessage("Username",8)
+					:username.errors.maxlength ? FormValidationMessageService.getMaxLengthMessage("Username",15)
+					:username.errors.pattern ? FormValidationMessageService.getAllowedUsernameMessage()
+					:""
+				}})
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Email -->
+<div *ngIf="!editMode" class="form-group row has-success has-error has-feedback">
+	<label for="email" class="col-sm-2 control-label">Email *</label>
+	<div class="col-sm-5">
+		<input type="email" class="form-control" id="email" name="email"
+			class="form-control" placeholder="Email"
+			required pattern="^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$"
+			[(ngModel)]="user.email" #email="ngModel">
+
+		<div *ngIf="email.errors && (email.dirty || email.touched)">
+			<span [hidden]="email.valid || email.pristine"
+				class="glyphicon glyphicon-remove form-control-feedback form-control-feedback-dashboard">
+			</span>
+			<div class="form-control-error-message">
+				({{
+					email.errors.required ? FormValidationMessageService.getRequiredMessage("Email")
+					:email.errors.pattern ? FormValidationMessageService.getInvalidEmailMessage()
+					:""
+				}})
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- First name -->
+<div class="form-group row has-success has-error has-feedback">
+	<label for="firstName" class="col-sm-2 control-label">First Name *</label>
+	<div class="col-sm-5">
+		<input type="text" class="form-control" id="firstName" name="firstName"
+			class="form-control" placeholder="First Name"
+			required maxlength="31" pattern="^([a-zA-Z])+$"
+			[(ngModel)]="user.firstName" #firstName="ngModel">
+
+		<div *ngIf="firstName.errors && (firstName.dirty || firstName.touched)">
+			<span [hidden]="firstName.valid || firstName.pristine"
+				class="glyphicon glyphicon-remove form-control-feedback form-control-feedback-dashboard">
+			</span>
+			<div class="form-control-error-message">
+				({{
+					firstName.errors.required ? FormValidationMessageService.getRequiredMessage("First name")
+					:firstName.errors.maxlength ? FormValidationMessageService.getMaxLengthMessage("First name",31)
+					:firstName.errors.pattern ? FormValidationMessageService.getSpecialCharactersNotAllowedMessage()
+					:""
+				}})
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Middle name -->
+<div class="form-group row has-success has-error has-feedback">
+	<label for="middleName" class="col-sm-2 control-label">Middle Name</label>
+	<div class="col-sm-5">
+		<input type="text" class="form-control" id="middleName" name="middleName"
+			class="form-control" placeholder="Middle Name" maxlength="31" pattern="^([a-zA-Z])+$"
+			[(ngModel)]="user.middleName" #middleName="ngModel">
+
+		<div *ngIf="middleName.errors && (middleName.dirty || middleName.touched)">
+			<span [hidden]="middleName.valid || middleName.pristine"
+				class="glyphicon glyphicon-remove form-control-feedback form-control-feedback-dashboard">
+			</span>
+			<div class="form-control-error-message">
+				({{
+					middleName.errors.maxlength ? FormValidationMessageService.getMaxLengthMessage("Middle name",31)
+					:middleName.errors.pattern ? FormValidationMessageService.getSpecialCharactersNotAllowedMessage()
+					:""
+				}})
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Last name -->
+<div class="form-group row has-success has-error has-feedback">
+	<label for="lastName" class="col-sm-2 control-label">Last name *</label>
+	<div class="col-sm-5">
+		<input type="text" class="form-control" id="lastName" name="lastName"
+			class="form-control" placeholder="Last name"
+			required maxlength="31" pattern="^([a-zA-Z])+$"
+			[(ngModel)]="user.lastName" #lastName="ngModel">
+
+		<div *ngIf="lastName.errors && (lastName.dirty || lastName.touched)">
+			<span [hidden]="lastName.valid || lastName.pristine"
+				class="glyphicon glyphicon-remove form-control-feedback form-control-feedback-dashboard">
+			</span>
+			<div class="form-control-error-message">
+				({{
+					lastName.errors.required ? FormValidationMessageService.getRequiredMessage("Last name")
+					:lastName.errors.maxlength ? FormValidationMessageService.getMaxLengthMessage("Last name",31)
+					:lastName.errors.pattern ? FormValidationMessageService.getSpecialCharactersNotAllowedMessage()
+					:""
+				}})
+			</div>
+		</div>
+	</div>
+</div>

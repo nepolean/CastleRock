@@ -1,0 +1,89 @@
+<div class="row">
+	<div class="col-xs-12">
+		<div>
+			<h1 class="dashboard-heading">Coupons</h1>
+		</div>
+		<form class="form-inline dashboard-action-form">
+			<a routerLink="/admin-dashboard/coupons/add" class="btn btn-primary" title="Add Coupon"><i class="fa fa-plus fa-lg"></i></a>
+		</form>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-xs-12">
+		<div class="dashboard-widget">
+			<div class="dashboard-widget-title">
+				<div class="row">
+					<h2 class="col-xs-12 col-sm-4" style="margin-top:10px">All coupons</h2>
+					<div class="form-inline col-xs-12 col-sm-5">
+						<!--<div class="dashboard-widget-title-form">
+							<label style="font-weight: bold">Filter by type:</label>
+							<select id="selectedType" class="form-control" [(ngModel)]="selectedType" name="selectedType" (change)="getCouponsByName()">
+								<option value="ALL">ALL</option>
+								<option value="USER">USER</option>
+								<option value="CUSTOMER">CUSTOMER</option>
+							</select>
+							<div class="clearfix"></div>
+						</div>-->
+					</div>
+					<div class="form-inline col-xs-12 col-sm-3">
+						<form role="form" #searchForm="ngForm" (ngSubmit)="searchCoupon(searchFilter.value);">
+						<div class="input-group">
+							<input type="text" class="form-control" placeholder="Search Coupon" id="searchFilter" name="searchFilter" #searchFilter required>
+							<span class="input-group-btn">
+								<button class="btn btn-danger" type="submit"><i class="fa fa-search fa-lg"></i></button>
+							</span>
+						</div>
+						</form>
+					</div>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="dashboard-widget-content">
+				<div class="dashboard-paginator-top-div">
+					<coupon-paginator [paginator]="paginator" (pageChange)="handlePageSelection($event)"></coupon-paginator>
+				</div>
+				<div class="table-responsive">
+				<table class="table table-striped table-hover">
+					<thead class="thead-default" style="background: black; color: white">
+						<tr>
+							<th>ID</th>
+							<th>Name</th>
+							<th>Valid From</th>
+							<th>Valid Till</th>
+							<th>Discount Percentage</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr *ngFor="let coupon of coupons" (click)="selectCoupon(coupon)"
+							[class.selected]="coupon === selectedCoupon">
+							<th scope="row">{{coupon.id}}</th>									
+							<td>
+								<a routerLink="/admin-dashboard/coupons/view/{{coupon.id}}" title="View Coupon">{{coupon.name}}</a>
+							</td>
+							<td>{{coupon.validFrom}}</td>
+							<td>{{coupon.validTo}}</td>
+							<td>{{coupon.discPct}}</td>
+							<td>
+								<coupon-action-buttons 
+									[coupon]="selectedCoupon" [listPage]="true" (editCoupon)="editCoupon($event)">
+								</coupon-action-buttons>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				</div>
+				<div class="dashboard-paginator-bottom-div">
+					<coupon-paginator [paginator]="paginator" (pageChange)="handlePageSelection($event)"></coupon-paginator>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!--/.row-->
+
+
+<coupon-action-modals 
+	[coupon]="selectedCoupon" (deleteCoupon)="deleteCoupon($event)"
+></coupon-action-modals>

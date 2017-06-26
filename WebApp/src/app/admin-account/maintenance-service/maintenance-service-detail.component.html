@@ -1,0 +1,79 @@
+<div class="row">
+	<div class="col-xs-12">
+		<div style="border-bottom: 1px solid black;">
+			<h1 class="dashboard-heading">View Maintenance Service</h1>
+		</div>
+		<form class="form-inline dashboard-action-form" style="margin-top: 10px">
+			<maintenance-service-action-buttons 
+				[maintenanceService]="maintenanceService" (editMaintenanceService)="editMaintenanceService($event)"
+			></maintenance-service-action-buttons>
+		</form>
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-12">
+		<div id="message" *ngIf="response.flags.available" [attr.class]="response.flags.error ? 'error col-sm-12' : 'col-sm-12'">
+			<div id="message-icon" [attr.class]="response.flags.error ? 'glyphicon glyphicon-remove error' : 'glyphicon glyphicon-chevron-right'"></div>
+			<div id="message-text">
+				<span>{{response.message}}</span>
+			</div>
+		</div>
+		<div class="clearfix"></div>
+		<br/>
+
+		<!-- MaintenanceService ID -->
+		<div class="form-group row">
+			<label for="id" class="col-sm-2 control-label">ID</label>
+			<div class="col-sm-5">
+				{{maintenanceService.id}}
+			</div>
+		</div>
+
+		<!-- MaintenanceService Name -->
+		<div class="form-group row">
+			<label for="type" class="col-sm-2 control-label">Name</label>
+			<div class="col-sm-5">
+				{{maintenanceService.name}}
+			</div>
+		</div>
+
+		<!-- MaintenanceService Valid From -->
+		<div class="form-group row">
+			<label for="type" class="col-sm-2 control-label">Valid From</label>
+			<div class="col-sm-5">
+				{{maintenanceService.validFrom}}
+			</div>
+		</div>
+
+		<!-- MaintenanceService Valid Till -->
+		<div class="form-group row">
+			<label for="type" class="col-sm-2 control-label">Valid Till</label>
+			<div class="col-sm-5">
+				{{maintenanceService.validTo}}
+			</div>
+		</div>
+
+		<!-- MaintenanceService Discount Percentage -->
+		<div class="form-group row">
+			<label for="discPct" class="col-sm-2 control-label">Discount Percentage</label>
+			<div class="col-sm-5">
+				{{maintenanceService.discPct}}
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div>
+				<button type="button" class="btn btn-primary-dashboard" (click)="editMaintenanceService(maintenanceService)">
+					<i class="fa fa-edit" style="padding-right: 5px"></i>Edit Maintenance Service
+				</button>
+				<a routerLink="/admin-dashboard/services" class="btn btn-primary-dashboard" title="GO TO MAINTENANCE SERVICE LIST">
+					<i class="fa fa-list" style="padding-right: 5px"></i>List Maintenance Services
+				</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+<maintenance-service-action-modals 
+	[maintenanceService]="maintenanceService" (deleteMaintenanceService)="deleteMaintenanceService($event)"
+></maintenance-service-action-modals>
