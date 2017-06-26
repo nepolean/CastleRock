@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:include="_fragments/header::head(metaDescription='blabla',title='Home',links='_',scripts='_')"></head><!--/head-->
+
+<body class="homepage">
+
+	<header id="header" th:include="_fragments/header::header(activeLink='Home')"></header>
+
+    <section id="services" class="service-item">
+	   <div class="container wow fadeInDown">
+            <div class="center">
+                <h2 id="service-title" style="font-family: cursive">One window for all your property related needs!</h2>
+                <p id="service-description" class="lead">Managing your property never got easier than this before. Be it legal advice to buy a property, utility bill payments, fixing a broken pipe or even helping you with your daily chores! You tell us what you need and our professionals will provide you the best service possible you can get.</p>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12">
+					<div class="bs-glyphicons">
+						<ul class="bs-glyphicons-list">
+							<li>
+								<span class="fa fa-gavel fa-lg"></span>
+								<span class="bs-glyphicons-tile-title">Legal assistance</span>
+								<span class="bs-glyphicons-tile-description">Legal assistance for property sellers and buyers</span>
+							</li>
+							<li class="">
+								<span class="fa fa-money fa-lg"></span>
+								<span class="bs-glyphicons-tile-title">Bill payments</span>
+								<span class="bs-glyphicons-tile-description">Utility bill payment assistance for your property</span>
+							</li>
+							<li class="">
+								<span class="fa fa-clock-o fa-lg"></span>
+								<span class="bs-glyphicons-tile-title">Periodic maintenance</span>
+								<span class="bs-glyphicons-tile-description">Periodic maintenance services for properties</span>
+							</li>
+							<li>
+								<span class="fa fa-flash fa-lg"></span>
+								<span class="bs-glyphicons-tile-title">Flash service</span>
+								<span class="bs-glyphicons-tile-description">Facing water leakage? Electrical problems? Reach out for immediate help</span>
+							</li>
+						</ul>
+					</div>
+                </div>
+            </div><!--/.row-->
+        </div><!--/.container-->
+    </section><!--/#services-->
+
+	<!-- <section id="bottom"  th:include="_fragments/bottom::bottom"></section>-->
+	<footer id="footer">
+		<div th:replace="_fragments/footer::footer(containerType='')"></div>
+	</footer>
+	<!--/#footer-->
+
+	<div th:include="_fragments/footer::scripts(extras='_')">
+	</div>
+</body>
+</html>

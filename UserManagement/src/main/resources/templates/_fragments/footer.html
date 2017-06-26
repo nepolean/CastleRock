@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+	<!--  TODO - Fix sticky footer issue for smaller viewports. -->
+	<div th:fragment="footer(containerType)">
+		<div class="container" th:style="${containerType == 'fluid' ? 'width: auto;' : ''}">
+			<div class="row">
+				<div class="col-sm-6">
+					&copy; 2016 <a target="_blank" href="#"
+						title="Free Twitter Bootstrap WordPress Themes and HTML templates">COMPANY</a>.
+					All Rights Reserved.
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--/#footer-->
+	<div th:fragment="scripts(extras)">
+		<script src="/js/jquery.js"></script>
+		<script src="/js/bootstrap.min.js"></script>
+		<script src="/js/wow.min.js"></script>
+		<script src="/js/initwow.js"></script>
+		<th:block th:replace="__${extras}__" />
+	</div>
+</body>
+</html>

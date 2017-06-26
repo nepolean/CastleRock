@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	th:fragment="html(meta,heading,type,greeting,content,buttons)">
+<head th:include="_fragments/header::head(metaDescription=${meta},title=${heading},links='_fragments/info::link',scripts='_')">
+	<link href="/css/user.css" rel="stylesheet"/>
+</head><!--/head-->
+
+<body>
+
+	<header id="header" th:include="_fragments/header::header"></header>
+	<div class="container">
+		<div class="row wow fadeInDown user-container">
+			<div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
+				<div class="row">
+					<div class="col-xs-12">
+						<div class="userpage-logo">
+							<span><i th:class="${type == 'error' ? 'glyphicon glyphicon-remove' : 
+												type == 'success' ? 'glyphicon glyphicon-ok' :
+												'glyphicon glyphicon-info-sign'}"></i></span>
+						</div>
+						<h1 class="userpage-heading" th:text="${heading}">Heading</h1>
+						
+						<div id="message">
+							<div id="message-icon" th:class="${type == 'error' ? 'glyphicon glyphicon-remove' : 
+															   type == 'success' ? 'glyphicon glyphicon-ok' :
+															   'glyphicon glyphicon-info-sign'}"></div>
+							<div id="message-text">
+								<span th:text="${greeting}"></span>
+							</div>
+						</div>
+						<div class="message-panel">
+							<div class="message-content">
+								<th:block th:replace="__${content}__" />
+							</div>
+						</div>
+						<hr class="black-line" style="margin-top: 0px"/>
+					</div>
+				</div>
+				<div class="row">
+					<th:block th:replace="__${buttons}__" />
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<footer id="footer">
+		<div th:replace="_fragments/footer::footer(containerType='')"></div>
+	</footer>
+	<!--/#footer-->
+
+	<div th:include="_fragments/footer::scripts(extras='_fragments/info::script')">
+		<script src="/js/user.js"></script>
+	</div>
+</body>
+</html>

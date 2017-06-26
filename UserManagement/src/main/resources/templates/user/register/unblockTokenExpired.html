@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	th:replace="_fragments/info::html(
+		meta='Unblock token expired',
+		heading='Unblock token expired',
+		type='info',
+		greeting='Oops!',
+		content='::content',
+		buttons='::buttons')">
+		<div th:fragment="content">
+			Your unblock token has expired. Request for the link again.
+		</div>
+		<div th:fragment="buttons">
+			<div class="col-xs-12 col-sm-12 col-md-12">
+				<a th:href="@{/sendUnblockLink}" href="/sendUnblockLink" class="btn btn-lg btn-primary-login btn-block">Request unblock link</a>
+			</div>
+		</div>
+</html>
