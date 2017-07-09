@@ -10,6 +10,12 @@
 	</ul>
 	<ul class="sidebar-nav">
 		<li>
+			<a [attr.class]="router.url.indexOf('/dashboard/home') != -1 ? 'active' : ''" routerLink="/dashboard/home" title="Dashboard home">
+				<span style="float: left">Dashboard home</span>
+				<span class="sidebar-sub-icon glyphicon fa fa-dashboard fa-lg"></span>
+			</a>
+		</li>		
+		<li>
 			<a [attr.class]="router.url.indexOf('/dashboard/message') != -1 ? 'active' : ''" routerLink="/dashboard/message" title="Messages">
 				<span style="float: left">Messages</span>
 				<span class="sidebar-sub-icon glyphicon fa fa-envelope fa-lg"></span>
@@ -17,7 +23,7 @@
 		</li>
 		<li>
 			<a [attr.class]="router.url.indexOf('/dashboard/service') != -1 ? 'active' : ''" routerLink="/dashboard/service" title="Services">
-				<span style="float: left">Services</span>
+				<span style="float: left">Jobs</span>
 				<span class="sidebar-sub-icon glyphicon fa fa-tasks fa-lg"></span>
 			</a>
 		</li>
@@ -28,19 +34,13 @@
 			</a>
 		</li>
 		<li>
-			<a [attr.class]="router.url.indexOf('/dashboard/property') != -1 ? 'active' : ''" routerLink="/dashboard/property" title="Properties">
-				<span style="float: left">Properties</span>
-				<span class="sidebar-sub-icon glyphicon fa fa-building-o fa-lg"></span>
-			</a>
-		</li>
-		<li>
-			<a title="Communities">
+			<a [attr.class]="router.url.indexOf('/dashboard/community') != -1 ? 'active' : ''" routerLink="/dashboard/community" title="Community">
 				<span style="float: left">Communities</span>
 				<span class="sidebar-sub-icon glyphicon fa fa-group fa-lg"></span>
 			</a>
 		</li>
 		<li>
-			<a title="Payments">
+			<a [attr.class]="router.url.indexOf('/dashboard/payment-pending') != -1 ? 'active' : ''" routerLink="/dashboard/payment-pending" title="Payments">
 				<span style="float: left">Payments</span>
 				<span class="sidebar-sub-icon glyphicon fa fa-money fa-lg"></span>
 			</a>
@@ -52,7 +52,7 @@
 			</a>
 		</li>
 		<li>
-			<a [attr.class]="router.url.indexOf('/dashboard/profile') != -1 ? 'active' : ''" routerLink="/dashboard/profile-edit" title="Profile">
+			<a [attr.class]="router.url.indexOf('/dashboard/profile-edit') != -1 ? 'active' : ''" routerLink="/dashboard/profile-edit" title="Profile">
 				<span style="float: left">Profile</span>
 				<span class="sidebar-sub-icon glyphicon fa fa-info fa-lg"></span>
 			</a>

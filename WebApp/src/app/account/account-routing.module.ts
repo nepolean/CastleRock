@@ -1,11 +1,20 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AccountComponent } from './account.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { HomeComponent } from './home/home.component';
 import { ServiceComponent } from './service/service.component';
 import { ServiceNewComponent } from './service/service-new.component';
 import { ServiceUpcomingComponent } from './service/service-upcoming.component';
 import { ServiceCompletedComponent } from './service/service-completed.component';
 import { ServiceCompletedDetailComponent } from './service/service-completed-detail.component';
+import { CommunityComponent } from './community/community.component';
+import { CommunityMembersComponent } from './community/community-members.component';
+import { PaymentComponent } from './payment/payment.component';
+import { PaymentPendingComponent } from './payment/payment-pending.component';
+import { PaymentHistoryComponent } from './payment/payment-history.component';
+import { PaymentDetailComponent } from './payment/payment-detail.component';
+import { PaymentSuccessComponent } from './payment/payment-success.component';
 import { PropertyComponent } from './property/property.component';
 import { PropertyDetailComponent } from './property/property-detail.component';
 import { SubscriptionComponent } from './subscription/subscription.component';
@@ -24,15 +33,25 @@ const routes: Routes = [
     path: '',
     component: AccountComponent,
     canActivate: [ AppAuthGuard ],
-    children: [
+    children: [        
       {
         path: '',
-        canActivateChild: [ AppAuthGuard ],
+        component: DashboardComponent,
         children: [
           {
             path: '',
-            redirectTo: '/dashboard/service',
+            redirectTo: '/dashboard/home',
             pathMatch: 'full'
+          },
+          {
+            path: 'home',
+            component: HomeComponent,
+            children: [
+              {
+                path: '',
+                component: ServiceComponent
+              }
+            ]
           },
           {
             path: 'service',
@@ -53,6 +72,18 @@ const routes: Routes = [
           {
             path: 'service-completed-detail/:id',
             component: ServiceCompletedDetailComponent
+          },
+          {
+            path: 'message',
+            component: MessageComponent
+          },
+          {
+            path: 'community',
+            component: CommunityComponent
+          },
+          {
+            path: 'community-members',
+            component: CommunityMembersComponent
           },
           {
             path: 'property',
@@ -77,24 +108,40 @@ const routes: Routes = [
           {
             path: 'subscription-new',
             component: SubscriptionNewComponent
-          },
-          {
-            path: 'profile-edit',
-            component: UserProfileEditComponent
-          },
-          {
-            path: 'profile-change-password',
-            component: UserProfileChangePasswordComponent
-          },
-          {
-            path: 'message',
-            component: MessageComponent
-          },
-          {
-            path: 'ticket',
-            component: TicketComponent
           }
         ]
+      },
+      {
+        path: 'profile-edit',
+        component: UserProfileEditComponent
+      },
+      {
+        path: 'profile-change-password',
+        component: UserProfileChangePasswordComponent
+      },
+      {
+        path: 'ticket',
+        component: TicketComponent
+      },
+      {
+        path: 'payment',
+        component: PaymentComponent
+      },
+      {
+        path: 'payment-pending',
+        component: PaymentPendingComponent
+      },
+      {
+        path: 'payment-history',
+        component: PaymentHistoryComponent
+      },
+      {
+        path: 'payment-detail/:id',
+        component: PaymentDetailComponent
+      },
+      {
+        path: 'payment-success',
+        component: PaymentSuccessComponent
       }
     ]
   }

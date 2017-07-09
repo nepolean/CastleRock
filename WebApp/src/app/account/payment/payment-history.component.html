@@ -1,0 +1,35 @@
+<div class="dashboard-widget">
+	<app-account-payment-begin></app-account-payment-begin>
+	<div class="dashboard-widget-content">
+		<table class="table table-hover table-striped" style="overflow: hidden">
+			<thead>
+				<tr>
+					<th>
+						<div class="row">
+							<div class="col-sm-5 col-xs-12">Particular</div>
+							<div class="col-sm-3 col-xs-12">Amount</div>
+							<div class="col-sm-2 col-xs-12">Paid on</div>
+							<div class="col-sm-2 col-xs-12">Details</div>
+						</div>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<div class="row">
+							<div class="col-sm-5 col-xs-12">1. <strong><a>Electricity and Plumbing maintenance</a></strong></div>
+							<div class="col-sm-3 col-xs-12"><i class="fa fa-rupee fa-md"></i><span style="font-size: medium">1200.00</span></div>
+							<div class="col-sm-2 col-xs-12">10 February 2016</div>
+							<div class="col-sm-2 col-xs-12">HDFC Cheque 12421 dated 09/02/2016</div>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="clearfix"></div>
+		<div class="dashboard-paginator-bottom-div">
+			<account-paginator [paginator]="paginator" (pageChange)="handlePageSelection($event)"></account-paginator>
+		</div>
+	</div>
+</div>
