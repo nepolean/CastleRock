@@ -1,0 +1,107 @@
+<div class="row">
+	<div class="col-sm-6 col-xs-12">
+		<div class="dashboard-widget" style="min-height: 225px">
+			<div class="dashboard-widget-title">
+				<h2 style="margin-top:10px">Account</h2>
+				<div class="clearfix"></div>
+			</div>
+			<div class="dashboard-widget-content">
+				<div class="bs-glyphicons bs-glyphicons-width">
+					<ul class="bs-glyphicons-list">
+						<li [attr.class]="router.url.indexOf('/dashboard/service') != -1 ? 'active' : ''" (click)="goToLink('/dashboard/service')">
+							<span class="fa fa-tasks fa-lg"></span>
+							<span class="dashboard-tile-title">Jobs</span>
+						</li>
+						<li [attr.class]="router.url.indexOf('/dashboard/subscription') != -1 ? 'active' : ''" (click)="goToLink('/dashboard/subscription')">
+							<span class="fa fa-newspaper-o fa-lg"></span>
+							<span class="dashboard-tile-title">Subscriptions</span>
+							<span class="dashboard-tile-count" style="font-weight: bold">(3)</span>
+						</li>
+						<!--<li [attr.class]="router.url.indexOf('/dashboard/property') != -1 ? 'active' : ''" (click)="goToLink('/dashboard/property')">
+							<span class="fa fa-building-o fa-lg"></span>
+							<span class="dashboard-tile-title">Properties</span>
+							<span class="dashboard-tile-count" style="font-weight: bold">(2)</span>
+						</li>-->
+						<li [attr.class]="router.url.indexOf('/dashboard/community') != -1 ? 'active' : ''" (click)="goToLink('/dashboard/community')">
+							<span class="fa fa-group fa-lg"></span>
+							<span class="dashboard-tile-title">Community</span>
+						</li>
+						<li [attr.class]="router.url.indexOf('/dashboard/payment-pending') != -1 ? 'active' : ''" (click)="goToLink('/dashboard/payment-pending')">
+							<span class="fa fa-money fa-lg"></span>
+							<span class="dashboard-tile-title">Payments</span>
+						</li>
+						<li [attr.class]="router.url.indexOf('/dashboard/ticket') != -1 ? 'active' : ''" (click)="goToLink('/dashboard/ticket')">
+							<span class="fa fa-life-ring fa-lg"></span>
+							<span class="dashboard-tile-title">Help Center</span>
+						</li>
+					</ul>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-sm-6 col-xs-12">
+		<div class="dashboard-widget" style="min-height: 225px">
+			<div class="dashboard-widget-title">
+				<div class="row">
+					<h2 class="col-xs-10 col-sm-8" style="margin-top:10px">Bulletin Board</h2>
+					<div class="col-xs-2 col-sm-4">
+						<div class="dashboard-widget-title-mobile-menu btn-group">
+							<button type="button" class="btn btn-danger" data-toggle="dropdown" title="View all messages" style="background:#d9534f;color:white">
+								<i class="fa fa-list fa-lg"></i>
+							</button>
+						</div>
+						<ul class="dashboard-widget-title-desktop-menu nav nav-pills pull-right">
+							<li>
+								<a routerLink="/dashboard/message">View all messages</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+
+			<div class="dashboard-widget-content">
+				<table class="table table-hover table-striped" style="overflow: hidden">
+					<tbody>
+						<tr>
+							<td>
+								<div class="row">
+									<div class="col-sm-7 col-xs-12"><strong>1. Lift maintenance subscription</strong> is pending renewal.</div>
+									<div class="col-sm-2 col-xs-6"><a>Renew now</a></div>
+									<div class="col-sm-2 col-xs-6 pull-right"><a>View Details</a></div>
+								</div>
+							</td>
+						</tr>
+
+						<tr>
+							<td>
+								<div class="row">
+									<div class="col-sm-7 col-xs-12"><strong>2. Painting task</strong> is awaiting payment for further process</div>
+									<div class="col-sm-2 col-xs-6"><a>Pay now</a></div>
+									<div class="col-sm-2 col-xs-6 pull-right"><a>View Details</a></div>
+								</div>
+							</td>
+						</tr>
+
+						<tr>
+							<td>
+								<div class="row">
+									<div class="col-sm-7 col-xs-12"><strong>3. Appliance maintenance</strong> is available now</div>
+									<div class="col-sm-2 col-xs-6"><a>Go FOR IT!</a></div>
+									<div class="col-sm-2 col-xs-6 pull-right"><a>View Details</a></div>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-12">
+		<router-outlet></router-outlet>
+	</div>
+</div>

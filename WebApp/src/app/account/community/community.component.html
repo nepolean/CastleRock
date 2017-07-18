@@ -1,0 +1,77 @@
+<div class="dashboard-widget">
+	<app-account-community-begin></app-account-community-begin>
+	<div class="dashboard-widget-content">
+
+		<form class="form-inline pull-right" style="margin-bottom: 10px">
+			<div class="btn-group">
+				<button type="button" class="btn btn-danger" title="New Post" data-toggle="modal" data-target="#postModal">
+					NEW POST
+				</button>
+			</div>
+		</form>
+		<!-- start recent activity -->
+		<ul class="messages">
+			<li>
+			<img src="assets/images/avatar.png" class="avatar" alt="Avatar">
+			<div class="message_wrapper">
+				<h4 class="heading">Yathiraj</h4>
+				<blockquote>There will be a meeting between 11 to 12 on 2nd June at the club house. Request all of you to attend it.</blockquote>
+				<p class="message_date_block">
+					<span class="message_date">Posted at 29th May 2017 09:30:42 hrs</span>
+				</p>
+			</div>
+			</li>
+			<li>
+			<img src="assets/images/avatar.png" class="avatar" alt="Avatar">
+			<div class="message_wrapper">
+				<h4 class="heading">Arun Kumar Yathiraj</h4>
+				<blockquote>Learnt that there is an increase in the electricity unit price. Watch out for a fatter electricity bill.</blockquote>
+				<p class="message_date_block">
+					<span class="message_date">Posted at 27th May 2017 09:30:42 hrs</span>
+				</p>
+			</div>
+			</li>
+			<li>
+			<img src="assets/images/avatar.png" class="avatar" alt="Avatar">
+			<div class="message_wrapper">
+				<h4 class="heading">Arun Kumar Yathiraj</h4>
+				<blockquote>Hi folks, this is to inform you that plumbing repairs will be undertaken on 13th June. Request you to have enough backup of water.</blockquote>
+				<p class="message_date_block">
+					<span class="message_date">Posted at 24th May 2017 09:30:42 hrs</span>
+				</p>
+			</div>
+			</li>
+		</ul>
+		<!-- end recent activity -->
+	</div>
+</div>
+
+<!-- Post Modal -->
+<div id="postModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content modal-sm">
+      <div class="modal-header" style="background: #c52d2f">
+        <button type="button" class="close" data-dismiss="modal" style="color: white">&times;</button>
+        <h4 class="modal-title" style="color: white">Post a message</h4>
+      </div>
+	  <div class="modal-body">
+		<fieldset>
+			<div class="form-group row">
+				<label for="message" class="col-xs-2 control-label">Message</label>
+				<div class="col-xs-10">
+					<textarea class="form-control" style="resize: none;" rows="5" id="post-message" maxlength="500"></textarea>
+				</div>
+				<div class="col-xs-offset-2 col-xs-10 form-control-error-message">
+					(Upto 500 characters allowed.)
+				</div>
+			</div>
+		</fieldset>
+	  </div>
+      <div class="modal-footer">
+			<button type="button" class="btn btn-danger" data-dismiss="modal" style="font-weight: bold">Post</button>
+			<button type="button" class="btn btn-default" data-dismiss="modal" style="font-weight: bold">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
