@@ -51,4 +51,16 @@ export class RealMaintenanceServiceService {
     return this.http
       .put(url, JSON.stringify(maintenanceService), {headers: this.headers});
   }
+
+  updateOneTimePlan(maintenanceServiceId: string, oneTimePlan: any): Observable<Response> {
+    const url = `${this.servicesUrl}/api/v1/admin/service/${maintenanceServiceId}/asset/onetime`;
+    return this.http
+      .post(url, JSON.stringify(oneTimePlan), {headers: this.headers});
+  }
+
+  updateSubscriptionPlan(maintenanceServiceId: string, subscriptionPlan: any): Observable<Response> {
+    const url = `${this.servicesUrl}/api/v1/admin/service/${maintenanceServiceId}/asset/subscription`;
+    return this.http
+      .post(url, JSON.stringify(subscriptionPlan), {headers: this.headers});
+  }
 }

@@ -1,7 +1,7 @@
 <div class="row">
 	<div class="col-xs-12">
 		<div style="border-bottom: 1px solid black;">
-			<h1 class="dashboard-heading">View Maintenance Service</h1>
+			<h1 class="dashboard-heading">View Service</h1>
 		</div>
 		<form class="form-inline dashboard-action-form" style="margin-top: 10px">
 			<maintenance-service-action-buttons 
@@ -37,27 +37,64 @@
 			</div>
 		</div>
 
-		<!-- MaintenanceService Valid From -->
+		<!-- MaintenanceService type -->
 		<div class="form-group row">
-			<label for="type" class="col-sm-2 control-label">Valid From</label>
+			<label for="type" class="col-sm-2 control-label">Type</label>
 			<div class="col-sm-5">
-				{{maintenanceService.validFrom}}
+				{{maintenanceService.type}}
 			</div>
 		</div>
 
-		<!-- MaintenanceService Valid Till -->
+		<!-- MaintenanceService category -->
 		<div class="form-group row">
-			<label for="type" class="col-sm-2 control-label">Valid Till</label>
+			<label for="category" class="col-sm-2 control-label">Category</label>
 			<div class="col-sm-5">
-				{{maintenanceService.validTo}}
+				{{maintenanceService.category}}
 			</div>
 		</div>
 
-		<!-- MaintenanceService Discount Percentage -->
+		<!-- MaintenanceService Applicable To -->
 		<div class="form-group row">
-			<label for="discPct" class="col-sm-2 control-label">Discount Percentage</label>
+			<label for="applicableTo" class="col-sm-2 control-label">Applicable to</label>
 			<div class="col-sm-5">
-				{{maintenanceService.discPct}}
+				{{maintenanceService.applicableTo}}
+			</div>
+		</div>
+
+		<!-- MaintenanceService Amenities -->
+		<div class="form-group row">
+			<label for="amenities" class="col-sm-2 control-label">Amenities</label>
+			<div class="col-sm-5">
+				{{maintenanceService.amenities}}
+			</div>
+		</div>
+
+		<!-- MaintenanceService Flags -->
+		<div class="form-group row">
+			<label for="canSubscribe" class="col-sm-2 control-label">Can Subscribe</label>
+			<div class="col-sm-5">
+				{{maintenanceService.canSubscribe}}
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label for="canRequestOneTime" class="col-sm-2 control-label">Can Request One Time</label>
+			<div class="col-sm-5">
+				{{maintenanceService.canRequestOneTime}}
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label for="active" class="col-sm-2 control-label">Active</label>
+			<div class="col-sm-5">
+				{{maintenanceService.active}}
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label for="deleted" class="col-sm-2 control-label">Deleted</label>
+			<div class="col-sm-5">
+				{{maintenanceService.deleted}}
 			</div>
 		</div>
 

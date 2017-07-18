@@ -1,0 +1,90 @@
+<!-- Name -->
+<div class="form-group row has-success has-error has-feedback">
+
+	<label for="name" class="col-md-3 col-sm-3 col-xs-12 control-label">Name *</label>
+	<div class="col-md-6 col-sm-6 col-xs-12">
+		<input type="text" class="form-control" id="name" name="name"
+			class="form-control" placeholder="Subscription Plan Name" required maxlength="31"
+			[(ngModel)]="subscriptionPlan.name" #name="ngModel">
+
+		<div *ngIf="name.errors && (name.dirty || name.touched)">
+			<span [hidden]="name.valid || name.pristine"
+				class="glyphicon glyphicon-remove form-control-feedback form-control-feedback-dashboard">
+			</span>
+			<div class="form-control-error-message">
+				({{
+					name.errors.required ? FormValidationMessageService.getRequiredMessage("Subscription Plan Name")
+					:name.errors.maxlength ? FormValidationMessageService.getMaxLengthMessage("Subscription Plan Name",31)
+					:""
+				}})
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Visit Count -->
+<div class="form-group row has-success has-error has-feedback">
+	<label for="visitCount" class="col-sm-2 control-label">Visit Count *</label>
+	<div class="col-sm-5">
+		<input type="number" class="form-control" id="visitCount" name="visitCount"
+			class="form-control" placeholder="0" required min="0" step="1"
+			[(ngModel)]="subscriptionPlan.visitCount" #visitCount="ngModel">
+
+		<div *ngIf="(visitCount.value < 0 || visitCount.errors) && (visitCount.dirty || visitCount.touched)">
+			<span [hidden]="visitCount.valid || visitCount.pristine"
+				class="glyphicon glyphicon-remove form-control-feedback form-control-feedback-dashboard">
+			</span>
+			<div class="form-control-error-message">
+				({{
+					visitCount.value < 0 ? FormValidationMessageService.getMinimumValueMessage("Visit Count",0)
+					:FormValidationMessageService.getRequiredMessage("Visit Count")
+				}})
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Subscription Price -->
+<div class="form-group row has-success has-error has-feedback">
+	<label for="subscriptionPrice" class="col-sm-2 control-label">Subscription Price *</label>
+	<div class="col-sm-5">
+		<input type="number" class="form-control" id="subscriptionPrice" name="subscriptionPrice"
+			class="form-control" placeholder="0" required min="0" step="1"
+			[(ngModel)]="subscriptionPlan.subscriptionPrice" #subscriptionPrice="ngModel">
+
+		<div *ngIf="(subscriptionPrice.value < 0 || subscriptionPrice.errors) && (subscriptionPrice.dirty || subscriptionPrice.touched)">
+			<span [hidden]="subscriptionPrice.valid || subscriptionPrice.pristine"
+				class="glyphicon glyphicon-remove form-control-feedback form-control-feedback-dashboard">
+			</span>
+			<div class="form-control-error-message">
+				({{
+					subscriptionPrice.value < 0 ? FormValidationMessageService.getMinimumValueMessage("Subscription Price",0)
+					:FormValidationMessageService.getRequiredMessage("Subscription Price")
+				}})
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Discount Percentage -->
+<div class="form-group row has-success has-error has-feedback">
+	<label for="discountPct" class="col-sm-2 control-label">Percentage</label>
+	<div class="col-sm-5">
+		<input type="number" class="form-control" id="discountPct" name="discountPct"
+			class="form-control" placeholder="0.00" required min="0" max="100" step="0.1"
+			[(ngModel)]="subscriptionPlan.discountPct" #discountPct="ngModel">
+
+		<div *ngIf="(discountPct.value < 0 || discountPct.value > 100 || discountPct.errors) && (discountPct.dirty || discountPct.touched)">
+			<span [hidden]="discountPct.valid || discountPct.pristine"
+				class="glyphicon glyphicon-remove form-control-feedback form-control-feedback-dashboard">
+			</span>
+			<div class="form-control-error-message">
+				({{
+					discountPct.value < 0 ? FormValidationMessageService.getMinimumValueMessage("Discount Percentage",0)
+					:discountPct.value > 100 ? FormValidationMessageService.getMaximumValueMessage("Discount Percentage",100)
+					:FormValidationMessageService.getRequiredMessage("Discount Percentage")
+				}})
+			</div>
+		</div>
+	</div>
+</div>

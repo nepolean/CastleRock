@@ -1,0 +1,35 @@
+<div class="dashboard-widget">
+	<app-account-payment-begin></app-account-payment-begin>
+	<div class="dashboard-widget-content">
+		<table class="table table-hover table-striped" style="overflow: hidden">
+			<thead>
+				<tr>
+					<th>
+						<div class="row">
+							<div class="col-sm-5 col-xs-12">Particular</div>
+							<div class="col-sm-3 col-xs-12">Amount</div>
+							<div class="col-sm-2 col-xs-12">Due date</div>
+							<div class="col-sm-2 col-xs-12"></div>
+						</div>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<div class="row">
+							<div class="col-sm-5 col-xs-12">1. <strong><a routerLink="/dashboard/payment-detail/1">Lift maintenance</a></strong></div>
+							<div class="col-sm-3 col-xs-12"><i class="fa fa-rupee fa-md"></i><span style="font-size: medium">24200.00</span></div>
+							<div class="col-sm-2 col-xs-12">10 February 2017</div>
+							<div class="col-sm-2 col-xs-12"><a class="btn btn-danger" routerLink="/dashboard/payment">Pay now</a></div>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="clearfix"></div>
+		<div class="dashboard-paginator-bottom-div">
+			<account-paginator [paginator]="paginator" (pageChange)="handlePageSelection($event)"></account-paginator>
+		</div>
+	</div>
+</div>

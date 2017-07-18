@@ -531,6 +531,10 @@ ul.social li {
   border: 1px solid #fff; 
 }
 
+.bs-glyphicons-width li {
+  width: 20%;
+}
+
 .bs-glyphicons li.wizard-tile {
   width: 10% !important;
 }
@@ -566,6 +570,10 @@ ul.social li {
   .bs-glyphicons li {
       width: 33.33%;
       height: 125px;
+  }
+
+  .bs-glyphicons-width li {
+    width: 33.33%;
   }
 
   .bs-glyphicons li.wizard-tile {

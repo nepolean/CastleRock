@@ -85,4 +85,18 @@ export class MaintenanceServiceService {
     }));
     return Observable.of(response);
   }
+
+  updateOneTimePlan(maintenanceId: string, oneTimePlan: any): Observable<Response> {
+    const response = new Response( new ResponseOptions({
+      body: "Updated"
+    }));
+    return Observable.of(response);
+  }
+
+  updateSubscriptionPlan(maintenanceId: string, subscriptionPlan: any): Observable<Response> {
+    const response = new Response( new ResponseOptions({
+      body: "Updated"
+    }));
+    return Observable.of(response);
+  }
 }

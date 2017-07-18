@@ -16,12 +16,12 @@ export class MessageComponent {
         private router: Router,
         private titleService: Title) {
         this.paginator.totalPages = 1;
-        this.paginator.totalElements = 2;
+        this.paginator.totalElements = 3;
         this.paginator.last = true;
         this.paginator.first = true;
-        this.paginator.size = 2;
+        this.paginator.size = 3;
         this.paginator.currentPage = 0;
-        this.paginator.numberOfElements = 2;
+        this.paginator.numberOfElements = 3;
         this.paginator.entity = 'messages';
         this.titleService.setTitle('Company | Messages');
     }

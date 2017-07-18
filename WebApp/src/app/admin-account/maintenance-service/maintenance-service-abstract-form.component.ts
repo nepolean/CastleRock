@@ -12,6 +12,9 @@ import { MaintenanceServiceService } from './mock-maintenance-service.service';
 })
 export class MaintenanceServiceAbstractFormComponent extends AbstractFormComponent {
 
+    protected readonly numberOfSteps: number = 3;
+    protected currentStep: number = 1;
+
     constructor(
         protected router: Router,
         protected route: ActivatedRoute,
@@ -37,5 +40,54 @@ export class MaintenanceServiceAbstractFormComponent extends AbstractFormCompone
         super.handleSuccess(successResponse);
         this.response.message = 'MaintenanceService deleted successfully';
         this.router.navigate(['/admin-dashboard/services']);
+    }
+
+    protected goToNext(): void {
+         if(this.currentStep === this.numberOfSteps) {
+            return;
+         }
+         this.currentStep++;
+    }
+
+    protected goToPrevious(): void {
+         if(this.currentStep === 1) {
+            return;
+         }
+         this.currentStep--;
+    }
+
+    protected getWizardStepCircleClass(step: number): string {
+        if (this.currentStep === step) {
+            return 'selected active';
+        }
+        if (this.currentStep > step) {
+            return 'done';
+        }
+        return 'disabled';
+    }
+
+    protected getNextButtonClass(): string {
+        if (this.currentStep === this.numberOfSteps) {
+            return 'buttonDisabled btn btn-danger';
+        }
+        return 'buttonNext btn btn-danger';
+    }
+
+    protected getPreviousButtonClass(): string {
+        if (this.currentStep === 1) {
+            return 'buttonDisabled btn btn-danger';
+        }
+        return 'buttonPrevious btn btn-danger';
+    }
+
+    protected getFinishButtonClass(): string {
+        if (this.currentStep === this.numberOfSteps) {
+            return 'btn btn-default';
+        }
+        return 'buttonDisabled btn btn-default';
+    }
+
+    protected submitForm(): void {
+        console.log('Submitted');
     }
 }
