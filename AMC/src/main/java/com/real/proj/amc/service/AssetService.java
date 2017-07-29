@@ -6,13 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.real.proj.amc.model.AMCPackage;
-import com.real.proj.amc.model.Amenity;
 import com.real.proj.amc.model.Apartment;
 import com.real.proj.amc.model.Asset;
-import com.real.proj.amc.model.AssetType;
 import com.real.proj.amc.model.PackageScheme;
-import com.real.proj.amc.model.Subscription;
 import com.real.proj.amc.model.UOM;
+import com.real.proj.amc.model.asset.Amenity;
+import com.real.proj.amc.model.asset.AssetType;
+import com.real.proj.amc.model.subscription.Subscription;
 import com.real.proj.amc.repository.AssetRepository;
 import com.real.proj.controller.exception.EntityNotFoundException;
 import com.real.proj.user.model.User;
@@ -86,7 +86,10 @@ public class AssetService implements IAgentAssetService {
   }
 
   @Override
-  public Subscription subscribe(String assetId, AMCPackage pkg, PackageScheme scheme) {
+  public Subscription subscribe(
+      String assetId,
+      AMCPackage pkg,
+      PackageScheme scheme) {
     // TODO Auto-generated method stub
     return null;
   }

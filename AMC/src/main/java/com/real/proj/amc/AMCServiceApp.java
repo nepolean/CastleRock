@@ -24,14 +24,22 @@ import com.real.proj.user.model.User;
 import com.real.proj.user.service.UserRepository;
 
 @SpringBootApplication
-@ComponentScan(basePackages = { "com.real.proj.controller.exception", "com.real.proj.controller.exception.handler",
-    "com.real.proj.amc.controller", "com.real.proj.amc.service", "com.real.proj.amc.repository",
+@ComponentScan(basePackages = {
+    "com.real.proj.controller.exception",
+    "com.real.proj.controller.exception.handler",
+    "com.real.proj.amc.controller",
+    "com.real.proj.amc.service",
+    "com.real.proj.amc.repository",
     "com.real.proj.user.model",
     "com.real.proj.user.model.workflow",
     "com.real.proj.user.service",
     "com.real.proj.amc.model.quote",
+    "com.real.proj.amc.model.subscription",
     "com.real.proj.util" })
-@EnableMongoRepositories({ "com.real.proj.user.service", "com.real.proj.amc.service", "com.real.proj.amc.repository",
+@EnableMongoRepositories({
+    "com.real.proj.user.service",
+    "com.real.proj.amc.service",
+    "com.real.proj.amc.repository",
     "com.real.proj.amc.model.quote" })
 @EnableAutoConfiguration
 public class AMCServiceApp implements CommandLineRunner {
@@ -105,7 +113,7 @@ public class AMCServiceApp implements CommandLineRunner {
     User user = userRepository.findByUserName("user1");
     if (user == null)
       throw new NullPointerException();
-    Asset newAsset = new Asset(user, user);
+    Asset newAsset = new Asset(user);
     newAsset = this.assetRepository.save(newAsset);
     String id = newAsset.getId();
     logger.info("{}", id);

@@ -1,5 +1,15 @@
 package com.real.proj.amc.model;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
+/**
+ * 
+ * @author murali
+ *         This interfaces provides an unique abstraction over service and
+ *         package.
+ *
+ */
+@Document(collection = "Products")
 public interface Product {
 
   public abstract String getName();

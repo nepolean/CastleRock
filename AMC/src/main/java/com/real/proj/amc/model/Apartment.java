@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.annotation.Transient;
 
 import com.mongodb.util.JSON;
+import com.real.proj.amc.model.asset.AssetType;
 
 public class Apartment extends Asset {
 

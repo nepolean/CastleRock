@@ -1,4 +1,4 @@
-package com.real.proj.amc.model;
+package com.real.proj.amc.model.asset;
 
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -9,18 +9,23 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RatingBasedSubscriptionMetadata extends SubscriptionMetadata implements Serializable {
+import com.real.proj.amc.model.Rating;
+import com.real.proj.amc.model.SubscriptionData;
+import com.real.proj.amc.model.SubscriptionMetadata;
+import com.real.proj.amc.model.UserInput;
 
-  private static final Logger logger = LoggerFactory.getLogger(RatingBasedSubscriptionMetadata.class);
+public class RatingBasedSubscriptionData extends SubscriptionMetadata implements Serializable {
+
+  private static final Logger logger = LoggerFactory.getLogger(RatingBasedSubscriptionData.class);
 
   /* holds pricing & other service specific details */
   Map<Rating, SubscriptionData> subscriptionData;
 
-  RatingBasedSubscriptionMetadata() {
+  RatingBasedSubscriptionData() {
 
   }
 
-  public RatingBasedSubscriptionMetadata(Map<Rating, SubscriptionData> data) {
+  public RatingBasedSubscriptionData(Map<Rating, SubscriptionData> data) {
     data = Objects.requireNonNull(data, "SubscriptionData cannot be null");
     this.subscriptionData = data;
   }

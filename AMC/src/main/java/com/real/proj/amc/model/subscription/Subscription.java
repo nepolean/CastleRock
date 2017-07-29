@@ -1,4 +1,4 @@
-package com.real.proj.amc.model;
+package com.real.proj.amc.model.subscription;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -12,6 +12,13 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.real.proj.amc.model.AMCPackage;
+import com.real.proj.amc.model.Asset;
+import com.real.proj.amc.model.BaseMasterEntity;
+import com.real.proj.amc.model.BaseService;
+import com.real.proj.amc.model.Product;
+import com.real.proj.amc.model.Service;
+import com.real.proj.amc.model.UserData;
 import com.real.proj.amc.model.quote.Quotation;
 import com.real.proj.user.model.User;
 
@@ -22,7 +29,7 @@ public class Subscription extends BaseMasterEntity {
 
   @Id
   String id;
-  String quotation_id;
+  String quotationId;
   @DBRef(lazy = true)
   private Asset asset;
   @DBRef
@@ -37,7 +44,7 @@ public class Subscription extends BaseMasterEntity {
 
   public Subscription(Quotation quotation) {
     logger.info("creating new subscription from quotation {}", quotation.getId());
-    this.quotation_id = quotation.getId();
+    this.quotationId = quotation.getId();
     this.owner = quotation.getCreatedFor();
     this.asset = quotation.getAsset();
     this.agent = quotation.getCreatedBy();
@@ -49,7 +56,6 @@ public class Subscription extends BaseMasterEntity {
     cal.setTime(startDate);
     cal.add(Calendar.MONTH, userData.getTenureInMonths());
     this.validUpto = cal.getTime();
-    scheduleTasks();
     logger.info("created new subscription");
   }
 

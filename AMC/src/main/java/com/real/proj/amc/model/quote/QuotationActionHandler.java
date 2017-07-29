@@ -1,7 +1,6 @@
 package com.real.proj.amc.model.quote;
 
 import static com.real.proj.amc.model.quote.QuotationConstants.ASSET_KEY;
-import static com.real.proj.amc.model.quote.QuotationConstants.PRODUCTS_KEY;
 import static com.real.proj.amc.model.quote.QuotationConstants.QUOTATION_OBJ_KEY;
 import static com.real.proj.amc.model.quote.QuotationConstants.USER_COMMENTS_KEY;
 import static com.real.proj.amc.model.quote.QuotationConstants.USER_DATA_KEY;
@@ -9,6 +8,7 @@ import static com.real.proj.amc.model.quote.QuotationConstants.USER_KEY;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -26,11 +26,15 @@ import org.springframework.stereotype.Component;
 import com.real.proj.amc.model.AMCPackage;
 import com.real.proj.amc.model.Asset;
 import com.real.proj.amc.model.EventHistory;
-import com.real.proj.amc.model.Subscription;
+import com.real.proj.amc.model.Product;
+import com.real.proj.amc.model.Service;
 import com.real.proj.amc.model.Tax;
 import com.real.proj.amc.model.UserData;
+import com.real.proj.amc.model.subscription.Subscription;
+import com.real.proj.amc.model.subscription.SubscriptionJobScheduler;
 import com.real.proj.amc.repository.AssetRepository;
 import com.real.proj.amc.repository.PackageRepository;
+import com.real.proj.amc.repository.ServiceRepository;
 import com.real.proj.amc.repository.SubscriptionRepository;
 import com.real.proj.amc.repository.TaxRepository;
 import com.real.proj.user.model.User;
@@ -43,28 +47,35 @@ public class QuotationActionHandler implements QuotationStateChangeListener {
   private static final Logger logger = LoggerFactory.getLogger(QuotationActionHandler.class);
 
   private QuotationNotificationHandler notificationHandler;
+  private SubscriptionJobScheduler subscriptionJobHandler;
   private QuotationRepository quoteRepository;
   private PackageRepository packageRepository;
+  private ServiceRepository serviceRepository;
   private UserRepository userRepository;
   private AssetRepository assetRepository;
   private TaxRepository taxRepository;
   private SubscriptionRepository subscriptionRepository;
 
   @Autowired
-  public void setNotificationHandler(QuotationNotificationHandler notificationHandler) {
+  public void setNotificationHandler(
+      QuotationNotificationHandler notificationHandler,
+      SubscriptionJobScheduler subscriptionJobHandler) {
     this.notificationHandler = notificationHandler;
+    this.subscriptionJobHandler = subscriptionJobHandler;
   }
 
   @Autowired
   public void setQuotationRepository(
       QuotationRepository quoteRepo,
       PackageRepository packageRepo,
+      ServiceRepository serviceRepo,
       UserRepository userRepository,
       AssetRepository assetRepository,
       TaxRepository taxRepository,
       SubscriptionRepository subscriptionRepository) {
     this.quoteRepository = quoteRepo;
     this.packageRepository = packageRepo;
+    this.serviceRepository = serviceRepo;
     this.userRepository = userRepository;
     this.assetRepository = assetRepository;
     this.taxRepository = taxRepository;
@@ -210,6 +221,7 @@ public class QuotationActionHandler implements QuotationStateChangeListener {
     Subscription subscription = new Subscription(userQuote);
     subscription = this.subscriptionRepository.save(subscription);
     this.notificationHandler.handleSubscriptionCreated(subscription);
+    this.subscriptionJobHandler.scheduleJob(subscription);
   }
 
   private void handleQuoteRenewal(Message<QEvents> message) {
@@ -261,8 +273,17 @@ public class QuotationActionHandler implements QuotationStateChangeListener {
     userId = Objects.requireNonNull(userId, "User id cannot be null.");
     String assetId = (String) userData.get(ASSET_KEY);
     assetId = Objects.requireNonNull(assetId, "Asset id cannot be null.");
-    String[] productIds = (String[]) userData.get(PRODUCTS_KEY);
-    productIds = Objects.requireNonNull(productIds, "Asset id cannot be null.");
+    String[] selectedPackages = (String[]) userData.get(QuotationConstants.SELECTED_PACKAGES_KEY);
+    String[] selectedServices = (String[]) userData.get(QuotationConstants.SELECTED_SERVICES_KEY);
+
+    if (logger.isDebugEnabled())
+      logger.debug("Package ids {}", Arrays.asList(selectedPackages));
+    if (logger.isDebugEnabled())
+      logger.debug("Service ids {}", Arrays.asList(selectedServices));
+
+    if ((selectedPackages == null && selectedServices == null)
+        || (selectedPackages.length == 0 && selectedServices.length == 0))
+      throw new IllegalArgumentException("You must selecte at least 1 package/service.");
 
     /* validate user input */
     User customer = this.userRepository.findByUserName(userId);
@@ -279,22 +300,51 @@ public class QuotationActionHandler implements QuotationStateChangeListener {
             "Quote is created.");
     //@formatter:on
 
-    /* create new quotation */
-    Quotation newQuote = new Quotation(customerAsset, loggedInUser);
-    logger.info("selected product ids : {}", Arrays.asList(productIds));
-
-    Iterable<AMCPackage> products = this.packageRepository.findValidProducts(productIds);
-    logger.info("selected product list : {}", products);
-
+    /* Convert ids to real packages/services */
+    List<Product> allSelectedProducts = new LinkedList<Product>();
+    List<AMCPackage> packages = this.packageRepository.findValidProducts(selectedPackages);
     if (logger.isDebugEnabled())
-      logger.debug("selected product list : {}", products);
-    if (products == null || !products.iterator().hasNext())
-      throw new IllegalArgumentException("The products you selected are not valid.");
-    products.forEach(item -> newQuote.addProduct(item));
+      logger.debug("selected product list : {}", packages);
+    rejectIfPackagesMismatch(selectedPackages, packages);
+    allSelectedProducts.addAll(packages);
+    List<Service> services = this.serviceRepository.findValidServices(selectedServices);
+    if (logger.isDebugEnabled())
+      logger.debug("Selected Services {}", services);
+    rejectIfPackagesMismatch(selectedServices, services);
+    allSelectedProducts.addAll(services);
+    /* create a new quotation */
+    Quotation newQuote = new Quotation(customerAsset, loggedInUser);
+
+    allSelectedProducts.forEach(item -> newQuote.addProduct(item));
     newQuote.setState(targetState);
     newQuote.getHistory().add(eventObj);
     this.quoteRepository.save(newQuote);
     logger.info("New quote created");
+  }
+
+  private void rejectIfPackagesMismatch(String[] selectedPackages, List<? extends Product> packageObjects) {
+    if (packageObjects == null)
+      throw new IllegalArgumentException("The selected pacakges are not valid.");
+    if (packageObjects.size() != selectedPackages.length) {
+      // find mismatches
+      List<String> mismatchedPackages = new LinkedList<String>();
+      for (String id : selectedPackages) {
+        boolean matched = false;
+        for (Product pkg : packageObjects) {
+          if (id.equals(pkg.getId())) {
+            matched = true;
+            break;
+          }
+        }
+        if (!matched) {
+          logger.warn("Product with product id {} not found.", id);
+          mismatchedPackages.add(id);
+        }
+      }
+      if (mismatchedPackages.size() > 0) {
+        throw new IllegalArgumentException("Following products are not found/valid " + mismatchedPackages.toString());
+      }
+    }
   }
 
   private void handleGenerateQuote(Message<QEvents> message, QStates targetState) {

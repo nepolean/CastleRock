@@ -1,4 +1,4 @@
-package com.real.proj.amc.model;
+package com.real.proj.amc.model.asset;
 
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -9,8 +9,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.real.proj.amc.model.BaseService;
+import com.real.proj.amc.model.Category;
+import com.real.proj.amc.model.DeliveryMethod;
+import com.real.proj.amc.model.Rating;
+import com.real.proj.amc.model.ServiceMetadata;
+import com.real.proj.amc.model.ServiceType;
+import com.real.proj.amc.model.UserInput;
+
 @Document(collection = "Services")
 public class AssetBasedService extends BaseService implements Serializable {
+
+  /**
+   * default serialVersionUID
+   */
+  private static final long serialVersionUID = 1L;
 
   private static final Logger logger = LoggerFactory.getLogger(AssetBasedService.class);
   // private static final String UOM = "SFT";
@@ -35,9 +48,13 @@ public class AssetBasedService extends BaseService implements Serializable {
     this.setCategory(Category.ASSET);
   }
 
-  public AssetBasedService(String name, String description, List<AssetType> applicableTo,
-      List<String> amenities) {
-    super(Category.ASSET, name, description);
+  public AssetBasedService(
+      String name,
+      String description,
+      List<AssetType> applicableTo,
+      List<String> amenities,
+      ServiceType serviceType) {
+    super(Category.ASSET, name, description, serviceType);
     this.applicableTo = applicableTo;
     this.amenities = amenities;
   }
@@ -71,11 +88,11 @@ public class AssetBasedService extends BaseService implements Serializable {
 
   protected void rejectIfDataIsNotValid(DeliveryMethod delivery, ServiceMetadata data) {
     Objects.requireNonNull(data, "Null value passed in for service metadata.");
-    if (delivery == DeliveryMethod.SUBSCRIPTION && !(data instanceof RatingBasedSubscriptionMetadata)) {
+    if (delivery == DeliveryMethod.SUBSCRIPTION && !(data instanceof RatingBasedSubscriptionData)) {
       if (logger.isErrorEnabled())
         logger.error("wrong data type {}", data);
       throw new IllegalArgumentException("Invalid service details have been passed.");
-    } else if (delivery == DeliveryMethod.TRANSACTIONAL && !(data instanceof RatingBasedOneTimeMetadata)) {
+    } else if (delivery == DeliveryMethod.TRANSACTIONAL && !(data instanceof RatingBasedOneTimeData)) {
       if (logger.isErrorEnabled())
         logger.error("wrong data type {}", data);
       throw new IllegalArgumentException("Invalid service details have been passed.");

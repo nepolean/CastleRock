@@ -1,7 +1,9 @@
-package com.real.proj.amc.model;
+package com.real.proj.amc.model.asset;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import com.real.proj.amc.model.BaseMasterEntity;
 
 @Document(collection = "Amenities")
 public class Amenity extends BaseMasterEntity {

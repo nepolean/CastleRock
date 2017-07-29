@@ -14,12 +14,12 @@ import com.real.proj.amc.model.BaseService;
 import com.real.proj.amc.model.OneTimeData;
 import com.real.proj.amc.model.OneTimeMetadata;
 import com.real.proj.amc.model.Rating;
-import com.real.proj.amc.model.RatingBasedOneTimeMetadata;
-import com.real.proj.amc.model.RatingBasedSubscriptionMetadata;
 import com.real.proj.amc.model.ServiceMetadata;
 import com.real.proj.amc.model.SubscriptionData;
 import com.real.proj.amc.model.SubscriptionMetadata;
 import com.real.proj.amc.model.UserInput;
+import com.real.proj.amc.model.asset.RatingBasedOneTimeData;
+import com.real.proj.amc.model.asset.RatingBasedSubscriptionData;
 
 public class ServiceTest {
 
@@ -88,7 +88,7 @@ public class ServiceTest {
     BaseService svc = ServiceTestHelper.createBasicService();
     ServiceMetadata metadata = ServiceTestHelper.createRatingBasedSubscriptionData();
     svc.setSubscriptionData(metadata);
-    RatingBasedSubscriptionMetadata ratingBasedMD = (RatingBasedSubscriptionMetadata) metadata;
+    RatingBasedSubscriptionData ratingBasedMD = (RatingBasedSubscriptionData) metadata;
     ratingBasedMD.updateSubscriptionMetadata(Rating.ONE, new SubscriptionData(200.0, 20));
     svc.updateSubscriptionData(ratingBasedMD, new Date());
     // get value for rating one
@@ -107,7 +107,7 @@ public class ServiceTest {
     BaseService svc = ServiceTestHelper.createBasicService();
     ServiceMetadata metadata = ServiceTestHelper.createOneTimeMetadata();
     svc.setOneTimeData(metadata);
-    RatingBasedOneTimeMetadata ratingBasedMD = (RatingBasedOneTimeMetadata) metadata;
+    RatingBasedOneTimeData ratingBasedMD = (RatingBasedOneTimeData) metadata;
     ratingBasedMD.updateSubscriptionMetadata(Rating.ONE, new OneTimeData(200.0));
     svc.updateOneTimeData(ratingBasedMD, new Date());
     // get value for rating one

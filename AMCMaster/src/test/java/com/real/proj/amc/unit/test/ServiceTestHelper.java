@@ -6,24 +6,24 @@ import java.util.List;
 import java.util.Map;
 
 import com.real.proj.amc.model.AMCPackage;
-import com.real.proj.amc.model.AssetBasedService;
-import com.real.proj.amc.model.AssetType;
 import com.real.proj.amc.model.BaseService;
 import com.real.proj.amc.model.Category;
 import com.real.proj.amc.model.OneTimeData;
 import com.real.proj.amc.model.OneTimeMetadata;
 import com.real.proj.amc.model.Rating;
-import com.real.proj.amc.model.RatingBasedOneTimeMetadata;
-import com.real.proj.amc.model.RatingBasedSubscriptionMetadata;
 import com.real.proj.amc.model.Service;
 import com.real.proj.amc.model.SubscriptionData;
 import com.real.proj.amc.model.TenureBasedDiscount;
+import com.real.proj.amc.model.asset.AssetBasedService;
+import com.real.proj.amc.model.asset.AssetType;
+import com.real.proj.amc.model.asset.RatingBasedOneTimeData;
+import com.real.proj.amc.model.asset.RatingBasedSubscriptionData;
 
 public class ServiceTestHelper {
 
-  static RatingBasedSubscriptionMetadata createRatingBasedSubscriptionData() {
+  static RatingBasedSubscriptionData createRatingBasedSubscriptionData() {
     Map<Rating, SubscriptionData> data = createRatingBasedSubscriptionMap();
-    return new RatingBasedSubscriptionMetadata(data);
+    return new RatingBasedSubscriptionData(data);
   }
 
   static Map<Rating, SubscriptionData> createRatingBasedSubscriptionMap() {
@@ -38,7 +38,7 @@ public class ServiceTestHelper {
 
   static OneTimeMetadata createOneTimeMetadata() {
     Map<Rating, OneTimeData> map = createOneTimeDataMap();
-    OneTimeMetadata metadata = new RatingBasedOneTimeMetadata(map);
+    OneTimeMetadata metadata = new RatingBasedOneTimeData(map);
     return metadata;
   }
 
@@ -57,7 +57,7 @@ public class ServiceTestHelper {
     String desc = "The plumbing service takes care of plumbing needs.";
     List<AssetType> applicableTo = createSampleApplicableList();
     List<String> amenities = createSampleAmenities();
-    return new AssetBasedService(name, desc, applicableTo, amenities);
+    return new AssetBasedService(name, desc, applicableTo, amenities, Category.ASSET.getServiceTypes()[0]);
   }
 
   static List<AssetType> createSampleApplicableList() {

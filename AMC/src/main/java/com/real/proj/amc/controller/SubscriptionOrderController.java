@@ -2,6 +2,8 @@ package com.real.proj.amc.controller;
 
 import static com.real.proj.amc.model.quote.QuotationConstants.ASSET_KEY;
 import static com.real.proj.amc.model.quote.QuotationConstants.QUOTATION_OBJ_KEY;
+import static com.real.proj.amc.model.quote.QuotationConstants.SELECTED_PACKAGES_KEY;
+import static com.real.proj.amc.model.quote.QuotationConstants.SELECTED_SERVICES_KEY;
 import static com.real.proj.amc.model.quote.QuotationConstants.USER_COMMENTS_KEY;
 import static com.real.proj.amc.model.quote.QuotationConstants.USER_DATA_KEY;
 import static com.real.proj.amc.model.quote.QuotationConstants.USER_KEY;
@@ -23,12 +25,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.real.proj.amc.controller.pojo.UserDecision;
+import com.real.proj.amc.model.Category;
 import com.real.proj.amc.model.UserData;
 import com.real.proj.amc.model.quote.NewQuoteInput;
 import com.real.proj.amc.model.quote.QEvents;
 import com.real.proj.amc.model.quote.QStates;
 import com.real.proj.amc.model.quote.Quotation;
-import com.real.proj.amc.model.quote.QuotationConstants;
 import com.real.proj.amc.model.quote.QuotationRepository;
 import com.real.proj.amc.model.quote.QuotationStateHandler;
 import com.real.proj.util.SecurityHelper;
@@ -65,12 +67,15 @@ public class SubscriptionOrderController {
     Map<String, Object> data = new HashMap<String, Object>();
     data.put(USER_KEY, userInput.getUserId());
     data.put(ASSET_KEY, userInput.getAssetId());
-    data.put(QuotationConstants.PRODUCTS_KEY, userInput.getProductID());
+    data.put(SELECTED_PACKAGES_KEY, userInput.getPackageID());
+    data.put(SELECTED_SERVICES_KEY, userInput.getPackageID());
     fireEvent(QStates.INITIAL, QEvents.CREATE_QUOTE, data);
   }
 
   @RequestMapping(path = "/quotation/{id}/generate", method = RequestMethod.POST, consumes = "application/json")
-  public void generateQuotation(@PathVariable String id, @RequestBody @Validated UserData userData) throws Exception {
+  public void generateQuotation(
+      @PathVariable String id,
+      @RequestBody @Validated UserData userData) throws Exception {
     logger.info("Genereate quotation requested for {}", id);
     userData = Objects.requireNonNull(userData, "UserData cannot be null");
     Map<String, Object> data = new HashMap<String, Object>();
@@ -116,6 +121,11 @@ public class SubscriptionOrderController {
     userQuotation = Objects.requireNonNull(userQuotation, "Quotation with id " + id + " not found.");
     data.put(QUOTATION_OBJ_KEY, userQuotation);
     fireEvent(userQuotation.getState(), QEvents.RENEW, data);
+  }
+
+  @RequestMapping(path = "/quotation/test", method = RequestMethod.POST, consumes = "application/json")
+  public void someEnumInput(@RequestBody @Validated Category.AssetServiceType type) {
+    logger.info("Type {}", type);
   }
 
   protected void fireEvent(QStates source, QEvents event, Object data) throws Exception {

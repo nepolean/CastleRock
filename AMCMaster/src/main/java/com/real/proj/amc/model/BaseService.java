@@ -15,6 +15,10 @@ import org.springframework.data.annotation.Id;
 
 public abstract class BaseService extends BaseMasterEntity implements Service, Product, Serializable {
 
+  /**
+   * default serialVersion UID
+   */
+  private static final long serialVersionUID = 1L;
   private static final String TYPE = "SERVICE";
   private static Logger logger = LoggerFactory.getLogger(BaseService.class);
   @Id
@@ -26,6 +30,8 @@ public abstract class BaseService extends BaseMasterEntity implements Service, P
   @NotNull
   @NotBlank
   protected String description;
+  @NotNull
+  ServiceType serviceType;
 
   private boolean canSubscribe;
 
@@ -33,14 +39,19 @@ public abstract class BaseService extends BaseMasterEntity implements Service, P
 
   protected Map<DeliveryMethod, TimeLine<ServiceMetadata>> detailsTracker;
 
-  BaseService() {
+  protected BaseService() {
 
   }
 
-  public BaseService(Category category, String name, String description) {
+  public BaseService(
+      Category category,
+      String name,
+      String description,
+      ServiceType serviceType) {
     this.category = category;
     this.name = name;
     this.description = description;
+    this.serviceType = serviceType;
   }
 
   public String getId() {
@@ -78,6 +89,14 @@ public abstract class BaseService extends BaseMasterEntity implements Service, P
 
   public void setCategory(String category) {
     this.category = Category.valueOf(category);
+  }
+
+  public ServiceType getServiceType() {
+    return serviceType;
+  }
+
+  public void setServiceType(ServiceType serviceType) {
+    this.serviceType = serviceType;
   }
 
   public void setSubscriptionData(ServiceMetadata subcriptionData) {
@@ -221,5 +240,11 @@ public abstract class BaseService extends BaseMasterEntity implements Service, P
 
   public boolean getCanRequestOneTime() {
     return this.canRequestOneTime;
+  }
+
+  public static void main(String[] args) {
+    ServiceType[] sTypes = Category.ASSET.getServiceTypes();
+    for (ServiceType type : sTypes)
+      System.out.println(type);
   }
 }

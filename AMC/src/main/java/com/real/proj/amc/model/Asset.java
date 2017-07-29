@@ -1,6 +1,5 @@
 package com.real.proj.amc.model;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -8,6 +7,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Reference;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.real.proj.amc.model.asset.Amenity;
+import com.real.proj.amc.model.asset.AssetBasedService;
+import com.real.proj.amc.model.asset.AssetType;
 import com.real.proj.user.model.User;
 
 @Document(collection = "Assets")
@@ -31,7 +33,7 @@ public class Asset extends BaseMasterEntity implements java.io.Serializable {
     // this.location = new Location();
   }
 
-  public Asset(User ownedBy, User createdBy) {
+  public Asset(User ownedBy) {
     this.assetOwner = ownedBy;
   }
 
@@ -63,14 +65,6 @@ public class Asset extends BaseMasterEntity implements java.io.Serializable {
     this.assetOwner = owner;
   }
 
-  public Date getCreatedOn() {
-    return createdOn;
-  }
-
-  public void setCreatedOn(Date createdOn) {
-    this.createdOn = createdOn;
-  }
-
   public Set<Amenity> getAmenities() {
     return amenities;
   }
@@ -84,6 +78,12 @@ public class Asset extends BaseMasterEntity implements java.io.Serializable {
 
   }
 
-  /*********************** BUISINESS LOGIC *************************/
+  public AssetType getType() {
+    return this.getType();
+  }
+
+  public void setType(AssetType type) {
+    this.type = type;
+  }
 
 }

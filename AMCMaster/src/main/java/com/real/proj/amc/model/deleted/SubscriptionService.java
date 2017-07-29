@@ -2,8 +2,8 @@ package com.real.proj.amc.model.deleted;
 
 import java.util.List;
 
-import com.real.proj.amc.model.AssetBasedService;
-import com.real.proj.amc.model.AssetType;
+import com.real.proj.amc.model.asset.AssetBasedService;
+import com.real.proj.amc.model.asset.AssetType;
 
 public class SubscriptionService extends AssetBasedService {
 

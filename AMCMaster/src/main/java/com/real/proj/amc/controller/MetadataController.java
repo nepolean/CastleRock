@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.real.proj.amc.model.AMCPackage;
-import com.real.proj.amc.model.AssetType;
 import com.real.proj.amc.model.Category;
 import com.real.proj.amc.model.PackageScheme;
 import com.real.proj.amc.model.Rating;
+import com.real.proj.amc.model.asset.AssetType;
 import com.real.proj.amc.model.deleted.FixedPricingScheme;
 import com.real.proj.amc.model.deleted.FixedPricingScheme.FixedPrice;
 import com.real.proj.amc.model.deleted.PriceData;

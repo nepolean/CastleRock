@@ -1,4 +1,4 @@
-package com.real.proj.amc.model;
+package com.real.proj.amc.model.asset;
 
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -9,19 +9,24 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RatingBasedOneTimeMetadata extends OneTimeMetadata implements Serializable {
+import com.real.proj.amc.model.OneTimeData;
+import com.real.proj.amc.model.OneTimeMetadata;
+import com.real.proj.amc.model.Rating;
+import com.real.proj.amc.model.UserInput;
+
+public class RatingBasedOneTimeData extends OneTimeMetadata implements Serializable {
 
   private static final String USER_INPUT = "RATING";
-  private static final Logger logger = LoggerFactory.getLogger(RatingBasedSubscriptionMetadata.class);
+  private static final Logger logger = LoggerFactory.getLogger(RatingBasedSubscriptionData.class);
 
   /* holds pricing & other service specific details */
   Map<Rating, OneTimeData> oneTimeData;
 
-  public RatingBasedOneTimeMetadata() {
+  public RatingBasedOneTimeData() {
 
   }
 
-  public RatingBasedOneTimeMetadata(Map<Rating, OneTimeData> data) {
+  public RatingBasedOneTimeData(Map<Rating, OneTimeData> data) {
     data = Objects.requireNonNull(data, "The data cannot be null");
     this.oneTimeData = data;
   }

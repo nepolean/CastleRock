@@ -81,6 +81,10 @@ public class QuotationSpringSMConfig extends EnumStateMachineConfigurerAdapter<Q
         //.action(action1());
       .and()
       .withExternal()
+        .source(QStates.SUBSCRIBED).target(QStates.SUBSCRIBED)
+        .event(QEvents.PAYMENT_SUCCESSFUL)
+      .and()
+      .withExternal()
         .source(QStates.PAYMENT_INITIATED).target(QStates.PAYMENT_PENDING)
         .event(QEvents.PAYMENT_ERROR)        
       .and() 

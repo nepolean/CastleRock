@@ -3,6 +3,9 @@ package com.real.proj.amc.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.real.proj.amc.model.asset.AssetBasedService;
+import com.real.proj.amc.model.asset.AssetType;
+
 public class Flat extends Asset {
 
   private static Flat flat = null;

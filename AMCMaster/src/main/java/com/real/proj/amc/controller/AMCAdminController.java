@@ -22,19 +22,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.real.proj.amc.model.AMCPackage;
-import com.real.proj.amc.model.Amenity;
-import com.real.proj.amc.model.AssetBasedService;
 import com.real.proj.amc.model.BaseService;
 import com.real.proj.amc.model.Coupon;
 import com.real.proj.amc.model.GeneralService;
 import com.real.proj.amc.model.OneTimeData;
 import com.real.proj.amc.model.OneTimeMetadata;
-import com.real.proj.amc.model.RatingBasedSubscriptionMetadata;
 import com.real.proj.amc.model.Service;
 import com.real.proj.amc.model.SubscriptionData;
 import com.real.proj.amc.model.SubscriptionMetadata;
 import com.real.proj.amc.model.Tax;
 import com.real.proj.amc.model.TenureBasedDiscount;
+import com.real.proj.amc.model.asset.Amenity;
+import com.real.proj.amc.model.asset.AssetBasedService;
+import com.real.proj.amc.model.asset.RatingBasedSubscriptionData;
 import com.real.proj.amc.repository.AmenityRepository;
 import com.real.proj.amc.repository.CouponRepository;
 import com.real.proj.amc.repository.PackageRepository;
@@ -185,7 +185,7 @@ public class AMCAdminController {
   @RequestMapping(path = "/service/{id}/asset/subscription", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Service> setAssetSubscriptionData(
       @PathVariable @Validated String id,
-      @RequestBody @Validated RatingBasedSubscriptionMetadata ratingBasedMetadata) {
+      @RequestBody @Validated RatingBasedSubscriptionData ratingBasedMetadata) {
     logger.info("Set subscription data for the asset based service {}", id);
     return this.updateServiceData(id, ratingBasedMetadata);
   }

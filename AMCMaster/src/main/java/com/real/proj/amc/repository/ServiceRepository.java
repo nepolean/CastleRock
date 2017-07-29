@@ -1,5 +1,7 @@
 package com.real.proj.amc.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -13,4 +15,8 @@ public interface ServiceRepository
 
   @Query("{'isActive': true, 'isDeleted':false}}")
   public Page<Service> findValidServices(Pageable page);
+
+  @Query("{'isActive': true, 'isDeleted':false, '_id': {$in: ?0}}")
+  public List<Service> findValidServices(String[] selectedServices);
+
 }

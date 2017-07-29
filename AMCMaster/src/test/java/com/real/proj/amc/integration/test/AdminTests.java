@@ -18,8 +18,6 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.real.proj.amc.model.AMCPackage;
-import com.real.proj.amc.model.AssetBasedService;
-import com.real.proj.amc.model.AssetType;
 import com.real.proj.amc.model.BaseMasterEntity;
 import com.real.proj.amc.model.BaseService;
 import com.real.proj.amc.model.Coupon;
@@ -28,6 +26,8 @@ import com.real.proj.amc.model.Rating;
 import com.real.proj.amc.model.Tax;
 import com.real.proj.amc.model.TimeLine;
 import com.real.proj.amc.model.UserInput;
+import com.real.proj.amc.model.asset.AssetBasedService;
+import com.real.proj.amc.model.asset.AssetType;
 import com.real.proj.amc.model.deleted.FixedPricingScheme;
 import com.real.proj.amc.model.deleted.FixedPricingScheme.FixedPrice;
 import com.real.proj.amc.model.deleted.PricingStrategy;

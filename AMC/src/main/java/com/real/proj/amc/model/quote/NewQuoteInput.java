@@ -8,7 +8,8 @@ public class NewQuoteInput implements java.io.Serializable {
   private static final long serialVersionUID = 1L;
   private String userId;
   private String assetId;
-  private String[] productID;
+  private String[] packageID;
+  private String[] serviceID;
 
   public NewQuoteInput() {
 
@@ -36,17 +37,25 @@ public class NewQuoteInput implements java.io.Serializable {
     this.assetId = assetId;
   }
 
+  public String[] getPackageID() {
+    return packageID;
+  }
+
+  public void setPackageID(String[] packageID) {
+    this.packageID = packageID;
+  }
+
+  public String[] getServiceID() {
+    return serviceID;
+  }
+
+  public void setServiceID(String[] serviceID) {
+    this.serviceID = serviceID;
+  }
+
   @Override
   public String toString() {
     return "NewQuoteInput [mobileNo=" + userId + ", assetId=" + assetId + "]";
-  }
-
-  public String[] getProductID() {
-    return productID;
-  }
-
-  public void setProductID(String[] productID) {
-    this.productID = productID;
   }
 
 }

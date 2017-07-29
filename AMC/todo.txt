@@ -1,16 +1,13 @@
 ** Send notification on generating a quote.
 ** Send notification on expiring a quote
-
-
-
-
+** How to handle agent creating the objects? 
+   - Don't want to convolute the whole code with 'agent' code.
 
 Quotation Service:
-
-- Implement NotifyUser functionality
-
+  - Implement NotifyUser functionality
 
 Scheduler Activities:
 
-- Notification on about to / expired quotes
-- 
+  - Notification on about to / expired quotes
+  - Notification on pending payment
+  - Notification on about to / expired subscriptions

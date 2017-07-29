@@ -1,5 +1,7 @@
 package com.real.proj.amc.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -17,7 +19,7 @@ public interface PackageRepository
   // pageable, List<String> serviceID);
 
   @Query("{'isActive': true, 'isDeleted':false, '_id': {$in: ?0}}")
-  public abstract Iterable<AMCPackage> findValidProducts(String[] productIDs);
+  public abstract List<AMCPackage> findValidProducts(String[] productIDs);
 
   @Query("{'isActive': true, 'isDeleted':false}}")
   public abstract Page<AMCPackage> findValidProducts(Pageable pageable);
