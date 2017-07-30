@@ -11,7 +11,7 @@ export class TaxService {
     'Content-Type': 'application/json',
     'Accept': 'application/json'
   });
-  private taxesUrl = '/api/admin/taxes';
+  private taxesUrl = '/api/v1/admin/tax';
   constructor(private http: Http) { }
 
   getTaxes(filters?: any): Observable<Response> {
