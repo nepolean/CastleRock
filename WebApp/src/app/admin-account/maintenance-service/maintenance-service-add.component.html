@@ -1,7 +1,7 @@
 <div class="row">
 	<div class="col-xs-12">
 		<div style="border-bottom: 1px solid black;">
-			<h1 class="dashboard-heading">Add Maintenance Service</h1>
+			<h1 class="dashboard-heading">Add Service</h1>
 		</div>
 		<form class="form-inline dashboard-action-form">
 			<div class="btn-group">
@@ -9,7 +9,7 @@
 					<i class="fa fa-list fa-lg"></i>
 				</button>
 				<ul class="dropdown-menu">
-					<li><a routerLink="/admin-dashboard/services"><i class="fa fa-list" style="padding-right: 5px"></i>List Maintenance Services</a></li>
+					<li><a routerLink="/admin-dashboard/services"><i class="fa fa-list" style="padding-right: 5px"></i>List Services</a></li>
 				</ul>
 			</div>
 		</form>
@@ -36,11 +36,11 @@
 				<div class="form-group">
 					<div>
 						<button type="submit" class="btn btn-primary-dashboard"
-							[disabled]="!maintenanceServiceForm.form.valid || !maintenanceService.validTo || !maintenanceService.validFrom || response.flags.loading">
+							[disabled]="!maintenanceServiceForm.form.valid || response.flags.loading">
 							<i class="fa fa-save" style="padding-right: 5px"></i>Save Maintenance Service
 						</button>
 						<button type="button" class="btn btn-primary-dashboard" (click)="addMaintenanceService();maintenanceServiceForm.reset();"
-							[disabled]="!maintenanceServiceForm.form.valid || !maintenanceService.validTo || !maintenanceService.validFrom || response.flags.loading">
+							[disabled]="!maintenanceServiceForm.form.valid || response.flags.loading">
 							<i class="fa fa-save" style="padding-right: 5px"></i>Save and add another maintenance service
 						</button>
 					</div>

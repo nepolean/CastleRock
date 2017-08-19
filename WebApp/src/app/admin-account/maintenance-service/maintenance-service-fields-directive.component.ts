@@ -9,7 +9,8 @@ import { IMyOptions, IMyDateRangeModel} from 'mydaterangepicker';
   selector: 'maintenance-service-fields',
   templateUrl: 'maintenance-service-fields-directive.html'
 })
-export class MaintenanceServiceFieldsDirective implements OnInit {
+//export class MaintenanceServiceFieldsDirective implements OnInit {
+export class MaintenanceServiceFieldsDirective {
 
     @Input() maintenanceService: MaintenanceService;
     @Input() editMode: boolean;
@@ -21,7 +22,7 @@ export class MaintenanceServiceFieldsDirective implements OnInit {
 
     }
 
-    ngOnInit(): void {
+    /*ngOnInit(): void {
         this.setDateRangeOptions();
         this.setDateRange();
     }
@@ -65,5 +66,5 @@ export class MaintenanceServiceFieldsDirective implements OnInit {
         // event properties are: event.date, event.jsdate, event.formatted and event.epoc
         this.maintenanceService.validFrom = event.beginJsDate ? event.beginJsDate.toISOString().slice(0, 10) : '';
         this.maintenanceService.validTo = event.endJsDate ? event.endJsDate.toISOString().slice(0, 10) : '';
-    }
+    }*/
 }

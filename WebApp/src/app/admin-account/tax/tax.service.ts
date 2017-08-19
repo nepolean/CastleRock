@@ -4,13 +4,13 @@ import { Observable } from 'rxjs/Observable';
 import { Tax } from './tax';
 
 @Injectable()
-export class RealTaxService {
+export class TaxService {
 
   private headers = new Headers({
     'Content-Type': 'application/json',
     'Accept': 'application/json'
   });
-  private taxesUrl = '/api/admin/taxes';
+  private taxesUrl = '/api/v1/admin/tax';
   constructor(private http: Http) { }
 
   getTaxes(filters?: any): Observable<Response> {
