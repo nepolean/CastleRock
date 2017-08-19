@@ -1,17 +1,24 @@
-package com.real.proj.amc.model;
+package com.real.proj.amc.model.job;
 
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.real.proj.amc.model.BaseMasterEntity;
+import com.real.proj.amc.model.EventHistory;
+import com.real.proj.amc.model.JobStates;
+import com.real.proj.amc.model.MaintenanceJob;
+import com.real.proj.amc.model.ServiceType;
 import com.real.proj.user.model.User;
 
 @Document(collection = "jobs")
 public class AbstractJob extends BaseMasterEntity implements MaintenanceJob {
 
-  // private String id;
+  @Id
+  private String id;
   private String name;
   /* service related information */
   private ServiceType serviceType;
@@ -21,7 +28,7 @@ public class AbstractJob extends BaseMasterEntity implements MaintenanceJob {
   @DBRef
   private User customer;
   private Date scheduledDate;
-  private User technician;
+  private Technician technician;
   private JobStates currentStatus;
   private Date lastStatusUpdate;
   private List<EventHistory> history;
@@ -52,7 +59,7 @@ public class AbstractJob extends BaseMasterEntity implements MaintenanceJob {
   }
 
   @Override
-  public void assign(User technician) {
+  public void assign(Technician technician) {
     this.technician = technician;
     this.lastStatusUpdate = new Date();
   }
@@ -151,7 +158,7 @@ public class AbstractJob extends BaseMasterEntity implements MaintenanceJob {
     return technician;
   }
 
-  public void setTechnician(User technician) {
+  public void setTechnician(Technician technician) {
     this.technician = technician;
   }
 

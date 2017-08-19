@@ -16,6 +16,7 @@ import com.real.proj.amc.model.Asset;
 import com.real.proj.amc.model.Category;
 import com.real.proj.amc.model.Service;
 import com.real.proj.amc.model.TenureBasedDiscount;
+import com.real.proj.amc.model.job.Technician;
 import com.real.proj.amc.repository.AssetRepository;
 import com.real.proj.amc.repository.PackageRepository;
 import com.real.proj.amc.repository.ServiceRepository;
@@ -144,6 +145,18 @@ public class AMCServiceApp implements CommandLineRunner {
       System.out.println("User service " + userRepository);
       userRepository.save(dummyUser);
       System.out.println("Dummy Saved");
+    }
+    Technician technician = (Technician) userRepository.findByEmail("tech1");
+    logger.info("{}", technician);
+    if (null == technician) {
+      Technician newTechnician = new Technician("Dummy", "User", "dummy@email.com", "999999", null, null);
+      newTechnician.setFirstName("Technician");
+      newTechnician.setLastName("Electrician");
+      newTechnician.setEmail("tech1");
+      newTechnician.setMobileNo("99999999");
+      System.out.println("User service " + userRepository);
+      userRepository.save(newTechnician);
+      System.out.println("Dummy Technician Saved");
     }
   }
 }

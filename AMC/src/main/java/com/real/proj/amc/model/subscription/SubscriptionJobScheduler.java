@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.real.proj.amc.model.AbstractJob;
 import com.real.proj.amc.model.Asset;
 import com.real.proj.amc.model.AssetBasedJob;
 import com.real.proj.amc.model.Product;
@@ -23,6 +22,7 @@ import com.real.proj.amc.model.SubscriptionData;
 import com.real.proj.amc.model.UserData;
 import com.real.proj.amc.model.asset.AssetBasedService;
 import com.real.proj.amc.model.asset.RatingBasedSubscriptionData;
+import com.real.proj.amc.model.job.AbstractJob;
 import com.real.proj.amc.model.quote.Quotation;
 import com.real.proj.amc.repository.JobRepository;
 import com.real.proj.user.model.User;
@@ -48,8 +48,11 @@ public class SubscriptionJobScheduler {
       int noOfQuarters = subscription.getUserData().getTenure();
       int expected = visitsPerQuarter * noOfQuarters;
       schedule(subscription, (Service) service, jobs, visitsPerQuarter, noOfQuarters);
-      if (expected != jobs.size())
-        throw new IllegalStateException("Something went wrong with the system");
+      if (expected != jobs.size()) {
+        if (logger.isErrorEnabled())
+          logger.error("Expected count {} and actual count", expected, jobs.size());
+        throw new IllegalStateException("Something went wrong with the system.");
+      }
     }
     this.jobRepository.save(jobs);
   }

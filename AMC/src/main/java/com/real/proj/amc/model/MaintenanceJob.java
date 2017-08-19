@@ -2,7 +2,7 @@ package com.real.proj.amc.model;
 
 import java.util.Date;
 
-import com.real.proj.user.model.User;
+import com.real.proj.amc.model.job.Technician;
 
 public interface MaintenanceJob {
 
@@ -10,7 +10,7 @@ public interface MaintenanceJob {
 
   public void reschedule(Date on);
 
-  public void assign(User technician);
+  public void assign(Technician technician);
 
   public void start();
 

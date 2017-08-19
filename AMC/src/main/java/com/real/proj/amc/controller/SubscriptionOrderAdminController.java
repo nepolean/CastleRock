@@ -23,8 +23,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.real.proj.amc.controller.pojo.UserDecision;
-import com.real.proj.amc.model.AbstractJob;
 import com.real.proj.amc.model.UserData;
+import com.real.proj.amc.model.job.AbstractJob;
 import com.real.proj.amc.model.quote.QEvents;
 import com.real.proj.amc.model.quote.QStates;
 import com.real.proj.amc.model.quote.Quotation;
