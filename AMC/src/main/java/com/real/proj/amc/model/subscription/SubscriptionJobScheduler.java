@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.real.proj.amc.model.Asset;
-import com.real.proj.amc.model.AssetBasedJob;
 import com.real.proj.amc.model.Product;
 import com.real.proj.amc.model.Rating;
 import com.real.proj.amc.model.Service;
@@ -23,6 +22,9 @@ import com.real.proj.amc.model.UserData;
 import com.real.proj.amc.model.asset.AssetBasedService;
 import com.real.proj.amc.model.asset.RatingBasedSubscriptionData;
 import com.real.proj.amc.model.job.AbstractJob;
+import com.real.proj.amc.model.job.AssetMetadata4Job;
+import com.real.proj.amc.model.job.JobMetadata;
+import com.real.proj.amc.model.job.JobType;
 import com.real.proj.amc.model.quote.Quotation;
 import com.real.proj.amc.repository.JobRepository;
 import com.real.proj.user.model.User;
@@ -64,7 +66,7 @@ public class SubscriptionJobScheduler {
       int visitsPerQuarter,
       int noOfQuarters) {
 
-    int noOfDays = 90; // per quarter
+    int noOfDays = 90; // approx per quarter
     int durationBetweenServices = noOfDays / visitsPerQuarter;
     int start = durationBetweenServices;
     for (int i = 0; i < noOfQuarters; i++) {
@@ -72,13 +74,13 @@ public class SubscriptionJobScheduler {
         Date after = getDateAfter(start);
         if (logger.isDebugEnabled())
           logger.debug("Job for service {} is scheduled on {}", service.getName(), after);
-        AbstractJob job = new AssetBasedJob(
-            service.getName(),
+        JobMetadata metadata = new AssetMetadata4Job(
             subscription.getAsset(),
-            service.getServiceType(),
             subscription.getClass().getName(),
             subscription.getId());
-        jobs.add(job);
+        AbstractJob job = JobType.getJob(service, metadata, null);
+        if (job != null)
+          jobs.add(job);
         start += durationBetweenServices;
       }
     }
@@ -90,7 +92,7 @@ public class SubscriptionJobScheduler {
     return cal.getTime();
   }
 
-  public static void main(String[] args) {
+  public static void main1(String[] args) {
     System.setProperty("ENVIRONMENT", "TEST");
     User user = new User("First", "Last", "first@gmail.com", "9999999");
     Asset asset = new Asset(user);

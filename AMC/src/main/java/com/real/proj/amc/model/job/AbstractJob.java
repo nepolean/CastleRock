@@ -9,7 +9,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.real.proj.amc.model.BaseMasterEntity;
 import com.real.proj.amc.model.EventHistory;
-import com.real.proj.amc.model.JobStates;
 import com.real.proj.amc.model.MaintenanceJob;
 import com.real.proj.amc.model.ServiceType;
 import com.real.proj.user.model.User;
@@ -32,6 +31,7 @@ public class AbstractJob extends BaseMasterEntity implements MaintenanceJob {
   private JobStates currentStatus;
   private Date lastStatusUpdate;
   private List<EventHistory> history;
+  private String orderId;
 
   public AbstractJob(
       String name,
@@ -184,6 +184,14 @@ public class AbstractJob extends BaseMasterEntity implements MaintenanceJob {
 
   public void setHistory(List<EventHistory> history) {
     this.history = history;
+  }
+
+  public void setOrderId(String orderId) {
+    this.orderId = orderId;
+  }
+
+  public String getOrderId() {
+    return this.orderId;
   }
 
 }

@@ -15,6 +15,11 @@ public interface Service extends Product {
 
   public abstract void setOneTimeData(ServiceMetadata oneTimeData);
 
+  /*
+   * Returns the ServiceType this service belongs to. The ServiceType
+   * provides information about the skills needed to perform the job
+   * 
+   */
   public abstract ServiceType getServiceType();
 
 }

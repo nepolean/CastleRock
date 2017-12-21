@@ -1,14 +1,19 @@
-package com.real.proj.amc.model;
+package com.real.proj.amc.model.job;
 
 public enum JobStates {
 
   INITIAL,
   CREATED,
+  ASSIGNED,
+  SCHEDULED,
   STARTED,
   PAUSED,
   RESUMED,
   CLOSED,
   COMPLETED,
   REOPENED,
-  CANCELLED
+  CANCELLED,
+  PAYMENT_PENDING,
+  PAID,
+
 }

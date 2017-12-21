@@ -5,6 +5,7 @@
 
 Quotation Service:
   - Implement NotifyUser functionality
+  - Implement NotifyUser on successful subscription creation
 
 Scheduler Activities:
 

@@ -28,7 +28,7 @@ public interface Product {
 
   public abstract OneTimeData fetchOneTimeData(UserInput<String, Object> input);
 
-  public abstract Object getCategory();
+  public abstract Category getCategory();
 
   public abstract String getId();
 

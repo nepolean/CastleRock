@@ -25,12 +25,12 @@ public abstract class BaseService extends BaseMasterEntity implements Service, P
   private String id;
   protected Category category;
   @NotNull
-  @NotBlank
+  @NotBlank(message = "Name cannot be empty.")
   protected String name;
   @NotNull
-  @NotBlank
+  @NotBlank(message = "Description cannot be empty.")
   protected String description;
-  @NotNull
+  @NotNull(message = "ServiceType cannot be null.")
   ServiceType serviceType;
 
   private boolean canSubscribe;

@@ -38,8 +38,6 @@ public class Quotation {
 
   private static Logger logger = LoggerFactory.getLogger(Quotation.class);
 
-  /* This variable maintains the current state of the workflow */
-
   @Id
   String id;
 

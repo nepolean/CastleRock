@@ -1,6 +1,7 @@
-package com.real.proj.amc.model;
+package com.real.proj.amc.model.job;
 
-import com.real.proj.amc.model.job.AbstractJob;
+import com.real.proj.amc.model.Asset;
+import com.real.proj.amc.model.ServiceType;
 
 public class AssetBasedJob extends AbstractJob {
 

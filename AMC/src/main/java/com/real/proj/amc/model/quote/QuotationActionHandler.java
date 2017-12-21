@@ -445,6 +445,7 @@ public class QuotationActionHandler implements QuotationStateChangeListener {
     return quote;
   }
 
+  @SuppressWarnings("unchecked")
   private Map<String, Object> getUserData(Message<QEvents> message) {
     Map<String, Object> userData = (Map<String, Object>) message.getHeaders().get("DATA_KEY");
     userData = Optional.of(userData).orElse(new HashMap<String, Object>(1));

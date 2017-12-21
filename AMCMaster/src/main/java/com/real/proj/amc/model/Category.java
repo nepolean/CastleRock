@@ -6,19 +6,33 @@ public enum Category {
     public ServiceType[] getServiceTypes() {
       return AssetServiceType.values();
     }
+
+    public JobType getJobType() {
+      return JobType.ASSET;
+    }
   },
   UTILITY_BILL_PAYMENT {
     public ServiceType[] getServiceTypes() {
       return UtilityBillPaymentType.values();
+    }
+
+    public JobType getJobType() {
+      return JobType.PAYMENT;
     }
   },
   LEGAL {
     public ServiceType[] getServiceTypes() {
       return LegalType.values();
     }
+
+    public JobType getJobType() {
+      return JobType.LEGAL;
+    }
   };
 
   public abstract ServiceType[] getServiceTypes();
+
+  public abstract JobType getJobType();
 
   public enum AssetServiceType implements ServiceType {
     ELECTRICAL {
@@ -88,4 +102,9 @@ public enum Category {
 
   }
 
+  public enum JobType {
+    ASSET,
+    LEGAL,
+    PAYMENT
+  }
 }
