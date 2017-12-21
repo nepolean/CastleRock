@@ -23,23 +23,24 @@ import org.statefulj.fsm.RetryException;
 import org.statefulj.fsm.TooBusyException;
 import org.statefulj.persistence.memory.MemoryPersisterImpl;
 
-import com.real.proj.amc.model.AMCPackage;
-import com.real.proj.amc.model.Location;
-import com.real.proj.amc.model.Product;
-import com.real.proj.amc.model.Rating;
-import com.real.proj.amc.model.Tax;
-import com.real.proj.amc.model.UserData;
-import com.real.proj.amc.model.UserInput;
-import com.real.proj.amc.model.quote.Quotation;
-import com.real.proj.amc.model.quote.QuotationConfig;
-import com.real.proj.amc.model.quote.QuotationConfig.States;
-import com.real.proj.amc.model.quote.QuotationRepository;
-import com.real.proj.amc.model.quote.QuotationSpringSMConfig;
-import com.real.proj.amc.model.quote.QuotationSpringSMConfig.Events;
-import com.real.proj.amc.model.quote.QuotationSpringSMConfig.QuoteStates;
-import com.real.proj.amc.model.quote.QuotationStateHandler;
 import com.real.proj.amc.unit.test.ServiceTestHelper;
-import com.real.proj.user.model.User;
+import com.subsede.amc.catalog.model.AMCPackage;
+import com.subsede.amc.catalog.model.Product;
+import com.subsede.amc.catalog.model.Rating;
+import com.subsede.amc.catalog.model.Tax;
+import com.subsede.amc.catalog.model.UserInput;
+import com.subsede.amc.catalog.model.quote.QuotationConfig;
+import com.subsede.amc.catalog.model.quote.QuotationConfig.States;
+import com.subsede.amc.catalog.model.quote.QuotationSpringSMConfig.Events;
+import com.subsede.amc.catalog.model.quote.QuotationSpringSMConfig.QuoteStates;
+import com.subsede.amc.model.Action;
+import com.subsede.amc.model.Location;
+import com.subsede.amc.model.UserData;
+import com.subsede.amc.model.quote.Quotation;
+import com.subsede.amc.model.quote.QuotationRepository;
+import com.subsede.amc.model.quote.QuotationSpringSMConfig;
+import com.subsede.amc.model.quote.QuotationStateHandler;
+import com.subsede.util.user.model.User;
 
 @TestPropertySource(properties = "logging.level.org.springframework:INFO")
 public class QuotationTest {

@@ -14,14 +14,14 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.real.proj.user.model.User;
-import com.real.proj.user.service.UserRepository;
+import com.subsede.util.user.model.User;
+import com.subsede.util.user.service.UserRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("default")
 @EnableAutoConfiguration
-@EnableMongoRepositories("com.real.proj.user.service")
+@EnableMongoRepositories("com.subsede.util.user.service")
 public class BaseTest {
 
   @Autowired

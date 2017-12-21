@@ -56,7 +56,7 @@
     </dependency>
     <dependency>
     	<groupId>RealService</groupId>
-    	<artifactId>AMCMaster</artifactId>
+    	<artifactId>AMCCatalog</artifactId>
     	<version>1.0.0</version>
     </dependency>
   </dependencies>

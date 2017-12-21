@@ -1,0 +1,20 @@
+package com.subsede.amc.model.quote;
+
+public enum QEvents {
+
+  CREATE_QUOTE,
+  GENERATE_QUOTE,
+  ACCEPT,
+  REGENERATE,
+  APPROVE,
+  INITIATE_PAY,
+  PAYMENT_SUCCESSFUL,
+  PAYMENT_ERROR,
+  NOTIFY,
+  RECEIVE_PAYMENT,
+  EXPIRE,
+  RENEW,
+  RECREATE,
+  REJECT;
+
+}

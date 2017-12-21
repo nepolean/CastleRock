@@ -11,18 +11,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
-import com.real.proj.amc.model.Apartment;
-import com.real.proj.amc.model.Apartment.Details;
-import com.real.proj.amc.model.Asset;
-import com.real.proj.amc.model.Location;
-import com.real.proj.amc.model.UOM;
-import com.real.proj.amc.service.AssetService;
 import com.real.proj.unit.test.BaseTest;
-import com.real.proj.user.model.User;
-import com.real.proj.user.service.UserRepository;
+import com.subsede.amc.model.Apartment;
+import com.subsede.amc.model.Asset;
+import com.subsede.amc.model.Location;
+import com.subsede.amc.model.UOM;
+import com.subsede.amc.model.Apartment.Details;
+import com.subsede.amc.service.AssetService;
+import com.subsede.util.user.model.User;
+import com.subsede.util.user.service.UserRepository;
 
 @EnableAutoConfiguration
-@EnableMongoRepositories("com.real.proj.amc.service")
+@EnableMongoRepositories("com.subsede.amc.catalog.service")
 public class AssetServiceTest extends BaseTest {
 
   @Autowired
