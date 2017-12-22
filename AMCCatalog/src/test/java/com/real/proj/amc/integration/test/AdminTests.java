@@ -22,23 +22,14 @@ import com.subsede.amc.catalog.model.AMCPackage;
 import com.subsede.amc.catalog.model.BaseMasterEntity;
 import com.subsede.amc.catalog.model.BaseService;
 import com.subsede.amc.catalog.model.Coupon;
-import com.subsede.amc.catalog.model.PackageScheme;
-import com.subsede.amc.catalog.model.Rating;
 import com.subsede.amc.catalog.model.Tax;
 import com.subsede.amc.catalog.model.TimeLine;
-import com.subsede.amc.catalog.model.UserInput;
 import com.subsede.amc.catalog.model.asset.AssetBasedService;
 import com.subsede.amc.catalog.model.asset.AssetType;
-import com.subsede.amc.catalog.model.deleted.FixedPricingScheme;
-import com.subsede.amc.catalog.model.deleted.PricingStrategy;
-import com.subsede.amc.catalog.model.deleted.RatingBasedPricingScheme;
-import com.subsede.amc.catalog.model.deleted.ServiceData;
 import com.subsede.amc.catalog.model.deleted.SubscriptionService;
-import com.subsede.amc.catalog.model.deleted.FixedPricingScheme.FixedPrice;
-import com.subsede.amc.catalog.model.deleted.RatingBasedPricingScheme.RatingBasedPrice;
 import com.subsede.amc.catalog.service.GenericFCRUDService;
-import com.subsede.util.user.model.User;
-import com.subsede.util.user.service.UserService;
+import com.subsede.user.model.user.User;
+import com.subsede.user.services.user.UserService;
 
 @SpringBootTest(classes = { UserService.class, GenericFCRUDService.class })
 @EnableAutoConfiguration
@@ -97,34 +88,6 @@ public class AdminTests extends BaseTest {
     List<String> amenities = new ArrayList<String>();
     amenities.add(new String("ELECTRICITY"));
 
-    RatingBasedPrice price = new RatingBasedPrice();
-    price.addPriceFor(Rating.ONE, 100.0);
-    price.addPriceFor(Rating.TWO, 80.0);
-    price.addPriceFor(Rating.THREE, 60.0);
-
-    RatingBasedPricingScheme pricing = new RatingBasedPricingScheme(price, dt);
-
-    RatingBasedPrice price1 = new RatingBasedPrice();
-    price1.addPriceFor(Rating.ONE, 105.0);
-    price1.addPriceFor(Rating.TWO, 85.0);
-    price1.addPriceFor(Rating.THREE, 65.0);
-    price1.addPriceFor(Rating.FOUR, 90.0);
-    price1.addPriceFor(Rating.FIVE, 95.0);
-
-    pricing.updatePrice(price1, getFutureDate(2));
-
-    AssetBasedService service = new SubscriptionService("New Category", "ELECTRICAL",
-        "Maintain electrical equipment",
-        applicableTo,
-        amenities);
-    service.setPricingStrategy(pricing);
-    ServiceData sld = new ServiceData(PackageScheme.GOLD, 10);
-    ((SubscriptionService) service).addServiceLevelData(sld);
-    service = (AssetBasedService) createEntity(service);
-    UserInput<String, Object> input = new UserInput<String, Object>();
-    input.add(RatingBasedPricingScheme.RATING, Rating.ONE);
-    double currentPrice = service.getPricingStrategy().getPrice(input);
-    assertEquals(100.0, currentPrice, 10);
   }
 
   @Test
@@ -133,11 +96,6 @@ public class AdminTests extends BaseTest {
     List<AssetBasedService> services = findAll(AssetBasedService.class);
     AssetBasedService service = services.get(0);
     // modify pricing strategy
-    PricingStrategy pricing = new FixedPricingScheme(new FixedPrice(100.0));
-    service.setPricingStrategy(pricing);
-    // modify delivery method
-    service = updateAndFind(service, AssetBasedService.class);
-    assertEquals(100.0, service.getPrice(null), 0.1);
   }
 
   @Test
@@ -145,13 +103,7 @@ public class AdminTests extends BaseTest {
     this.testCreateService();
     List<AssetBasedService> services = findAll(AssetBasedService.class);
     BaseService service = services.get(0);
-    PricingStrategy pricingStrategy = service.getPricingStrategy();
-    UserInput<String, Object> userInput = new UserInput<String, Object>();
-    userInput.add(RatingBasedPricingScheme.RATING, Rating.ONE);
-    double currentPrice = pricingStrategy.getPrice(userInput);
-    assertEquals(100.0, currentPrice, 0.1);
-    double futurePrice = pricingStrategy.getPrice(userInput, getFutureDate(3));
-    assertEquals(100.0, futurePrice, 0.1);
+
   }
 
   @Test
@@ -186,7 +138,7 @@ public class AdminTests extends BaseTest {
     String description = "Offers services for 1 year";
     Long tenure = Long.valueOf(12);
     Double disc = Double.valueOf(10);
-    AMCPackage pkg = new AMCPackage(name, description, tenure, disc, services);
+    AMCPackage pkg = new AMCPackage();
     return pkg;
   }
 

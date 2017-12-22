@@ -18,7 +18,7 @@
   <parent>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-parent</artifactId>
-      <version>1.4.1.RELEASE</version>
+      <version>1.5.9.RELEASE</version>
   </parent>
   <dependencies>
     <dependency>
@@ -42,6 +42,11 @@
     <dependency>
     	<groupId>RealService</groupId>
     	<artifactId>CommonUtils</artifactId>
+    	<version>1.0.0</version>
+    </dependency>
+    <dependency>
+    	<groupId>RealService</groupId>
+    	<artifactId>UserAccount</artifactId>
     	<version>1.0.0</version>
     </dependency>
   </dependencies>

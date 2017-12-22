@@ -14,9 +14,9 @@ import com.subsede.amc.model.Asset;
 import com.subsede.amc.model.UOM;
 import com.subsede.amc.model.subscription.Subscription;
 import com.subsede.amc.repository.AssetRepository;
+import com.subsede.user.model.user.User;
+import com.subsede.user.services.user.UserService;
 import com.subsede.util.controller.exception.EntityNotFoundException;
-import com.subsede.util.user.model.User;
-import com.subsede.util.user.service.UserService;
 
 @Service
 public class AssetService implements IAgentAssetService {
@@ -27,13 +27,13 @@ public class AssetService implements IAgentAssetService {
   private UserService userService;
 
   public Asset createAsset(Asset asset, String loggedInUser) {
-    User authorizedUser = userService.getUser(loggedInUser);
+    User authorizedUser = userService.findByUsername(loggedInUser);
     // asset.setCreatedBy(authorizedUser);
     return assetRepository.save(asset);
   }
 
   public Asset createApartment(String loggedInUser) {
-    User authorizedUser = userService.getUser(loggedInUser);
+    User authorizedUser = userService.findByUsername(loggedInUser);
     Asset newAsset = new Apartment(new Apartment.Details(100, 2, 1000.0, UOM.SFT));
     // newAsset.setCreatedBy(authorizedUser);
     Asset saved = assetRepository.save(newAsset);
@@ -41,7 +41,7 @@ public class AssetService implements IAgentAssetService {
   }
 
   public List<Asset> getMyAssets(String email) {
-    User owner = userService.getUser(email);
+    User owner = userService.findByUsername(email);
     return this.assetRepository.findByAssetOwner(owner);
   }
 

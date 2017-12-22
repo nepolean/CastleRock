@@ -5,9 +5,9 @@ import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.subsede.user.model.user.User;
+import com.subsede.user.services.user.UserService;
 import com.subsede.util.controller.exception.InvalidSessionException;
-import com.subsede.util.user.model.User;
-import com.subsede.util.user.service.UserService;
 
 @Resource
 public class UserHelper {
@@ -23,6 +23,6 @@ public class UserHelper {
     String userName = SecurityContextHolder.getContext().getAuthentication().getName();
     if (userName == null)
       throw new InvalidSessionException();
-    return this.userService.findByUserName(userName);
+    return this.userService.findByUsername(userName);
   }
 }

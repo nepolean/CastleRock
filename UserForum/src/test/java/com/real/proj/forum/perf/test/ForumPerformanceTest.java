@@ -14,9 +14,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.subsede.forum.model.Forum;
 import com.subsede.forum.service.ForumRepository;
 import com.subsede.forum.service.IForumService;
-import com.subsede.util.user.model.User;
-import com.subsede.util.user.service.UserRepository;
-import com.subsede.util.user.service.UserService;
+import com.subsede.user.model.user.User;
+import com.subsede.user.repository.user.UserRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -27,7 +26,7 @@ public class ForumPerformanceTest {
   @Autowired
   IForumService forumService;
   @Autowired
-  UserService userSerivce;
+  com.subsede.user.services.user.UserService userSerivce;
   @Autowired
   UserRepository userRepository;
   @Autowired
@@ -46,7 +45,7 @@ public class ForumPerformanceTest {
     for (int i = 0; i < SIZE; i++) {
       User u = new User();
       u.setEmail("User" + i);
-      this.userSerivce.save(u);
+      this.userRepository.save(u);
     }
     long end = System.currentTimeMillis();
 

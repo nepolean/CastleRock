@@ -1,5 +1,6 @@
 package com.subsede.amc.model;
 
+import java.util.Calendar;
 import java.util.Date;
 
 public class EventHistory implements Comparable<EventHistory> {
@@ -15,7 +16,7 @@ public class EventHistory implements Comparable<EventHistory> {
     this.postedBy = postedBy;
     this.role = role;
     this.comments = comments;
-    this.created = new Date();
+    this.created = Calendar.getInstance().getTime();
   }
 
   @Override

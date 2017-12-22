@@ -6,7 +6,7 @@ import com.subsede.amc.catalog.model.AMCPackage;
 import com.subsede.amc.catalog.model.Coupon;
 import com.subsede.amc.catalog.model.Rating;
 import com.subsede.amc.catalog.model.Tax;
-import com.subsede.util.user.model.User;
+import com.subsede.user.model.user.User;
 
 public interface IAMCAdminService {
 

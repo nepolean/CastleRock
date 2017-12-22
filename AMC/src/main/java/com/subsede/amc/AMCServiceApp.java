@@ -9,7 +9,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.real.proj.amc.unit.test.ServiceTestHelper;
 import com.subsede.amc.catalog.model.AMCPackage;
@@ -21,8 +23,9 @@ import com.subsede.amc.catalog.repository.ServiceRepository;
 import com.subsede.amc.model.Asset;
 import com.subsede.amc.model.job.Technician;
 import com.subsede.amc.repository.AssetRepository;
-import com.subsede.util.user.model.User;
-import com.subsede.util.user.service.UserRepository;
+import com.subsede.user.model.Customer;
+import com.subsede.user.model.user.User;
+import com.subsede.user.repository.user.UserRepository;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {
@@ -31,18 +34,21 @@ import com.subsede.util.user.service.UserRepository;
     "com.subsede.amc.catalog.controller",
     "com.subsede.amc.catalog.service",
     "com.subsede.amc.catalog.repository",
-    "com.subsede.util.user.model",
     "com.subsede.util.user.model.workflow",
-    "com.subsede.util.user.service",
     "com.subsede.amc.catalog.model.quote",
     "com.subsede.amc.catalog.model.subscription",
-    "com.subsede.util.util" })
+    "com.subsede.util.util",
+    "com.subsede.user.services.user",
+    "com.subsede.user.services.mailer" })
 @EnableMongoRepositories({
     "com.subsede.util.user.service",
     "com.subsede.amc.catalog.service",
     "com.subsede.amc.catalog.repository",
-    "com.subsede.amc.catalog.model.quote" })
+    "com.subsede.amc.catalog.model.quote",
+    "com.subsede.user.repository.user",
+    "com.subsede.amc.repository" })
 @EnableAutoConfiguration
+@Import({ BCryptPasswordEncoder.class })
 public class AMCServiceApp implements CommandLineRunner {
 
   private static final org.slf4j.Logger logger = LoggerFactory.getLogger(AMCServiceApp.class);
@@ -111,7 +117,7 @@ public class AMCServiceApp implements CommandLineRunner {
   }
 
   private void createAsset() {
-    User user = userRepository.findByUserName("user1");
+    Customer user = (Customer) userRepository.findByUsername("user1");
     if (user == null)
       throw new NullPointerException();
     Asset newAsset = new Asset(user);
@@ -126,7 +132,7 @@ public class AMCServiceApp implements CommandLineRunner {
   private void createFewUsers() {
     User user = userRepository.findByEmail("user");
     if (null == user) {
-      User dummyUser = new User("Dummy", "User", "dummy@email.com", "999999");
+      User dummyUser = new User("Dummy", "User");
       dummyUser.setFirstName("Dummy");
       dummyUser.setLastName("Dummy");
       dummyUser.setEmail("user");
@@ -135,9 +141,9 @@ public class AMCServiceApp implements CommandLineRunner {
       userRepository.save(dummyUser);
       System.out.println("Dummy Saved");
     }
-    user = userRepository.findByEmail("user1");
+    Customer cust = (Customer) userRepository.findByEmail("user1");
     if (null == user) {
-      User dummyUser = new User("Dummy", "User", "dummy@email.com", "999999");
+      Customer dummyUser = new Customer("Dummy", "User", null);
       dummyUser.setFirstName("Dummy");
       dummyUser.setLastName("Dummy");
       dummyUser.setEmail("user1");
@@ -149,7 +155,7 @@ public class AMCServiceApp implements CommandLineRunner {
     Technician technician = (Technician) userRepository.findByEmail("tech1");
     logger.info("{}", technician);
     if (null == technician) {
-      Technician newTechnician = new Technician("Dummy", "User", "dummy@email.com", "999999", null, null);
+      Technician newTechnician = new Technician("Dummy", "User", "dummy@email.com", "999999", null, null, null, null);
       newTechnician.setFirstName("Technician");
       newTechnician.setLastName("Electrician");
       newTechnician.setEmail("tech1");

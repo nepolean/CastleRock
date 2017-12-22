@@ -59,9 +59,6 @@ public class JobActionHandler implements JobStateChangeListener {
       StateMachine<JobStates, JobEvents> stateMachine) {
     logger.info("Event name {}", event.toString());
     switch (event) {
-    case CREATE_JOB:
-      handleCreateNewJob(message, targetState);
-      break;
     case ASSIGN:
       handleAssignJob(message, targetState);
       break;

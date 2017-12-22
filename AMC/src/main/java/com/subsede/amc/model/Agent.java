@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import com.subsede.amc.model.quote.Quotation;
-import com.subsede.util.user.model.User;
+import com.subsede.user.model.user.User;
 
 public class Agent extends User {
 

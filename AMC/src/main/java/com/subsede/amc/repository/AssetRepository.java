@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 import com.subsede.amc.model.Asset;
-import com.subsede.util.user.model.User;
+import com.subsede.user.model.user.User;
 
 @Repository
 public interface AssetRepository extends MongoRepository<Asset, String> {

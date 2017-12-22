@@ -8,8 +8,8 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import com.subsede.amc.catalog.model.BaseMasterEntity;
-import com.subsede.util.user.model.User;
-import com.subsede.util.user.service.UserService;
+import com.subsede.user.model.user.User;
+import com.subsede.user.services.user.UserService;
 
 @Service
 public class GenericFCRUDService {
@@ -20,7 +20,7 @@ public class GenericFCRUDService {
   UserService userRepo;
 
   public <E extends BaseMasterEntity> E create(E entity, String userid) {
-    User user = userRepo.getUser(userid);
+    User user = userRepo.findByUsername(userid);
     entity.setCreatedOn(new Date());
     entity.setCreatedBy(user.getEmail());
     this.template.save(entity);
@@ -28,7 +28,7 @@ public class GenericFCRUDService {
   }
 
   public <E extends BaseMasterEntity> E update(E entity, String userid) {
-    User user = userRepo.getUser(userid);
+    User user = userRepo.findByUsername(userid);
     entity.setModifiedBy(user.getEmail());
     entity.setLastModified(new Date());
     template.save(entity);

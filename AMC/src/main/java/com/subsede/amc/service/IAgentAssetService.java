@@ -8,7 +8,7 @@ import com.subsede.amc.catalog.model.asset.Amenity;
 import com.subsede.amc.catalog.model.asset.AssetType;
 import com.subsede.amc.model.Asset;
 import com.subsede.amc.model.subscription.Subscription;
-import com.subsede.util.user.model.User;
+import com.subsede.user.model.user.User;
 
 public interface IAgentAssetService {
 

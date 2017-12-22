@@ -27,7 +27,7 @@ import com.subsede.amc.model.job.JobMetadata;
 import com.subsede.amc.model.job.JobType;
 import com.subsede.amc.model.quote.Quotation;
 import com.subsede.amc.repository.JobRepository;
-import com.subsede.util.user.model.User;
+import com.subsede.user.model.Customer;
 
 @Component
 public class SubscriptionJobScheduler {
@@ -94,7 +94,7 @@ public class SubscriptionJobScheduler {
 
   public static void main1(String[] args) {
     System.setProperty("ENVIRONMENT", "TEST");
-    User user = new User("First", "Last", "first@gmail.com", "9999999");
+    Customer user = new Customer("First", "Last", "first@gmail.com");
     Asset asset = new Asset(user);
     Service service = new AssetBasedService("A", "ABC", null, null, null);
     Map<Rating, SubscriptionData> data = new HashMap<Rating, SubscriptionData>();

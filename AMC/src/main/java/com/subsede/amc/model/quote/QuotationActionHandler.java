@@ -37,8 +37,8 @@ import com.subsede.amc.model.subscription.Subscription;
 import com.subsede.amc.model.subscription.SubscriptionJobScheduler;
 import com.subsede.amc.repository.AssetRepository;
 import com.subsede.amc.repository.SubscriptionRepository;
-import com.subsede.util.user.model.User;
-import com.subsede.util.user.service.UserRepository;
+import com.subsede.user.model.user.User;
+import com.subsede.user.repository.user.UserRepository;
 import com.subsede.util.util.SecurityHelper;
 
 @Component
@@ -155,17 +155,22 @@ public class QuotationActionHandler implements QuotationStateChangeListener {
       return;
     }
     userQuote.setState(targetState);
+    updateHistory(message, userQuote, "Payment Initated.");
+    this.quoteRepository.save(userQuote);
+
+  }
+
+  private void updateHistory(Message<QEvents> message, Quotation userQuote, String comment) {
     User loggedInUser = secHelper.getLoggedInUser();
     //@formatter:off
     EventHistory eventObj = 
         new EventHistory(message.getPayload().toString(),
-            loggedInUser.getUserName(),
-            loggedInUser.getRole(),
-            "Payment Initated.");
+            loggedInUser.getUsername(),
+            loggedInUser.getRoles().iterator().next().getName(),
+            comment
+            );
     //@formatter:on       
     userQuote.getHistory().add(eventObj);
-    this.quoteRepository.save(userQuote);
-
   }
 
   private void handleRejectQuote(Message<QEvents> message, QStates targetState) {
@@ -174,15 +179,7 @@ public class QuotationActionHandler implements QuotationStateChangeListener {
     String comments = (String) userData.get(USER_COMMENTS_KEY);
     comments = Optional.of(comments).orElse("");
     userQuote.setState(targetState);
-    User loggedInUser = secHelper.getLoggedInUser();
-    //@formatter:off
-    EventHistory eventObj = 
-        new EventHistory(message.getPayload().toString(),
-            loggedInUser.getUserName(),
-            loggedInUser.getRole(),
-            comments);
-    //@formatter:on       
-    userQuote.getHistory().add(eventObj);
+    this.updateHistory(message, userQuote, comments);
     this.quoteRepository.save(userQuote);
     this.notificationHandler.handleQuotationRejected(userQuote);
   }
@@ -234,15 +231,7 @@ public class QuotationActionHandler implements QuotationStateChangeListener {
     else
       targetState = QStates.QUOTATION_REGENERATED;
     userQuote.setState(targetState);
-    User loggedInUser = secHelper.getLoggedInUser();
-    //@formatter:off
-    EventHistory eventObj = 
-        new EventHistory(message.getPayload().toString(),
-            loggedInUser.getUserName(),
-            loggedInUser.getRole(),
-            "Quote is renewed.");
-    //@formatter:on   
-    userQuote.getHistory().add(eventObj);
+    this.updateHistory(message, userQuote, "Quotation Renewed");
     this.quoteRepository.save(userQuote);
   }
 
@@ -286,19 +275,10 @@ public class QuotationActionHandler implements QuotationStateChangeListener {
       throw new IllegalArgumentException("You must selecte at least 1 package/service.");
 
     /* validate user input */
-    User customer = this.userRepository.findByUserName(userId);
+    User customer = this.userRepository.findByUsername(userId);
     customer = Objects.requireNonNull(customer, "User with id " + userId + " not found.");
     Asset customerAsset = this.assetRepository.findOne(assetId);
     customerAsset = Objects.requireNonNull(customerAsset, "Asset with id " + assetId + " not found.");
-
-    User loggedInUser = secHelper.getLoggedInUser();
-    //@formatter:off
-    EventHistory eventObj = 
-        new EventHistory(message.getPayload().toString(),
-            loggedInUser.getUserName(),
-            loggedInUser.getRole(),
-            "Quote is created.");
-    //@formatter:on
 
     /* Convert ids to real packages/services */
     List<Product> allSelectedProducts = new LinkedList<Product>();
@@ -313,11 +293,11 @@ public class QuotationActionHandler implements QuotationStateChangeListener {
     rejectIfPackagesMismatch(selectedServices, services);
     allSelectedProducts.addAll(services);
     /* create a new quotation */
-    Quotation newQuote = new Quotation(customerAsset, loggedInUser);
+    Quotation newQuote = new Quotation(customerAsset, secHelper.getLoggedInUser());
 
     allSelectedProducts.forEach(item -> newQuote.addProduct(item));
     newQuote.setState(targetState);
-    newQuote.getHistory().add(eventObj);
+    this.updateHistory(message, newQuote, "Quotation is created");
     this.quoteRepository.save(newQuote);
     logger.info("New quote created");
   }
@@ -374,16 +354,7 @@ public class QuotationActionHandler implements QuotationStateChangeListener {
     String comments = (String) userData.get(QuotationConstants.USER_COMMENTS_KEY);
     comments = Optional.of(comments).orElse("");
     userQuote.userAccepted();
-    User loggedInUser = secHelper.getLoggedInUser();
-    //@formatter:off
-    EventHistory event = 
-        new EventHistory(
-            message.getPayload().toString(),
-            loggedInUser.getUserName(),
-            loggedInUser.getRole(),
-            comments);
-    //@formatter:off
-    userQuote.getHistory().add(event);
+    this.updateHistory(message, userQuote, comments);
     userQuote.setState(targetState);
     this.quoteRepository.save(userQuote);
     this.notificationHandler.handleQuotationAcceptedByUser(userQuote);
@@ -395,16 +366,7 @@ public class QuotationActionHandler implements QuotationStateChangeListener {
     String comments = (String) userData.get(USER_COMMENTS_KEY);
     comments = Optional.of(comments).orElse("");
     User loggedInUser = secHelper.getLoggedInUser();
-    //@formatter:off
-    EventHistory eventObj = 
-        new EventHistory(
-            message.getPayload().toString(),
-            loggedInUser.getUserName(),
-            loggedInUser.getRole(),
-            comments);
-    //@formatter:on
-
-    userQuote.getHistory().add(eventObj);
+    this.updateHistory(message, userQuote, comments);
     userQuote.setState(targetState);
     this.quoteRepository.save(userQuote);
     this.notificationHandler.handleQuotationApprovedByAdmin(userQuote);
@@ -414,26 +376,16 @@ public class QuotationActionHandler implements QuotationStateChangeListener {
     Map<String, Object> userData = getUserData(message);
     UserData data = (UserData) userData.get(USER_DATA_KEY);
     data = Objects.requireNonNull(data, "Service specific data cannot be null.");
-    Quotation quote = getQuoteFromUserInput(userData);
+    Quotation userQuote = getQuoteFromUserInput(userData);
     List<Tax> applicableTaxes = getApplicableTaxes();
-    quote.setUserData(data);
-    quote.setApplicableTaxes(applicableTaxes);
-    quote.createQuote();
-    String loggedInUser = secHelper.getLoggedInUser().getUserName();
-    String userRole = secHelper.getLoggedInUser().getRole();
-    //@formatter:off
-    EventHistory eventObj = 
-        new EventHistory(event.toString(),
-            loggedInUser,
-            userRole,
-            "Quote is generated.");
-    //@formatter:on
-
-    quote.getHistory().add(eventObj);
-    quote.setState(nextState);
+    userQuote.setUserData(data);
+    userQuote.setApplicableTaxes(applicableTaxes);
+    userQuote.createQuote();
+    this.updateHistory(message, userQuote, "Quotation is generated");
+    userQuote.setState(nextState);
     if (event.equals(QEvents.REGENERATE))
-      quote.approveQuote();
-    this.quoteRepository.save(quote);
+      userQuote.approveQuote();
+    this.quoteRepository.save(userQuote);
   }
 
   private List<Tax> getApplicableTaxes() {

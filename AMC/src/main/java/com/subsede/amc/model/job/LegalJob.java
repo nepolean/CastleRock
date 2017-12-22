@@ -3,7 +3,7 @@ package com.subsede.amc.model.job;
 import java.util.List;
 
 import com.subsede.amc.catalog.model.ServiceType;
-import com.subsede.util.user.model.User;
+import com.subsede.user.model.user.User;
 
 public class LegalJob extends AbstractJob {
 

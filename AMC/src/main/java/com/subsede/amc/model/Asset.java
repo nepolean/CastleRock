@@ -11,7 +11,7 @@ import com.subsede.amc.catalog.model.BaseMasterEntity;
 import com.subsede.amc.catalog.model.asset.Amenity;
 import com.subsede.amc.catalog.model.asset.AssetBasedService;
 import com.subsede.amc.catalog.model.asset.AssetType;
-import com.subsede.util.user.model.User;
+import com.subsede.user.model.Customer;
 
 @Document(collection = "Assets")
 public class Asset extends BaseMasterEntity implements java.io.Serializable {
@@ -25,7 +25,7 @@ public class Asset extends BaseMasterEntity implements java.io.Serializable {
   Location location;
   @Reference
   Asset belongsTo;
-  User assetOwner;
+  Customer assetOwner;
   Set<Amenity> amenities;
 
   // Subscription subscription;
@@ -34,7 +34,7 @@ public class Asset extends BaseMasterEntity implements java.io.Serializable {
     // this.location = new Location();
   }
 
-  public Asset(User ownedBy) {
+  public Asset(Customer ownedBy) {
     this.assetOwner = ownedBy;
   }
 
@@ -42,11 +42,11 @@ public class Asset extends BaseMasterEntity implements java.io.Serializable {
     return id;
   }
 
-  public User getOwnedBy() {
+  public Customer getOwnedBy() {
     return assetOwner;
   }
 
-  public void setOwnedBy(User ownedBy) {
+  public void setOwnedBy(Customer ownedBy) {
     this.assetOwner = ownedBy;
   }
 
@@ -58,11 +58,11 @@ public class Asset extends BaseMasterEntity implements java.io.Serializable {
     this.location = location;
   }
 
-  public User getOwner() {
+  public Customer getOwner() {
     return assetOwner;
   }
 
-  public void setOwner(User owner) {
+  public void setOwner(Customer owner) {
     this.assetOwner = owner;
   }
 

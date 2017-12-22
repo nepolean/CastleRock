@@ -2,7 +2,7 @@ package com.subsede.forum.service;
 
 import org.springframework.scheduling.annotation.Async;
 
-import com.subsede.util.user.model.User;
+import com.subsede.user.model.user.User;
 
 public class NotificationHelper {
 

@@ -11,9 +11,9 @@ import com.subsede.amc.catalog.model.BaseMasterEntity;
 import com.subsede.amc.catalog.model.ServiceType;
 import com.subsede.amc.model.EventHistory;
 import com.subsede.amc.model.MaintenanceJob;
-import com.subsede.util.user.model.User;
+import com.subsede.user.model.user.User;
 
-@Document(collection = "jobs")
+@Document(collection = "Jobs")
 public class AbstractJob extends BaseMasterEntity implements MaintenanceJob {
 
   @Id
@@ -44,6 +44,7 @@ public class AbstractJob extends BaseMasterEntity implements MaintenanceJob {
     this.sourceType = sourceType;
     this.sourceId = sourceId;
     this.customer = customer;
+    this.currentStatus = JobStates.CREATED;
   }
 
   @Override
@@ -154,7 +155,7 @@ public class AbstractJob extends BaseMasterEntity implements MaintenanceJob {
     this.scheduledDate = scheduledDate;
   }
 
-  public User getTechnician() {
+  public Technician getTechnician() {
     return technician;
   }
 

@@ -12,13 +12,13 @@ import com.subsede.forum.model.Forum;
 import com.subsede.forum.model.Message;
 import com.subsede.forum.model.MessageType;
 import com.subsede.forum.model.SubscriptionRequest;
+import com.subsede.user.model.user.User;
+import com.subsede.user.services.user.UserService;
 import com.subsede.util.controller.exception.DBException;
 import com.subsede.util.controller.exception.DBException.Operation;
 import com.subsede.util.controller.exception.EntityNotFoundException;
 import com.subsede.util.controller.exception.SecurityPermissionException;
 import com.subsede.util.message.SimpleMessage;
-import com.subsede.util.user.model.User;
-import com.subsede.util.user.service.UserService;
 
 @Service
 public class ForumService implements IForumService {
@@ -51,7 +51,7 @@ public class ForumService implements IForumService {
       throw new DBException("Subscriber", DBException.Operation.adding);
     }
     try {
-      this.userService.subscribe(subscriber.getEmail(), f.getId());
+      // this.userService.subscribe(subscriber.getEmail(), f.getId());
     } catch (Exception ex) {
       if (logger.isErrorEnabled())
         logger.error("Error while adding subscription to the user");
@@ -87,7 +87,7 @@ public class ForumService implements IForumService {
         throw new DBException("Forum", Operation.creating);
       }
       try {
-        user = this.userService.subscribe(userName, f.getId());
+        // user = this.userService.subscribe(userName, f.getId());
         if (logger.isInfoEnabled())
           logger.info("added subscription to the user" + user);
       } catch (Exception ex) {
@@ -216,7 +216,7 @@ public class ForumService implements IForumService {
       Forum f = this.getForum(forumId);
       assertForumNotClosed(f);
       assertAuthorized(userId, f);
-      User author = userService.getUser(userId);
+      User author = userService.findByUsername(userId);
       Message post = new Message(MessageType.TEXT);
       post.setMessage(message);
       post.setAuthor(author);
@@ -305,7 +305,7 @@ public class ForumService implements IForumService {
   private User getUser(String userName) throws Exception {
     User user = null;
     try {
-      user = this.userService.getUser(userName);
+      user = this.userService.findByUsername(userName);
     } catch (Exception ex) {
       if (logger.isErrorEnabled())
         logger.error("Error while retrieving user " + userName, ex);

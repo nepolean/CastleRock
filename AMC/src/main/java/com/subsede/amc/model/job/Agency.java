@@ -1,38 +1,30 @@
 package com.subsede.amc.model.job;
 
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.subsede.amc.catalog.model.BaseMasterEntity;
 import com.subsede.amc.model.Location;
 
 @Document(collection = "Agencies")
-public class Agency extends BaseMasterEntity {
+public class Agency {
 
   @Id
   private String id;
-  @NotBlank(message = "First name should not be empty")
-  @Size(max = 31, message = "First name can have upto 31 characters")
-  @Pattern(regexp = ValidPatterns.PATTERN_WITHOUT_SPECIAL_CHARACTERS_AND_DIGITS, message = "Agency name should not contain special characters")
+  @NotBlank(message = "Name should not be empty")
   private String name;
   @NotBlank(message = "Address should not be empty")
   private Location address;
+  private boolean isActive;
+  private Set<AgencyAdmin> adminUsers;
+  private Set<Technician> technicians;
 
   public Agency(String name, Location address) {
     this.name = name;
     this.address = address;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
   }
 
   public Location getAddress() {
@@ -43,8 +35,30 @@ public class Agency extends BaseMasterEntity {
     this.address = address;
   }
 
-  @Override
-  public String getId() {
-    return this.id;
+  public void setActive(boolean active) {
+    isActive = active;
   }
+
+  public boolean getActvie() {
+    return isActive;
+  }
+
+  public void addAdmin(AgencyAdmin adminUser) {
+    if (adminUsers == null)
+      adminUsers = new HashSet<>();
+    adminUsers.add(adminUser);
+  }
+
+  public void addTechnician(Technician technician) {
+    if (technicians == null) {
+      technicians = new HashSet<>();
+    }
+    technicians.add(technician);
+  }
+
+  public void removeTechnician(Technician technician) {
+    if (technicians != null)
+      technicians.remove(technician);
+  }
+
 }

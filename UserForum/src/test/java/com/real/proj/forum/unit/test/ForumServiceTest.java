@@ -24,11 +24,12 @@ import com.subsede.forum.model.Forum;
 import com.subsede.forum.service.ForumRepository;
 import com.subsede.forum.service.ForumService;
 import com.subsede.forum.service.IForumService;
+import com.subsede.user.services.user.UserService;
 import com.subsede.util.message.SimpleMessage;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = { ForumService.class,
-    com.subsede.util.user.service.UserService.class })
+    UserService.class })
 @ActiveProfiles("test")
 @EnableAutoConfiguration
 @EnableMongoRepositories("com.subsede.forum.service")

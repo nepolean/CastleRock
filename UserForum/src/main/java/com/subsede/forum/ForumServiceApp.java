@@ -9,11 +9,11 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 import com.subsede.forum.service.ForumService;
-import com.subsede.util.user.model.User;
-import com.subsede.util.user.service.UserRepository;
-import com.subsede.util.user.service.UserService;
+import com.subsede.user.model.user.User;
+import com.subsede.user.repository.user.UserRepository;
 
-@SpringBootApplication(scanBasePackageClasses = { UserService.class, ForumService.class })
+@SpringBootApplication(scanBasePackageClasses = { com.subsede.user.services.user.UserService.class,
+    ForumService.class })
 @ComponentScan(basePackages = { "com.real.proj.controller.exception", "com.real.proj.controller.exception.handler",
     "com.subsede.forum.controller", "com.subsede.forum.service", "com.real.proj.user.service" })
 @EnableMongoRepositories({ "com.real.proj.user.service", "com.subsede.forum.service" })
@@ -21,7 +21,7 @@ import com.subsede.util.user.service.UserService;
 public class ForumServiceApp implements CommandLineRunner {
 
   @Autowired
-  private UserRepository userRepository;
+  private com.subsede.user.repository.user.UserRepository userRepository;
 
   public void setUserRepository(UserRepository userRepository) {
     this.userRepository = userRepository;

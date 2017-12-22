@@ -29,7 +29,7 @@ import com.subsede.amc.catalog.model.UserInput;
 import com.subsede.amc.model.Asset;
 import com.subsede.amc.model.EventHistory;
 import com.subsede.amc.model.UserData;
-import com.subsede.util.user.model.User;
+import com.subsede.user.model.user.User;
 
 @Document(collection = "Quotations")
 @WithStateMachine
@@ -99,12 +99,12 @@ public class Quotation {
     this.createdFor = createdFor;
     this.createdBy = createdBy;
     this.asset = location;
-    isNewUser = Objects.isNull(createdFor.getUserName());
+    isNewUser = Objects.isNull(createdFor.getUsername());
     createdByAgent = !Objects.equals(createdFor, createdBy);
   }
 
   public Quotation(Asset asset, User agent) {
-    this.createdFor = asset.getOwner();
+    this.createdFor = (User) asset.getOwner();
     this.createdBy = agent;
     this.asset = asset;
     isNewUser = false;

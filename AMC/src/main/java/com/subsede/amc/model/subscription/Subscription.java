@@ -20,7 +20,7 @@ import com.subsede.amc.catalog.model.Service;
 import com.subsede.amc.model.Asset;
 import com.subsede.amc.model.UserData;
 import com.subsede.amc.model.quote.Quotation;
-import com.subsede.util.user.model.User;
+import com.subsede.user.model.user.User;
 
 @Document(collection = "Subscriptions")
 public class Subscription extends BaseMasterEntity {

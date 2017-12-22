@@ -6,7 +6,7 @@ import java.util.Date;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.subsede.util.user.model.User;
+import com.subsede.user.model.user.User;
 
 @Document
 public class SubscriptionRequest implements Serializable {

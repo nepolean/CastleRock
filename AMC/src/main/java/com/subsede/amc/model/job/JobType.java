@@ -1,7 +1,7 @@
 package com.subsede.amc.model.job;
 
 import com.subsede.amc.catalog.model.Service;
-import com.subsede.util.user.model.User;
+import com.subsede.user.model.user.User;
 
 public class JobType {
 
