@@ -1,4 +1,4 @@
-package com.subsede.util.util;
+package com.subsede.util;
 
 import javax.annotation.Resource;
 

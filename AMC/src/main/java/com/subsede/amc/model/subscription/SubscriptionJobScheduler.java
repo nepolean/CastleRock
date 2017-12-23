@@ -18,8 +18,10 @@ import com.subsede.amc.catalog.model.Rating;
 import com.subsede.amc.catalog.model.Service;
 import com.subsede.amc.catalog.model.SubscriptionData;
 import com.subsede.amc.catalog.model.asset.AssetBasedService;
+import com.subsede.amc.catalog.model.asset.AssetType;
 import com.subsede.amc.catalog.model.asset.RatingBasedSubscriptionData;
 import com.subsede.amc.model.Asset;
+import com.subsede.amc.model.Location;
 import com.subsede.amc.model.UserData;
 import com.subsede.amc.model.job.AbstractJob;
 import com.subsede.amc.model.job.AssetMetadata4Job;
@@ -95,7 +97,7 @@ public class SubscriptionJobScheduler {
   public static void main1(String[] args) {
     System.setProperty("ENVIRONMENT", "TEST");
     Customer user = new Customer("First", "Last", "first@gmail.com");
-    Asset asset = new Asset(user);
+    Asset asset = new Asset("",new Location(), AssetType.FLAT);
     Service service = new AssetBasedService("A", "ABC", null, null, null);
     Map<Rating, SubscriptionData> data = new HashMap<Rating, SubscriptionData>();
     for (Rating key : Rating.values())

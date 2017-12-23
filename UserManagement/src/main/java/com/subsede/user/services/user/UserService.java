@@ -100,7 +100,7 @@ public class UserService {
     User manager = uRepository.findByUsername(request.getUserPrincipal().getName());
     user.setManager(manager);
     String randomPassword = UUID.randomUUID().toString().substring(0, 8);
-    System.out.println("Random password is " + randomPassword);
+    // System.out.println("Random password is " + randomPassword);
     user.setPassword(passwordEncoder.encode(randomPassword));
     user.addRole(rRepository.findByName("USER"));
     uRepository.save(user);

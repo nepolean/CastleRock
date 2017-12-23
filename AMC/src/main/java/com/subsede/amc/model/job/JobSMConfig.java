@@ -4,20 +4,23 @@ import java.util.EnumSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.statemachine.annotation.WithStateMachine;
 import org.springframework.statemachine.config.EnableStateMachine;
+import org.springframework.statemachine.config.EnableStateMachineFactory;
 import org.springframework.statemachine.config.EnumStateMachineConfigurerAdapter;
 import org.springframework.statemachine.config.builders.StateMachineStateConfigurer;
 import org.springframework.statemachine.config.builders.StateMachineTransitionConfigurer;
-
+import org.springframework.stereotype.Component;
 @Configuration
-@EnableStateMachine
+@EnableStateMachine(name="JobFlow")
 public class JobSMConfig extends EnumStateMachineConfigurerAdapter<JobStates, JobEvents> {
 
   private static Logger logger = LoggerFactory.getLogger(JobSMConfig.class);
 
   public void configure(StateMachineStateConfigurer<JobStates, JobEvents> states) throws Exception {
-    logger.info("configuring quotation workflow");
+    logger.info("Configuring job workflow");
     states
         .withStates()
         .initial(JobStates.INITIAL)

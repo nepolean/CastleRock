@@ -14,10 +14,12 @@ import org.springframework.messaging.Message;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.state.State;
 import org.springframework.statemachine.transition.Transition;
+import org.springframework.stereotype.Component;
 
 import com.subsede.amc.repository.JobRepository;
-import com.subsede.util.util.SecurityHelper;
+import com.subsede.util.SecurityHelper;
 
+@Component
 public class JobActionHandler implements JobStateChangeListener {
 
   private static final Logger logger = LoggerFactory.getLogger(JobActionHandler.class);

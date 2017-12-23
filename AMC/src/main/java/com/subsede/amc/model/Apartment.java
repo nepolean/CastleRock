@@ -10,20 +10,16 @@ import com.subsede.amc.catalog.model.asset.AssetType;
 
 public class Apartment extends Asset {
 
-  private static final long serialVersionUID = 1L;
-
   Details details;
 
-  @Transient
-  static Apartment aptmt;
-
   private Apartment() {
-    super();
+    super("Test", new Location(), AssetType.APARTMENT);
     type = AssetType.APARTMENT;
     this.setDetails(new Details(0, 0, 0.0, UOM.SFT));
   }
 
-  public Apartment(Details details) {
+  public Apartment(String name, Location location, Details details) {
+    super(name, location, AssetType.APARTMENT);
     this.details = details;
     type = AssetType.APARTMENT;
   }
@@ -36,18 +32,12 @@ public class Apartment extends Asset {
     this.details = details;
   }
 
-  public AssetType getType() {
-    return type;
-  }
-
   public String toJson() {
     return JSON.serialize(this);
   }
 
   public static Apartment getMetadata() {
-    if (aptmt == null)
-      aptmt = new Apartment();
-    return aptmt;
+    return  new Apartment();
   }
 
   public static class Block {

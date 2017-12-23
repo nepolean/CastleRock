@@ -39,7 +39,7 @@ import com.subsede.amc.repository.AssetRepository;
 import com.subsede.amc.repository.SubscriptionRepository;
 import com.subsede.user.model.user.User;
 import com.subsede.user.repository.user.UserRepository;
-import com.subsede.util.util.SecurityHelper;
+import com.subsede.util.SecurityHelper;
 
 @Component
 public class QuotationActionHandler implements QuotationStateChangeListener {

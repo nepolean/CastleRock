@@ -1,6 +1,9 @@
-package com.subsede.util.util;
+package com.subsede.util;
+
+import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -27,5 +30,21 @@ public class SecurityHelper {
 
   public boolean IsUserLoggedIn() {
     return SecurityContextHolder.getContext().getAuthentication().isAuthenticated();
+  }
+
+  public String getLoggedInUserRole() {
+    @SuppressWarnings("unchecked")
+    Collection<GrantedAuthority> roles = (Collection<GrantedAuthority>) SecurityContextHolder.getContext()
+        .getAuthentication().getAuthorities();
+    if (roles != null & roles.size() > 0)
+      return roles.iterator().next().getAuthority();
+    return null;
+  }
+  
+  public String getLoggedInUsername() {
+    String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+    if (userName == null)
+      throw new InvalidSessionException();
+    return userName;
   }
 }

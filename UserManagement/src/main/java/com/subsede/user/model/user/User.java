@@ -31,6 +31,8 @@ public class User {
   private String userType;
 
   @Id
+  String id;
+
   @NotBlank(message = "Username should not be empty")
   @Pattern(regexp = ValidPatterns.PATTERN_WITH_DIGITS_AND_ALLOWED_SPECIAL_CHARACTERS, message = "Username does not match the required pattern")
   @Size(min = 8, max = 15)
@@ -85,6 +87,10 @@ public class User {
     this();
     this.username = username;
     this.password = password;
+  }
+
+  public String getId() {
+    return this.id;
   }
 
   @JsonView(UserView.class)
@@ -226,4 +232,72 @@ public class User {
   public void setManager(User manager) {
     this.manager = manager;
   }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((email == null) ? 0 : email.hashCode());
+    result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());
+    result = prime * result + ((id == null) ? 0 : id.hashCode());
+    result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
+    result = prime * result + ((middleName == null) ? 0 : middleName.hashCode());
+    result = prime * result + ((mobileNo == null) ? 0 : mobileNo.hashCode());
+    result = prime * result + ((userType == null) ? 0 : userType.hashCode());
+    result = prime * result + ((username == null) ? 0 : username.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    User other = (User) obj;
+    if (email == null) {
+      if (other.email != null)
+        return false;
+    } else if (!email.equals(other.email))
+      return false;
+    if (firstName == null) {
+      if (other.firstName != null)
+        return false;
+    } else if (!firstName.equals(other.firstName))
+      return false;
+    if (id == null) {
+      if (other.id != null)
+        return false;
+    } else if (!id.equals(other.id))
+      return false;
+    if (lastName == null) {
+      if (other.lastName != null)
+        return false;
+    } else if (!lastName.equals(other.lastName))
+      return false;
+    if (middleName == null) {
+      if (other.middleName != null)
+        return false;
+    } else if (!middleName.equals(other.middleName))
+      return false;
+    if (mobileNo == null) {
+      if (other.mobileNo != null)
+        return false;
+    } else if (!mobileNo.equals(other.mobileNo))
+      return false;
+    if (userType == null) {
+      if (other.userType != null)
+        return false;
+    } else if (!userType.equals(other.userType))
+      return false;
+    if (username == null) {
+      if (other.username != null)
+        return false;
+    } else if (!username.equals(other.username))
+      return false;
+    return true;
+  }
+
 }

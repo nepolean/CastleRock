@@ -1,5 +1,6 @@
 package com.subsede.amc.catalog.model;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import org.springframework.security.core.Authentication;
@@ -8,8 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public abstract class BaseMasterEntity {
-  @JsonIgnore
-  String id;
+  protected String id;
   @JsonIgnore
   protected Date createdOn;
   @JsonIgnore
@@ -24,7 +24,7 @@ public abstract class BaseMasterEntity {
 
   protected BaseMasterEntity() {
     this.createdBy = getLoggedInUser();
-    this.createdOn = new Date();
+    this.createdOn = Calendar.getInstance().getTime();
     this.isActive = false;
     isDeleted = false;
   }

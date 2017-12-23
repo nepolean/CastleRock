@@ -13,13 +13,14 @@ public class Flat extends Asset {
   private List<AssetBasedService> services;
 
   private Flat() {
-    type = AssetType.FLAT;
+    super("Test Flat", new Location(), AssetType.FLAT);
     services = new ArrayList<AssetBasedService>();
     // services.add(new ElectricalService());
     details = new Details();
   }
 
-  Flat(Details details) {
+  Flat(String name, Location location, Details details) {
+    super(name, location, AssetType.FLAT);
     this.details = details;
   }
 

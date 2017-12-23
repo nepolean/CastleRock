@@ -12,17 +12,24 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.statemachine.StateMachine;
+import org.springframework.statemachine.config.EnumStateMachineConfigurerAdapter;
 
 import com.real.proj.amc.unit.test.ServiceTestHelper;
 import com.subsede.amc.catalog.model.AMCPackage;
 import com.subsede.amc.catalog.model.Category;
 import com.subsede.amc.catalog.model.Service;
 import com.subsede.amc.catalog.model.TenureBasedDiscount;
+import com.subsede.amc.catalog.model.asset.AssetType;
 import com.subsede.amc.catalog.repository.PackageRepository;
 import com.subsede.amc.catalog.repository.ServiceRepository;
 import com.subsede.amc.model.Asset;
+import com.subsede.amc.model.Location;
+import com.subsede.amc.model.job.JobSMConfig;
 import com.subsede.amc.model.job.Technician;
 import com.subsede.amc.repository.AssetRepository;
+import com.subsede.user.config.MVCConfig;
+import com.subsede.user.config.SecurityConfig;
 import com.subsede.user.model.Customer;
 import com.subsede.user.model.user.User;
 import com.subsede.user.repository.user.UserRepository;
@@ -31,13 +38,19 @@ import com.subsede.user.repository.user.UserRepository;
 @ComponentScan(basePackages = {
     "com.subsede.util.controller.exception",
     "com.subsede.util.controller.exception.handler",
+    "com.subsede.amc.model.job",
+    "com.subsede.amc.controller",
+    "com.subsede.amc.service",
+    "com.subsede.amc.controller.asset",
+    "com.subsede.amc.model.quote",
+    "com.subsede.amc.model.subscription",
     "com.subsede.amc.catalog.controller",
     "com.subsede.amc.catalog.service",
     "com.subsede.amc.catalog.repository",
     "com.subsede.util.user.model.workflow",
     "com.subsede.amc.catalog.model.quote",
     "com.subsede.amc.catalog.model.subscription",
-    "com.subsede.util.util",
+    "com.subsede.util",
     "com.subsede.user.services.user",
     "com.subsede.user.services.mailer" })
 @EnableMongoRepositories({
@@ -46,23 +59,24 @@ import com.subsede.user.repository.user.UserRepository;
     "com.subsede.amc.catalog.repository",
     "com.subsede.amc.catalog.model.quote",
     "com.subsede.user.repository.user",
-    "com.subsede.amc.repository" })
+    "com.subsede.amc.repository" ,
+    "com.subsede.amc.model.quote"})
 @EnableAutoConfiguration
-@Import({ BCryptPasswordEncoder.class })
+@Import({MVCConfig.class, SecurityConfig.class})
 public class AMCServiceApp implements CommandLineRunner {
 
   private static final org.slf4j.Logger logger = LoggerFactory.getLogger(AMCServiceApp.class);
 
-  private UserRepository userRepository;
+  private UserRepository<User> userRepository;
 
-  private com.subsede.amc.repository.AssetRepository assetRepository;
+  private AssetRepository assetRepository;
 
   private PackageRepository packageRepository;
 
   private ServiceRepository serviceRepository;
 
   @Autowired
-  public void setUserRepository(UserRepository userRepository) {
+  public void setUserRepository(UserRepository<User> userRepository) {
     this.userRepository = userRepository;
   }
 
@@ -95,8 +109,9 @@ public class AMCServiceApp implements CommandLineRunner {
   public void run(String... args) throws Exception {
     System.setProperty("ENVIRONMENT", "TEST");
     createFewUsers();
-    // createAsset();
+    createAsset();
     createPackage();
+    // createAgency();
   }
 
   private void createPackage() {
@@ -117,11 +132,13 @@ public class AMCServiceApp implements CommandLineRunner {
   }
 
   private void createAsset() {
-    Customer user = (Customer) userRepository.findByUsername("user1");
+    Customer user = (Customer) userRepository.findByEmail("user2");
+    logger.info("{}", user);
     if (user == null)
-      throw new NullPointerException();
-    Asset newAsset = new Asset(user);
-    newAsset = this.assetRepository.save(newAsset);
+      return;
+    Asset newAsset = new Asset("Purva Supreme", new Location(), AssetType.APARTMENT);
+    newAsset.addOwner(user);
+    newAsset = this.assetRepository.insert(newAsset);
     String id = newAsset.getId();
     logger.info("{}", id);
     newAsset = null;
@@ -138,24 +155,25 @@ public class AMCServiceApp implements CommandLineRunner {
       dummyUser.setEmail("user");
       dummyUser.setMobileNo("99999999");
       System.out.println("User service " + userRepository);
-      userRepository.save(dummyUser);
-      System.out.println("Dummy Saved");
+      userRepository.insert(dummyUser);
+      System.out.println("Dummy User Saved");
     }
-    Customer cust = (Customer) userRepository.findByEmail("user1");
+    Customer cust = (Customer) userRepository.findByEmail("user2");
+    System.out.println("Customer 2" + cust);
     if (null == user) {
-      Customer dummyUser = new Customer("Dummy", "User", null);
-      dummyUser.setFirstName("Dummy");
-      dummyUser.setLastName("Dummy");
-      dummyUser.setEmail("user1");
+      Customer dummyUser = new Customer("Dummy2", "User", null);
+      dummyUser.setFirstName("Dummy2");
+      dummyUser.setLastName("Dummy2");
+      dummyUser.setEmail("user2");
       dummyUser.setMobileNo("99999999");
       System.out.println("User service " + userRepository);
       userRepository.save(dummyUser);
-      System.out.println("Dummy Saved");
+      System.out.println("Dummy Customer Saved");
     }
     Technician technician = (Technician) userRepository.findByEmail("tech1");
     logger.info("{}", technician);
     if (null == technician) {
-      Technician newTechnician = new Technician("Dummy", "User", "dummy@email.com", "999999", null, null, null, null);
+      Technician newTechnician = new Technician("Dummy2", "User", "dummy@email.com", "999999", null, null, null, null);
       newTechnician.setFirstName("Technician");
       newTechnician.setLastName("Electrician");
       newTechnician.setEmail("tech1");

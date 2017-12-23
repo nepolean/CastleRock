@@ -1,53 +1,72 @@
 package com.subsede.amc.model;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
-import org.springframework.data.annotation.Id;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.data.annotation.Reference;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.subsede.amc.catalog.model.BaseMasterEntity;
 import com.subsede.amc.catalog.model.asset.Amenity;
-import com.subsede.amc.catalog.model.asset.AssetBasedService;
 import com.subsede.amc.catalog.model.asset.AssetType;
 import com.subsede.user.model.Customer;
+import com.subsede.user.model.user.User;
 
 @Document(collection = "Assets")
-public class Asset extends BaseMasterEntity implements java.io.Serializable {
+public class Asset extends BaseMasterEntity {
 
-  static final long serialVersionUID = 1L;
-
-  @Id
-  String id;
+  @NotBlank(message = "Asset name should not be blank")
+  private String name;
+  @NotNull(message = "Asset Type should not be blank")
   protected AssetType type;
   @Reference
+  @NotNull(message = "Address should not be empty")
   Location location;
   @Reference
   Asset belongsTo;
-  Customer assetOwner;
+  @Reference
+  List<Customer> assetOwner;
   Set<Amenity> amenities;
-
-  // Subscription subscription;
-
+  List<String> imagePaths;
+  String backgroundImage;
+  
   public Asset() {
-    // this.location = new Location();
+    
   }
 
-  public Asset(Customer ownedBy) {
-    this.assetOwner = ownedBy;
+  public Asset(String name, Location location, AssetType type) {
+    this.name = name;
+    this.location = location;
   }
 
   public String getId() {
     return id;
   }
 
-  public Customer getOwnedBy() {
-    return assetOwner;
+  public Customer getOwner() {
+    if(assetOwner != null)
+      for(Customer owner : assetOwner)
+        if (owner.isPrimary())
+          return owner;
+    return null;
   }
 
-  public void setOwnedBy(Customer ownedBy) {
-    this.assetOwner = ownedBy;
+  public void addOwner(Customer owner) {
+    if (assetOwner == null)
+      assetOwner = new ArrayList<>();
+    this.assetOwner.add(owner);
+  }
+
+  public void removeOwner(String owner) {
+    if (assetOwner == null)
+      return;
+    this.assetOwner.removeIf(obj -> obj.equals(owner));
   }
 
   public Location getLocation() {
@@ -58,14 +77,6 @@ public class Asset extends BaseMasterEntity implements java.io.Serializable {
     this.location = location;
   }
 
-  public Customer getOwner() {
-    return assetOwner;
-  }
-
-  public void setOwner(Customer owner) {
-    this.assetOwner = owner;
-  }
-
   public Set<Amenity> getAmenities() {
     return amenities;
   }
@@ -74,17 +85,52 @@ public class Asset extends BaseMasterEntity implements java.io.Serializable {
     this.amenities = amenities;
   }
 
-  public void setServices(List<AssetBasedService> services) {
-    // TODO Auto-generated method stub
-
-  }
-
   public AssetType getType() {
-    return this.getType();
+    return this.type;
   }
 
   public void setType(AssetType type) {
     this.type = type;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public List<Customer> getAssetOwner() {
+    return assetOwner;
+  }
+
+  public void setAssetOwner(List<Customer> assetOwner) {
+    this.assetOwner = assetOwner;
+  }
+
+  public List<String> getImagePaths() {
+    return imagePaths;
+  }
+
+  public void setImagePaths(List<String> imagePaths) {
+    this.imagePaths = imagePaths;
+  }
+
+  public String getBackgroundImage() {
+    return backgroundImage;
+  }
+
+  public void setBackgroundImage(String backgroundImage) {
+    this.backgroundImage = backgroundImage;
+  }
+
+  public void setParent(Asset parent) {
+    this.belongsTo = parent;
+  }
+  
+  public Asset getParent() {
+    return this.belongsTo;
   }
 
 }

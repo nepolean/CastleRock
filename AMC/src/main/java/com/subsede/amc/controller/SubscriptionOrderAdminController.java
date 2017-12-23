@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.subsede.amc.controller.pojo.UserDecision;
+import com.subsede.amc.controller.dto.UserDecision;
 import com.subsede.amc.model.UserData;
 import com.subsede.amc.model.job.AbstractJob;
 import com.subsede.amc.model.quote.QEvents;

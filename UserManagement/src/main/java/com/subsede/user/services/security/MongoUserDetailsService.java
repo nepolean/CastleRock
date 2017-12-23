@@ -22,66 +22,71 @@ import com.subsede.user.repository.user.UserRepository;
 @Component
 public class MongoUserDetailsService implements UserDetailsService {
 
-	@Autowired
-	private UserRepository<com.subsede.user.model.user.User> userRepository;
+  @Autowired
+  private UserRepository<com.subsede.user.model.user.User> userRepository;
 
-	@Autowired
-	private LoginAttemptService loginAttemptService;
-	
-    /*@Autowired
-    private HttpServletRequest request;*/
+  @Autowired
+  private LoginAttemptService loginAttemptService;
 
-    @Bean public RequestContextListener requestContextListener(){
-        return new RequestContextListener();
-    } 
-    
-	private org.springframework.security.core.userdetails.User userdetails;
+  /*
+   * @Autowired
+   * private HttpServletRequest request;
+   */
 
-	public UserDetails loadUserByUsername(String username) {
+  @Bean
+  public RequestContextListener requestContextListener() {
+    return new RequestContextListener();
+  }
 
-//		String ip = getClientIP();
-		com.subsede.user.model.user.User user = getUserDetail(username);
-		if (loginAttemptService.isBlocked(username)) {
-			if(user != null) {
-				user.setAccountLocked(true);
-				userRepository.save(user);
-				loginAttemptService.removeUserFromCache(username);
-			}
-			throw new LockedException("User is blocked");
-		}
-		
-		if(user == null)
-			throw new BadCredentialsException("Bad credentials");
+  private org.springframework.security.core.userdetails.User userdetails;
 
-		System.out.println(username);
-		System.out.println(user.getPassword());
-		System.out.println(user.getUsername());
-		System.out.println(user.getRoles());
+  public UserDetails loadUserByUsername(String username) {
 
-		userdetails = new User(user.getUsername(), user.getPassword(), user.isEnabled(), !user.isAccountExpired(),
-				!user.isPasswordExpired(), !user.isAccountLocked(), getAuthorities(user.getRoles()));
-		return userdetails;
-	}
+    // String ip = getClientIP();
+    com.subsede.user.model.user.User user = getUserDetail(username);
+    if (loginAttemptService.isBlocked(username)) {
+      if (user != null) {
+        user.setAccountLocked(true);
+        userRepository.save(user);
+        loginAttemptService.removeUserFromCache(username);
+      }
+      throw new LockedException("User is blocked");
+    }
 
-	public List<GrantedAuthority> getAuthorities(Set<Role> roles) {
-		List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
-		for (Role role : roles) {
-			authList.add(new SimpleGrantedAuthority("ROLE_" + role.getName()));
-		}
-		return authList;
-	}
+    if (user == null)
+      throw new BadCredentialsException("Bad credentials");
 
-	public com.subsede.user.model.user.User getUserDetail(String username) {
-		com.subsede.user.model.user.User user = userRepository.findByUsername(username);
-		return user;
-	}
+    System.out.println(username);
+    System.out.println(user.getPassword());
+    System.out.println(user.getUsername());
+    System.out.println(user.getRoles());
 
-	/*private String getClientIP() {
-		String xfHeader = request.getHeader("X-Forwarded-For");
-		if (xfHeader == null) {
-			return request.getRemoteAddr();
-		}
-		return xfHeader.split(",")[0];
-	}*/
+    userdetails = new User(user.getUsername(), user.getPassword(), user.isEnabled(), !user.isAccountExpired(),
+        !user.isPasswordExpired(), !user.isAccountLocked(), getAuthorities(user.getRoles()));
+    return userdetails;
+  }
+
+  public List<GrantedAuthority> getAuthorities(Set<Role> roles) {
+    List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
+    for (Role role : roles) {
+      authList.add(new SimpleGrantedAuthority("ROLE_" + role.getName()));
+    }
+    return authList;
+  }
+
+  public com.subsede.user.model.user.User getUserDetail(String username) {
+    com.subsede.user.model.user.User user = userRepository.findByUsername(username);
+    return user;
+  }
+
+  /*
+   * private String getClientIP() {
+   * String xfHeader = request.getHeader("X-Forwarded-For");
+   * if (xfHeader == null) {
+   * return request.getRemoteAddr();
+   * }
+   * return xfHeader.split(",")[0];
+   * }
+   */
 
 }

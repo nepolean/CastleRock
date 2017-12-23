@@ -8,6 +8,7 @@ import com.subsede.user.model.user.User;
 public class Customer extends User {
 
   private String address;
+  private boolean isPrimary;
 
   public Customer() {
     super.setUserType("CUSTOMER");
@@ -30,8 +31,16 @@ public class Customer extends User {
   @Override
   public String toString() {
     return String.format(
-        "Customer[ username='%s', password='%s, address=%s']",
-        this.getUsername(), this.getPassword(), this.getAddress());
+        "Customer[username='%s', password='%s', address='%s', email='%s']",
+        this.getUsername(), this.getPassword(), this.getAddress(), this.getEmail());
+  }
+
+  public void setPrimary() {
+    this.isPrimary = true;
+  }
+  
+  public boolean isPrimary() {
+    return isPrimary;
   }
 
 }

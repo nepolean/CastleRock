@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.subsede.amc.catalog.model.Category;
-import com.subsede.amc.controller.pojo.UserDecision;
+import com.subsede.amc.controller.dto.UserDecision;
 import com.subsede.amc.model.UserData;
 import com.subsede.amc.model.quote.NewQuoteInput;
 import com.subsede.amc.model.quote.QEvents;
@@ -33,7 +33,7 @@ import com.subsede.amc.model.quote.QStates;
 import com.subsede.amc.model.quote.Quotation;
 import com.subsede.amc.model.quote.QuotationRepository;
 import com.subsede.amc.model.quote.QuotationStateHandler;
-import com.subsede.util.util.SecurityHelper;
+import com.subsede.util.SecurityHelper;
 
 @RestController
 @RequestMapping("/api/v1")

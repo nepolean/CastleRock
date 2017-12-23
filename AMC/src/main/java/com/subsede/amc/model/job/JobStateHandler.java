@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
 import org.springframework.statemachine.StateMachine;
+import org.springframework.statemachine.annotation.WithStateMachine;
 import org.springframework.statemachine.listener.StateMachineListenerAdapter;
 import org.springframework.statemachine.state.State;
 import org.springframework.statemachine.support.DefaultStateMachineContext;
@@ -20,6 +21,7 @@ import org.springframework.statemachine.transition.Transition;
 import org.springframework.stereotype.Component;
 
 @Component
+@WithStateMachine(name = "JobFlow")
 public class JobStateHandler extends LifecycleObjectSupport {
 
   private static final Logger logger = LoggerFactory.getLogger(JobStateHandler.class);
@@ -29,18 +31,18 @@ public class JobStateHandler extends LifecycleObjectSupport {
   private JobActionHandler jobActionHandler;
 
   @Autowired
-  public void setStateMachine(StateMachine<JobStates, JobEvents> sm) {
+  public void setJobStateMachine(StateMachine<JobStates, JobEvents> sm) {
     this.sm = sm;
   }
 
   @Autowired
-  public void setQuotationActionHandler(JobActionHandler handler) {
+  public void setJobActionHandler(JobActionHandler handler) {
     this.jobActionHandler = handler;
   }
 
   @Override
   public void onInit() {
-    logger.info("INIT - QuotationStateHandler");
+    logger.info("INIT - JobStateHandler");
     addKnownHandlers();
     this.sm.getStateMachineAccessor()
         .doWithAllRegions(

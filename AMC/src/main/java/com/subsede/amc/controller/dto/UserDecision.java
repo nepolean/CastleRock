@@ -1,4 +1,4 @@
-package com.subsede.amc.controller.pojo;
+package com.subsede.amc.controller.dto;
 
 import javax.validation.constraints.NotNull;
 
