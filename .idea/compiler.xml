@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="AMC" />
+        <module name="AMCMaster" />
+        <module name="CommonUtils" />
+        <module name="companyApplication" />
+        <module name="Forum" />
+        <module name="Notification" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="AMC" target="1.8" />
+      <module name="AMCMaster" target="1.8" />
+      <module name="CommonUtils" target="1.8" />
+      <module name="companyApplication" target="1.8" />
+      <module name="Forum" target="1.8" />
+      <module name="Notification" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
