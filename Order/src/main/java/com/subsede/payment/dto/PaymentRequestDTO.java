@@ -1,4 +1,4 @@
-package com.real.order.dto;
+package com.subsede.payment.dto;
 
 public class PaymentRequestDTO {
   private String paymentRequestId;

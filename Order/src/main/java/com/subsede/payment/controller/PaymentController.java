@@ -1,4 +1,4 @@
-package com.real.order.controller;
+package com.subsede.payment.controller;
 
 import java.security.Principal;
 
@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.real.order.model.Cash;
-import com.real.order.model.Cheque;
-import com.real.order.model.PaymentRequest;
-import com.real.order.repository.PaymentRepository;
-import com.real.order.service.PaymentService;
+import com.subsede.payment.model.Cash;
+import com.subsede.payment.model.Cheque;
+import com.subsede.payment.model.PaymentRequest;
+import com.subsede.payment.repository.PaymentRepository;
+import com.subsede.payment.service.PaymentService;
 
 @RestController
 public class PaymentController {

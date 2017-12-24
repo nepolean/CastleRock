@@ -1,4 +1,4 @@
-package com.real.order.service;
+package com.subsede.payment.service;
 
 public class NotificationService {
   protected void sendNotification() {

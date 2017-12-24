@@ -4,13 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>RealProject</groupId>
-    <artifactId>Order</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <groupId>RealService</groupId>
+    <artifactId>Payment</artifactId>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
-    <name>Order</name>
-    <description>Project to handle the orders</description>
+    <name>Payment</name>
+    <description>Project to handle the Payment</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>

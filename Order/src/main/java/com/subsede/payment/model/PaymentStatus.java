@@ -1,4 +1,4 @@
-package com.real.order.model;
+package com.subsede.payment.model;
 
 
 public enum PaymentStatus {

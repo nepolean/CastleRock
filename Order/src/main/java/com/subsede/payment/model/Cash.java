@@ -1,4 +1,4 @@
-package com.real.order.model;
+package com.subsede.payment.model;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
