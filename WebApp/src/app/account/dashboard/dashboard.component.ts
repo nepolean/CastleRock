@@ -7,16 +7,26 @@ import { Router } from '@angular/router';
   templateUrl: './dashboard.component.html'
 })
 export class DashboardComponent implements OnInit {
-
+  private propertyName:string='';
   constructor(
       private router: Router) {
   }
 
   ngOnInit(): void {
+    let propName=localStorage.getItem('appType');
+    if(propName==null || propName==undefined)
+    {
+      localStorage.setItem('appType','Purva Supreme');
+    }
   }
 
   private goToLink(link: any): void {
     this.router.navigate([link]);
   }
 
+  private chooseProerty(name: any): void {
+    this.propertyName=name;
+    localStorage.setItem('appType',name);
+    this.router.navigate(['/dashboard/service',name]);
+  }
 }

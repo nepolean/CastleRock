@@ -18,7 +18,7 @@ html {
 body {
   background: #fff;
   font-family: 'Open Sans', sans-serif;
-  color: #000;
+  color: #4F6DAF;
   line-height: 22px;
   margin: 0 0 70px;
 }
@@ -55,7 +55,7 @@ h4{
 }
 
 a {
-  color: #c52d2f;
+  color: #4F6DAF;
   -webkit-transition: color 300ms, background-color 300ms;
   -moz-transition: color 300ms, background-color 300ms;
   -o-transition:  color 300ms, background-color 300ms;
@@ -74,16 +74,15 @@ hr {
 .black-line {
     height: 2px;
     border: 0;
-    border-top: 2px solid #000;
+    border-top: 2px solid #4F6DAF;
 }
 
 .btn-primary {
   padding: 8px 20px;
-  background: #f4c20d;
-  color: #000;
+  background: #4F6DAF;
+  color: #FFFFFF;
   border-radius: 4px;
   border:none;
-  margin-top: 10px;
 }
 
 
@@ -91,6 +90,7 @@ hr {
 .btn-primary:focus{
   outline: none;
   box-shadow: none;
+  background: #1B3977;
 } 
 
 .btn-transparent {
@@ -105,19 +105,19 @@ hr {
 
 .btn-primary-login {
     color: #fff;
-    background-color: #000;
-    border-color: #000;
+    background-color: #4F6DAF;
+    border-color: #4F6DAF;
     margin-top: 0px;
     padding: 10px 16px;
 }
 
 .btn-primary-login:hover {
-    color: #f4c20d;
+    color: #1B3977;
 }
 
 a:hover,
 a:focus {
-  color: #111;
+  color: #4F6DAF;
   text-decoration: none;
   outline: none;
 }
@@ -218,7 +218,7 @@ body > section {
 
 .top-bar {
   padding: 10px 0;
-  background: #191919;
+  background: #4F6DAF;
   border-bottom: 1px solid #222;
   line-height: 28px;
 }
@@ -299,7 +299,7 @@ input.search-form:hover {
 .navbar {
   border-radius: 0;
   margin-bottom: 0;
-  background: #151515;
+  background: #4F6DAF;
   padding: 15px 0;
   padding-bottom: 0;
 }
@@ -355,12 +355,12 @@ input.search-form:hover {
 .navbar-inverse .navbar-nav > .open > a:hover,
 .navbar-inverse .navbar-nav > .open > a:focus {
   color: #fff;
-  border-bottom: solid #f4c20d;
+  border-bottom: solid #fff;
   background-color: transparent;
 }
 
 .navbar-inverse .navbar-nav .dropdown-menu {
-  background-color: rgba(0,0,0,.85);
+  background-color: rgba(79, 109, 175, 1);
   -webkit-box-shadow: 0 3px 8px rgba(0, 0, 0, 0.125);
   -moz-box-shadow: 0 3px 8px rgba(0, 0, 0, 0.125);
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.125);
@@ -500,7 +500,7 @@ input.search-form:hover {
 
 #main-slider .prev:hover,
 #main-slider .next:hover {
-  background-color: #000;
+  background-color: #4F6DAF;
 }
 
 #main-slider .prev {
@@ -525,7 +525,7 @@ input.search-form:hover {
   width: 24px;
   height: 24px;
   border-radius: 100%;
-  background: rgba(0, 0, 0, 0);
+  background: rgba(79, 109, 175, 1);
   border: 1px solid #FFF;
   left: -3px;
   top: -3px;
@@ -709,12 +709,12 @@ input.search-form:hover {
 
 #services .lead,
 #services h2{
-  color: #000;
+  color: #4F6DAF;
 }
 
 .services-wrap {
   padding: 40px 30px;
-  background: #000;
+  background: #4F6DAF;
   border-radius: 4px;
   margin: 0 0 40px;
   color: #aaa;
@@ -874,7 +874,7 @@ input.search-form:hover {
 }
 
 .panel-heading.active{
-  background: #c52d2f;
+  background: #4F6DAF;
 }
 
 .panel-heading.active .panel-title>a{
@@ -892,12 +892,12 @@ a.accordion-toggle  i{
 }
 
 .panel-heading.active a.accordion-toggle i{
-  background: #c52d2f;
+  background: #4F6DAF;
   color: #fff;
 }
 
 .panel-heading.active a.accordion-toggle.collapsed i{
-  background: #c52d2f;
+  background: #4F6DAF;
   color: #fff;
 }
 
@@ -939,7 +939,7 @@ a.accordion-toggle  i{
 .nav-tabs>li.active>a:focus {
   border: 0;
   color:#fff;
-  background: #1f1f20;
+  background: #647EB5;
   position: relative;
 }
 
@@ -949,7 +949,7 @@ a.accordion-toggle  i{
   width: auto;
   height: auto;
   border-style:solid;
-  border-color: transparent transparent transparent #1f1f20;
+  border-color: transparent transparent transparent #647EB5;
   border-width: 25px 22px;
   right: -44px;
   top:0;
@@ -1040,18 +1040,18 @@ a.accordion-toggle  i{
   font-size: 40px;
   line-height: 60px;
   color: #fff;
-  background: #000;
+  background: #4F6DAF;
   text-align: center;
   border-radius: 10px;
 }
 
 .contact-info h2{
   margin-top: 0;
-  color: #000;
+  color: #4F6DAF;
 }
 
 .contact-info{
-  color:#000;
+  color:#4F6DAF;
 }
 
 /*************************
@@ -2071,7 +2071,7 @@ textarea#message{
 }
 
 .widget h3 {
-  color: #000;
+  color: #4F6DAF;
   text-transform: uppercase;
   margin-bottom: 20px;
 }
@@ -2301,8 +2301,8 @@ ul.pagination > li > a i{
 
 ul.pagination > li.active > a, 
 ul.pagination > li:hover > a {
-  background-color: #c52d2f !important;
-  border-color: #c52d2f !important;
+  background-color: #1B3977 !important;
+  border-color: #1B3977 !important;
   color: #fff;
 }
 
@@ -2570,7 +2570,7 @@ shortcodes page css
 ********* Footer ******
 ************************/
 #bottom {
-  background: #000;
+  background: #4F6DAF;
   border-bottom: 5px solid #f4c20d;
   font-size: 14px;
 }
@@ -2610,7 +2610,7 @@ shortcodes page css
   padding-top: 30px;
   padding-bottom: 30px;
   color: #fff;
-  background: #000;
+  background: #4F6DAF;
   width: 100%;
   position: absolute;
   left: 0;

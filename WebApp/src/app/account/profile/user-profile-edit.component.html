@@ -13,7 +13,7 @@
 				<div class="panel-body">
 					<form role="form" #profileForm="ngForm" (ngSubmit)="onSubmit()">
 						<span class="form-inline pull-right">
-							<button type="submit" class="btn btn-danger" [disabled]="!profileForm.form.valid || response.flags.loading">
+							<button type="submit" class="btn btn-primary" [disabled]="!profileForm.form.valid || response.flags.loading">
 								<i class="fa fa-save" style="padding-right: 5px"></i>Save Profile
 							</button>
 						</span>

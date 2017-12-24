@@ -1,0 +1,31 @@
+<div class="dashboard-widget">
+	<app-account-utility-bill-begin></app-account-utility-bill-begin>
+    
+    <div class="dashboard-widget-content">
+		
+			<div class="panel-collapse">
+				<div class="panel-body">
+                        <div class="form-group row ">
+                                <div for="firstName" class="col-sm-4 control-label"><input type="file" class="filestyle" data-btnClass="btn-primary"></div>
+                                
+                       </div>
+					<div class="form-group row ">
+                        <label for="firstName" class="col-sm-2 control-label">Amount</label>
+                        <div class="col-sm-5">
+                            <input type="number" class="form-control" id="amount" name="amount"
+                                class="form-control" placeholder="Amount"
+                                required maxlength="31"
+                                [(ngModel)]="payment">
+                            </div>
+                    </div>
+                    <div class="form-group row ">
+                        <div class="col-sm-2">
+                            <a class="btn btn-primary" routerLink="/dashboard/payment"  href="#">Pay</a>
+                       </div>
+                        
+                    </div>
+				</div>
+			</div>
+		
+	</div>
+</div>

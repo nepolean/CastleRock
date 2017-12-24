@@ -26,6 +26,10 @@
 							<span class="fa fa-group fa-lg"></span>
 							<span class="dashboard-tile-title">Community</span>
 						</li>
+						<li [attr.class]="router.url.indexOf('/dashboard/cctv') != -1 ? 'active' : ''" (click)="goToLink('/dashboard/cctv')">
+							<span class="fa fa-video-camera fa-lg"></span>
+							<span class="dashboard-tile-title">CC TV</span>
+						</li>
 						<li [attr.class]="router.url.indexOf('/dashboard/payment-pending') != -1 ? 'active' : ''" (click)="goToLink('/dashboard/payment-pending')">
 							<span class="fa fa-money fa-lg"></span>
 							<span class="dashboard-tile-title">Payments</span>
@@ -33,6 +37,10 @@
 						<li [attr.class]="router.url.indexOf('/dashboard/ticket') != -1 ? 'active' : ''" (click)="goToLink('/dashboard/ticket')">
 							<span class="fa fa-life-ring fa-lg"></span>
 							<span class="dashboard-tile-title">Help Center</span>
+						</li>
+						<li [attr.class]="router.url.indexOf('/dashboard/utility-bill') != -1 ? 'active' : ''" (click)="goToLink('/dashboard/utility-bill')">
+							<span class="fa fa-file fa-lg"></span>
+							<span class="dashboard-tile-title">Utility bill</span>
 						</li>
 					</ul>
 				</div>

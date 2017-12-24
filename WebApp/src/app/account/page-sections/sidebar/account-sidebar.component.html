@@ -57,6 +57,12 @@
 				<span class="sidebar-sub-icon glyphicon fa fa-info fa-lg"></span>
 			</a>
 		</li>
+		<li>
+			<a [attr.class]="router.url.indexOf('/dashboard/cctv') != -1 ? 'active' : ''" routerLink="/dashboard/cctv" title="CC Tv">
+				<span style="float: left">CC Tv</span>
+				<span class="sidebar-sub-icon glyphicon fa fa-video-camera fa-lg"></span>
+			</a>
+		</li>
 	</ul>
 </div>
 <!--/#Sidebar -->

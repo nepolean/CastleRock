@@ -1,13 +1,29 @@
 <div class="row">
 	<div class="col-xs-12">
-		<div>
+		<div *ngIf="propertyName=='' || propertyName=='Purva Supreme'">
 			<!--<h1 class="dashboard-heading">{{profile.firstName}} {{profile.middleName}} {{profile.lastName}}</h1>
 			<span style="margin-left: 2px;">Email: {{profile.email}}</span>
 			<br>
 			<span style="margin-left: 2px; text-align: justify">Phone: +919945040191 </span>-->
-			<h1 class="dashboard-heading">412 Purva Supreme</h1>
+			<h1 class="dashboard-heading">412 Purva Supreme (Apartment)</h1>
 			<span style="margin-left: 2px;">#412, Purva Supreme, Thimaiah cross, 2nd Main, RMV extension, Bangalore-89</span>
 		</div>
+		<div *ngIf="propertyName=='Sampige Enclave'">
+				<!--<h1 class="dashboard-heading">{{profile.firstName}} {{profile.middleName}} {{profile.lastName}}</h1>
+				<span style="margin-left: 2px;">Email: {{profile.email}}</span>
+				<br>
+				<span style="margin-left: 2px; text-align: justify">Phone: +919945040191 </span>-->
+				<h1 class="dashboard-heading">59454 Sampige Supreme (Layout)</h1>
+				<span style="margin-left: 2px;">#412, Sampige Supreme, Gayathri cross, 8nd Main, Near school, Bangalore-89</span>
+		</div>
+		<div *ngIf="propertyName=='Ramaiah Enclave'">
+				<!--<h1 class="dashboard-heading">{{profile.firstName}} {{profile.middleName}} {{profile.lastName}}</h1>
+				<span style="margin-left: 2px;">Email: {{profile.email}}</span>
+				<br>
+				<span style="margin-left: 2px; text-align: justify">Phone: +919945040191 </span>-->
+				<h1 class="dashboard-heading">201 Ramaiah Mension (Flat)</h1>
+				<span style="margin-left: 2px;">#201, Ramaiah Mension, Mahadayi cross, 1st Main, Mg Road, Bangalore-38</span>
+			</div>
 		<!--<form class="form-inline dashboard-action-form">
 			<a routerLink="/dashboard/profile-edit" class="btn btn-primary" title="Edit Profile"><i class="fa fa-edit fa-lg"></i></a>
 		</form>-->
@@ -19,7 +35,9 @@
 				<ul class="dropdown-menu">
 					<li><a><i class="fa fa-list" style="padding-right: 5px"></i>Choose another property</a></li>
 					<li role="separator" class="divider"></li>
-					<li><a routerlink="/account/dashboard/service"><i class="fa fa-building-o" style="padding-right: 5px"></i>Ramaiah Enclave</a></li>
+					<li><a (click)="chooseProerty('Purva Supreme')"><i class="fa fa-building-o" style="padding-right: 5px"></i>Purva Supreme (Apartment)</a></li>
+					<li><a (click)="chooseProerty('Sampige Enclave')"><i class="fa fa-table" style="padding-right: 5px"></i>Sampige Enclave (Layout)</a></li>
+					<li><a (click)="chooseProerty('Ramaiah Enclave')"><i class="fa fa-home" style="padding-right: 5px"></i>Ramaiah Mension (Flat)</a></li>
 				</ul>
 			</div>
 		</form>					

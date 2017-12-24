@@ -6,12 +6,12 @@ import { AppAuthGuard } from './app-auth-guard.service';
 const routes: Routes = [
   {
     path: 'dashboard',
-    canLoad: [ AppAuthGuard ],
+    //canLoad: [ AppAuthGuard ],
     loadChildren: 'app/account/account.module#AccountModule'
   },
   {
     path: 'admin-dashboard',
-    canLoad: [ AppAuthGuard ],
+   // canLoad: [ AppAuthGuard ],
     loadChildren: 'app/admin-account/admin-account.module#AdminAccountModule'
   },
   {

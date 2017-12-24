@@ -8,8 +8,10 @@ import { ServiceNewComponent } from './service/service-new.component';
 import { ServiceUpcomingComponent } from './service/service-upcoming.component';
 import { ServiceCompletedComponent } from './service/service-completed.component';
 import { ServiceCompletedDetailComponent } from './service/service-completed-detail.component';
+import { CCTVComponent } from './cctv/cctv.component';
 import { CommunityComponent } from './community/community.component';
 import { CommunityMembersComponent } from './community/community-members.component';
+import { CommunityLinkComponent } from './community/communitylink.component';
 import { PaymentComponent } from './payment/payment.component';
 import { PaymentPendingComponent } from './payment/payment-pending.component';
 import { PaymentHistoryComponent } from './payment/payment-history.component';
@@ -23,6 +25,7 @@ import { SubscriptionDetailComponent } from './subscription/subscription-detail.
 import { SubscriptionRenewalComponent } from './subscription/subscription-renewal.component';
 import { UserProfileEditComponent } from './profile/user-profile-edit.component';
 import { UserProfileChangePasswordComponent } from './profile/user-profile-change-password.component';
+import { UtilityBillComponent } from './utilitybill/utility-bill.component';
 import { MessageComponent } from './message/message.component';
 import { TicketBeginAbstractComponent } from './ticket/ticket-begin-abstract.component';
 import { TicketComponent } from './ticket/ticket.component';
@@ -32,7 +35,7 @@ const routes: Routes = [
   {
     path: '',
     component: AccountComponent,
-    canActivate: [ AppAuthGuard ],
+    //canActivate: [ AppAuthGuard ],
     children: [        
       {
         path: '',
@@ -58,7 +61,15 @@ const routes: Routes = [
             component: ServiceComponent
           },
           {
+            path: 'service/:name',
+            component: ServiceComponent
+          },
+          {
             path: 'service-new',
+            component: ServiceNewComponent
+          },
+          {
+            path: 'service-new/:name',
             component: ServiceNewComponent
           },
           {
@@ -78,12 +89,20 @@ const routes: Routes = [
             component: MessageComponent
           },
           {
+            path: 'cctv',
+            component: CCTVComponent
+          },
+          {
             path: 'community',
             component: CommunityComponent
           },
           {
             path: 'community-members',
             component: CommunityMembersComponent
+          },
+          {
+            path: 'communitylink',
+            component: CommunityLinkComponent
           },
           {
             path: 'property',
@@ -108,6 +127,10 @@ const routes: Routes = [
           {
             path: 'subscription-new',
             component: SubscriptionNewComponent
+          },
+          {
+            path: 'utility-bill',
+            component: UtilityBillComponent
           }
         ]
       },

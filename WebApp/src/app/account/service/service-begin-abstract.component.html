@@ -33,7 +33,7 @@
 					<a routerLink="/dashboard/service-completed">Completed</a>
 				</li>
 				<li [attr.class]="router.url=='/dashboard/service-new' ? 'active' : ''">
-					<a routerLink="/dashboard/service-new" style="margin-top: 0px">NEW SERVICE</a>
+					<a [routerLink]="['/dashboard/service-new',proertyName]" style="margin-top: 0px">NEW SERVICE</a>
 				</li>
 			</ul>
 		</div>

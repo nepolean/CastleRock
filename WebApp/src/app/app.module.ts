@@ -2,12 +2,14 @@ import { NgModule } from '@angular/core';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
+import { APP_BASE_HREF, Location, LocationStrategy, HashLocationStrategy ,PathLocationStrategy} from '@angular/common';
 import { AppComponent } from './app.component';
 import { NotFoundComponent } from './not-found.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AppCommonModule } from './common/app-common.module';
 import { AppAuthGuard } from './app-auth-guard.service';
 import { AppAuthService } from './app-auth.service';
+
 
 @NgModule({
   imports: [
