@@ -22,9 +22,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.subsede.amc.catalog.model.AMCPackage;
+import com.subsede.amc.catalog.model.BasePackages;
 import com.subsede.amc.catalog.model.BaseService;
 import com.subsede.amc.catalog.model.Coupon;
 import com.subsede.amc.catalog.model.GeneralService;
+import com.subsede.amc.catalog.model.ISubscriptionPackage;
 import com.subsede.amc.catalog.model.OneTimeData;
 import com.subsede.amc.catalog.model.OneTimeMetadata;
 import com.subsede.amc.catalog.model.Service;
@@ -56,7 +58,7 @@ public class AMCAdminController {
   private AmenityRepository amenityRepo;
   private ServiceRepository serviceRepo;
 
-  private PackageRepository packageRepo;
+  private PackageRepository<ISubscriptionPackage> packageRepo;
 
   @Autowired
   public void setGenericFCRUDService(GenericFCRUDService crudService) {
@@ -84,7 +86,7 @@ public class AMCAdminController {
   }
 
   @Autowired
-  public void setPackageRespository(PackageRepository packageRepo) {
+  public void setPackageRespository(PackageRepository<ISubscriptionPackage> packageRepo) {
     this.packageRepo = packageRepo;
   }
 
@@ -268,18 +270,18 @@ public class AMCAdminController {
   /******************* package *****************************/
 
   @RequestMapping(path = "/package", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Page<AMCPackage>> getPackages(Pageable page) {
+  public ResponseEntity<Page<ISubscriptionPackage>> getPackages(Pageable page) {
     logger.info("Get packages");
-    Page<AMCPackage> pkgs = this.packageRepo.findAll(page);
-    return new ResponseEntity<Page<AMCPackage>>(pkgs, HttpStatus.OK);
+    Page<ISubscriptionPackage> pkgs = this.packageRepo.findAll(page);
+    return new ResponseEntity<>(pkgs, HttpStatus.OK);
   }
 
   @RequestMapping(path = "/package/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<AMCPackage> getPackage(@PathVariable String id) {
+  public ResponseEntity<ISubscriptionPackage> getPackage(@PathVariable String id) {
     logger.info("Get package with id {}", id);
-    AMCPackage pkg = this.packageRepo.findOne(id);
+    ISubscriptionPackage pkg = this.packageRepo.findOne(id);
     pkg = Objects.requireNonNull(pkg, "Package with id " + id + " not found.");
-    return new ResponseEntity<AMCPackage>(pkg, HttpStatus.OK);
+    return new ResponseEntity<>(pkg, HttpStatus.OK);
   }
 
   @RequestMapping(path = "/package", method = { RequestMethod.POST,
@@ -292,22 +294,22 @@ public class AMCAdminController {
 
   @RequestMapping(path = "/package/{id}", method = {
       RequestMethod.POST }, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<AMCPackage> setTenureBasedDiscount(
+  public ResponseEntity<ISubscriptionPackage> setTenureBasedDiscount(
       @PathVariable @Validated String id,
       @RequestBody @Validated TenureBasedDiscount discount) {
     logger.info("Set discount for the package with id {}", id);
-    AMCPackage pkg = this.packageRepo.findOne(id);
+    ISubscriptionPackage pkg = this.packageRepo.findOne(id);
     pkg = Objects.requireNonNull(pkg, "Package with id " + id + " not found.");
     pkg.setTenureBasedDisc(discount);
     pkg = this.packageRepo.save(pkg);
-    return new ResponseEntity<AMCPackage>(pkg, HttpStatus.OK);
+    return new ResponseEntity<>(pkg, HttpStatus.OK);
   }
 
   @RequestMapping(path = "/package/enable", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<String> enablePackages(@RequestBody @Validated List<String> packages) {
     logger.info("Enable packages ({})", packages.size());
-    Iterable<AMCPackage> allPackages = this.packageRepo.findAll(packages);
-    for (AMCPackage eachPkg : allPackages)
+    Iterable<ISubscriptionPackage> allPackages = this.packageRepo.findAll(packages);
+    for (ISubscriptionPackage eachPkg : allPackages)
       eachPkg.setActive(true);
     this.packageRepo.save(allPackages);
     return new ResponseEntity<String>("Successfully enabled all the packages.", HttpStatus.OK);
@@ -316,8 +318,8 @@ public class AMCAdminController {
   @RequestMapping(path = "/package/disable", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<String> disablePackages(@RequestBody @Validated List<String> packages) {
     logger.info("Disable packages ({})", packages.size());
-    Iterable<AMCPackage> allPackages = this.packageRepo.findAll(packages);
-    for (AMCPackage eachPkg : allPackages)
+    Iterable<ISubscriptionPackage> allPackages = this.packageRepo.findAll(packages);
+    for (ISubscriptionPackage eachPkg : allPackages)
       eachPkg.setActive(false);
     this.packageRepo.save(allPackages);
     return new ResponseEntity<String>("Successfully disabled all the packages.", HttpStatus.OK);

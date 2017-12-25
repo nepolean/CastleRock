@@ -55,7 +55,7 @@ public class UserController {
 	@GetMapping(value = "/home")
 	public ModelAndView goHome(HttpServletRequest request) {
 		if(request.isUserInRole("ROLE_USER"))
-			return new ModelAndView("redirect:/account/dashboard/");
+			return new ModelAndView("redirect:http://localhost:9090/account/dashboard/");
 		if(request.isUserInRole("ROLE_ADMIN"))
 			return new ModelAndView("redirect:/account/admin-dashboard/");
 		return new ModelAndView("redirect:/login");

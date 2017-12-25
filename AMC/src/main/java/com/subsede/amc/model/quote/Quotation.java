@@ -2,6 +2,7 @@ package com.subsede.amc.model.quote;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -22,7 +23,9 @@ import org.springframework.stereotype.Component;
 import com.subsede.amc.catalog.model.AMCPackage;
 import com.subsede.amc.catalog.model.Coupon;
 import com.subsede.amc.catalog.model.Product;
+import com.subsede.amc.catalog.model.Service;
 import com.subsede.amc.catalog.model.SubscriptionData;
+import com.subsede.amc.catalog.model.ISubscriptionPackage;
 import com.subsede.amc.catalog.model.Tax;
 import com.subsede.amc.catalog.model.TenureBasedDiscount;
 import com.subsede.amc.catalog.model.UserInput;
@@ -83,7 +86,7 @@ public class Quotation {
 
   private QStates currentState;
 
-  private Set<Product> selectedItems;
+  private Set<ISubscriptionPackage> selectedItems;
 
   private boolean userAccepted;
 
@@ -128,10 +131,10 @@ public class Quotation {
     this.id = id;
   }
 
-  public void addProducts(Set<Product> products) {
+  public void addProducts(Set<ISubscriptionPackage> products) {
     products = Objects.requireNonNull(products, "Product data cannot be null");
     StringBuilder sb = new StringBuilder();
-    for (Product product : products)
+    for (ISubscriptionPackage product : products)
       try {
         this.addProduct(product);
       } catch (IllegalArgumentException ex) {
@@ -142,14 +145,14 @@ public class Quotation {
       throw new IllegalArgumentException("The following products are not included.\n" + sb.toString());
   }
 
-  public void addProduct(Product product) {
+  public void addProduct(ISubscriptionPackage product) {
     product = Objects.requireNonNull(product, "Product cannot be null");
-    if (!product.canSubscribe()) {
+/*    if (!product.canSubscribe()) {
       String msg = String.format("Product, {}, does not support subscription", product.getName());
       if (logger.isErrorEnabled())
         logger.error(msg);
       throw new IllegalArgumentException(msg);
-    }
+    }*/
     getSelectedItems().add(product);
   }
 
@@ -232,7 +235,7 @@ public class Quotation {
   private void calculateTotalPrice(UserInput<String, Object> input) {
     double totalAmount = 0.0;
     double totalDiscount = 0.0;
-    for (Product product : getSelectedItems()) {
+    for (ISubscriptionPackage product : getSelectedItems()) {
       SubscriptionData subsData = product.fetchSubscriptionData(input);
       if (logger.isDebugEnabled())
         logger.debug("Product {}, subscription data {} ", product.getName(), subsData);
@@ -252,20 +255,17 @@ public class Quotation {
     this.discount = totalDiscount;
   }
 
-  private double getDiscountPct(Product product) {
+  private double getDiscountPct(ISubscriptionPackage product) {
     double discountPct = 0.0;
-    if (product.getType().equals(AMCPackage.TYPE)) {
+    if (logger.isDebugEnabled())
+      logger.debug("Calculating discount");
+    TenureBasedDiscount disc = product.getTenureBasedDisc();
+    if (logger.isDebugEnabled())
+      logger.debug("{}", disc);
+    if (Objects.nonNull(disc)) {
+      discountPct = disc.getDiscountFor(this.data.getTenure());
       if (logger.isDebugEnabled())
-        logger.debug("Calculating discount");
-      AMCPackage pkg = (AMCPackage) product;
-      TenureBasedDiscount disc = pkg.getTenureBasedDisc();
-      if (logger.isDebugEnabled())
-        logger.debug("{}", disc);
-      if (Objects.nonNull(disc)) {
-        discountPct = disc.getDiscountFor(this.data.getTenure());
-        if (logger.isDebugEnabled())
-          logger.debug("Requested tenure {}, Disc pct {}", this.data.getTenure(), discountPct);
-      }
+        logger.debug("Requested tenure {}, Disc pct {}", this.data.getTenure(), discountPct);
     }
     return discountPct;
   }
@@ -420,13 +420,21 @@ public class Quotation {
 
   }
 
-  public Set<Product> getSelectedItems() {
-    selectedItems = (Objects.isNull(selectedItems) ? new HashSet<Product>() : selectedItems);
+  public Set<ISubscriptionPackage> getSelectedItems() {
+    selectedItems = (Objects.isNull(selectedItems) ? new HashSet<ISubscriptionPackage>() : selectedItems);
     return selectedItems;
   }
 
-  public void setSelectedItems(Set<Product> selectedItems) {
+  public void setSelectedItems(Set<ISubscriptionPackage> selectedItems) {
     this.selectedItems = Objects.requireNonNull(selectedItems, "Choose at least one service");
+  }
+  
+  public Set<Service> getSelectedServices() {
+    Set<Service> services = Collections.emptySet();
+    for (ISubscriptionPackage pkg : getSelectedItems()) {
+      services.addAll(pkg.getServices());
+    }
+    return services;
   }
 
   public UserData getUserData() {

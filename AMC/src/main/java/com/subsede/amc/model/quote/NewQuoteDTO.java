@@ -1,6 +1,8 @@
 package com.subsede.amc.model.quote;
 
-public class NewQuoteInput implements java.io.Serializable {
+import java.util.List;
+
+public class NewQuoteDTO implements java.io.Serializable {
 
   /**
    * Default serial version UID
@@ -8,14 +10,14 @@ public class NewQuoteInput implements java.io.Serializable {
   private static final long serialVersionUID = 1L;
   private String userId;
   private String assetId;
-  private String[] packageID;
-  private String[] serviceID;
+  private List<String> packages;
+  //private String[] serviceID;
 
-  public NewQuoteInput() {
+  public NewQuoteDTO() {
 
   }
 
-  public NewQuoteInput(String userId, String assetId) {
+  public NewQuoteDTO(String userId, String assetId) {
     super();
     this.userId = userId;
     this.assetId = assetId;
@@ -37,25 +39,25 @@ public class NewQuoteInput implements java.io.Serializable {
     this.assetId = assetId;
   }
 
-  public String[] getPackageID() {
-    return packageID;
+  public List<String> getPackageID() {
+    return packages;
   }
 
-  public void setPackageID(String[] packageID) {
-    this.packageID = packageID;
+  public void setPackageID(List<String> packages) {
+    this.packages = packages;
   }
 
-  public String[] getServiceID() {
+/*  public String[] getServiceID() {
     return serviceID;
   }
 
   public void setServiceID(String[] serviceID) {
     this.serviceID = serviceID;
-  }
+  }*/
 
   @Override
   public String toString() {
-    return "NewQuoteInput [mobileNo=" + userId + ", assetId=" + assetId + "]";
+    return "NewQuoteDTO [mobileNo=" + userId + ", assetId=" + assetId + "]";
   }
 
 }

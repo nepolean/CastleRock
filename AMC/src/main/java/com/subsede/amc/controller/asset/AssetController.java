@@ -27,7 +27,6 @@ import com.subsede.amc.model.Asset;
 import com.subsede.amc.model.Flat;
 import com.subsede.amc.repository.AssetRepository;
 import com.subsede.amc.service.AssetService;
-import com.subsede.amc.service.IAssetService;
 import com.subsede.user.model.user.UserRegistrationDTO;
 import com.subsede.util.SecurityHelper;
 import com.subsede.util.controller.FileController;

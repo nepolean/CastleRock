@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -57,8 +58,8 @@ public class SubscriptionOrderAdminController extends SubscriptionOrderControlle
     this.jobScheduler = jobScheduler;
   }
 
-  @RequestMapping(path = "/quotation/{id}/regenerate", method = RequestMethod.POST, consumes = "application/json")
-  public void reGenerateQuotation(@PathVariable String id, @RequestBody @Validated UserData userData) throws Exception {
+  @PostMapping(path = "/quotation/{id}/regenerate")
+  public void regenerateQuotation(@PathVariable String id, @RequestBody @Validated UserData userData) throws Exception {
     logger.info("Genereate quotation requested for {}", id);
     userData = Objects.requireNonNull(userData, "UserData cannot be null");
     Map<String, Object> data = new HashMap<String, Object>();
@@ -90,7 +91,7 @@ public class SubscriptionOrderAdminController extends SubscriptionOrderControlle
    ****************************************************************************************************/
   //@formatter:on
 
-  @RequestMapping(path = "quotation/{id}/subscription", method = RequestMethod.POST, consumes = "application/json")
+  @PostMapping(path = "/quotation/{id}/subscription")
   public ResponseEntity<String> generateSubscriptionFromQuotation(@PathVariable @Validated String id) throws Exception {
     logger.info("Create quotation manually from paid quotation {}", id);
     Subscription subscription = this.subscriptionRepository.findByQuotationId(id);
@@ -113,7 +114,7 @@ public class SubscriptionOrderAdminController extends SubscriptionOrderControlle
     return new ResponseEntity<String>("Subscription is successful.", HttpStatus.OK);
   }
 
-  @RequestMapping(path = "quotation/{id}/paid", method = RequestMethod.POST, consumes = "application/json")
+  @PostMapping(path = "/quotation/{id}/paid")
   public ResponseEntity<String> handlePaymentSusccess(@PathVariable @Validated String id) throws Exception {
     logger.info("Handle missing payment authorization for quotation {} ", id);
     Quotation userQuotation = this.getQuotation(id);
@@ -123,7 +124,7 @@ public class SubscriptionOrderAdminController extends SubscriptionOrderControlle
     return new ResponseEntity<String>("Subscription is successful.", HttpStatus.OK);
   }
 
-  @RequestMapping(path = "subscription/{id}/paid", method = RequestMethod.POST, consumes = "application/json")
+  @PostMapping(path = "/subscription/{id}/paid")
   public ResponseEntity<String> scheduleJobsFromSubscription(@PathVariable @Validated String id) {
     logger.info("Schedule missing jobs for subscription {}", id);
     Subscription userSubscription = getSubscription(id);
@@ -137,7 +138,7 @@ public class SubscriptionOrderAdminController extends SubscriptionOrderControlle
         .findBySourceTypeAndSourceId(userSubscription.getClass().getName(), userSubscription.getId());
     String response = "";
     if (scheduledJobs.isEmpty()) {
-      logger.info("The jobs are created yet. Create one now");
+      logger.info("The jobs are not created yet. Create one now");
       this.jobScheduler.scheduleJob(userSubscription);
       response = "Jobs have been created successfully.";
     } else {

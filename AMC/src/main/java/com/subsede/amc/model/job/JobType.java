@@ -5,7 +5,7 @@ import com.subsede.user.model.user.User;
 
 public class JobType {
 
-  public static AbstractJob getJob(Service service, JobMetadata jobMetadata, User customer) {
+  public static AbstractJob getJob(Service service, ServiceMetadata jobMetadata, User customer) {
     switch (service.getCategory().getJobType()) {
     case ASSET:
       AssetMetadata4Job metadata = (AssetMetadata4Job) jobMetadata;
@@ -13,7 +13,7 @@ public class JobType {
           service.getName(),
           metadata.getAsset(),
           service.getServiceType(),
-          metadata.getName(),
+          metadata.getSource(),
           metadata.getUniqueId());
     case LEGAL:
       LegalMetadata4Job legalData = (LegalMetadata4Job) jobMetadata;
@@ -21,15 +21,16 @@ public class JobType {
           service.getName(),
           legalData.getDocuments(),
           service.getServiceType(),
-          "LEGAL",
-          "1",
+          legalData.getSource(),
+          legalData.getUniqueId(),
           customer);
     case PAYMENT:
+      PaymentMetadata4Job pmtData = (PaymentMetadata4Job) jobMetadata;
       return new BillPaymentJob(
           service.getName(),
           service.getServiceType(),
-          "PAYMENT",
-          "1",
+          pmtData.getSource(),
+          pmtData.getUniqueId(),
           customer);
     default:
       return null;

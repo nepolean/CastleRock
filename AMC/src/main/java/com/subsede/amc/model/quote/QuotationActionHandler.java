@@ -7,12 +7,14 @@ import static com.subsede.amc.model.quote.QuotationConstants.USER_DATA_KEY;
 import static com.subsede.amc.model.quote.QuotationConstants.USER_KEY;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,12 +25,10 @@ import org.springframework.statemachine.state.State;
 import org.springframework.statemachine.transition.Transition;
 import org.springframework.stereotype.Component;
 
-import com.subsede.amc.catalog.model.AMCPackage;
+import com.subsede.amc.catalog.model.ISubscriptionPackage;
 import com.subsede.amc.catalog.model.Product;
-import com.subsede.amc.catalog.model.Service;
 import com.subsede.amc.catalog.model.Tax;
 import com.subsede.amc.catalog.repository.PackageRepository;
-import com.subsede.amc.catalog.repository.ServiceRepository;
 import com.subsede.amc.catalog.repository.TaxRepository;
 import com.subsede.amc.model.Asset;
 import com.subsede.amc.model.EventHistory;
@@ -37,6 +37,7 @@ import com.subsede.amc.model.subscription.Subscription;
 import com.subsede.amc.model.subscription.SubscriptionJobScheduler;
 import com.subsede.amc.repository.AssetRepository;
 import com.subsede.amc.repository.SubscriptionRepository;
+import com.subsede.user.model.Customer;
 import com.subsede.user.model.user.User;
 import com.subsede.user.repository.user.UserRepository;
 import com.subsede.util.SecurityHelper;
@@ -49,9 +50,8 @@ public class QuotationActionHandler implements QuotationStateChangeListener {
   private QuotationNotificationHandler notificationHandler;
   private SubscriptionJobScheduler subscriptionJobHandler;
   private QuotationRepository quoteRepository;
-  private PackageRepository packageRepository;
-  private ServiceRepository serviceRepository;
-  private UserRepository userRepository;
+  private PackageRepository<ISubscriptionPackage> packageRepository;
+  private UserRepository<Customer> userRepository;
   private AssetRepository assetRepository;
   private TaxRepository taxRepository;
   private SubscriptionRepository subscriptionRepository;
@@ -67,15 +67,13 @@ public class QuotationActionHandler implements QuotationStateChangeListener {
   @Autowired
   public void setQuotationRepository(
       QuotationRepository quoteRepo,
-      PackageRepository packageRepo,
-      ServiceRepository serviceRepo,
-      UserRepository userRepository,
+      PackageRepository<ISubscriptionPackage> packageRepo,
+      UserRepository<Customer> userRepository,
       AssetRepository assetRepository,
       TaxRepository taxRepository,
       SubscriptionRepository subscriptionRepository) {
     this.quoteRepository = quoteRepo;
     this.packageRepository = packageRepo;
-    this.serviceRepository = serviceRepo;
     this.userRepository = userRepository;
     this.assetRepository = assetRepository;
     this.taxRepository = taxRepository;
@@ -281,17 +279,17 @@ public class QuotationActionHandler implements QuotationStateChangeListener {
     customerAsset = Objects.requireNonNull(customerAsset, "Asset with id " + assetId + " not found.");
 
     /* Convert ids to real packages/services */
-    List<Product> allSelectedProducts = new LinkedList<Product>();
-    List<AMCPackage> packages = this.packageRepository.findValidProducts(selectedPackages);
+    Set<ISubscriptionPackage> allSelectedProducts = Collections.emptySet();
+    List<ISubscriptionPackage> packages = this.packageRepository.findValidProducts(selectedPackages);
     if (logger.isDebugEnabled())
       logger.debug("selected product list : {}", packages);
     rejectIfPackagesMismatch(selectedPackages, packages);
     allSelectedProducts.addAll(packages);
-    List<Service> services = this.serviceRepository.findValidServices(selectedServices);
-    if (logger.isDebugEnabled())
-      logger.debug("Selected Services {}", services);
-    rejectIfPackagesMismatch(selectedServices, services);
-    allSelectedProducts.addAll(services);
+    //List<Service> services = this.serviceRepository.findValidServices(selectedServices);
+    //if (logger.isDebugEnabled())
+    //  logger.debug("Selected Services {}", services);
+    //rejectIfPackagesMismatch(selectedServices, services);
+    //allSelectedProducts.addAll(services);
     /* create a new quotation */
     Quotation newQuote = new Quotation(customerAsset, secHelper.getLoggedInUser());
 
@@ -365,7 +363,6 @@ public class QuotationActionHandler implements QuotationStateChangeListener {
     Quotation userQuote = this.getQuoteFromUserInput(userData);
     String comments = (String) userData.get(USER_COMMENTS_KEY);
     comments = Optional.of(comments).orElse("");
-    User loggedInUser = secHelper.getLoggedInUser();
     this.updateHistory(message, userQuote, comments);
     userQuote.setState(targetState);
     this.quoteRepository.save(userQuote);

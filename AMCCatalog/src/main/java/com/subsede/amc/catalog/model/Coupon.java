@@ -85,7 +85,7 @@ public class Coupon extends BaseMasterEntity {
    * BUISINESS LOGIC *
    *****************************/
 
-  public double applyDiscount(AMCPackage pkgs, double totalAmount) throws InvalidCouponException {
+  public double applyDiscount(BasePackages pkgs, double totalAmount) throws InvalidCouponException {
     Date now = new Date();
     if (now.before(validFrom) || now.after(validTo))
       throw new InvalidCouponException("This coupon has expired.");

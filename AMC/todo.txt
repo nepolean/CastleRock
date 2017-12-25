@@ -12,3 +12,7 @@ Scheduler Activities:
   - Notification on about to / expired quotes
   - Notification on pending payment
   - Notification on about to / expired subscriptions
+  
+For tomorrow:
+- when user is deleted from asset, the same is not deleted from user list
+- handle apartment user community

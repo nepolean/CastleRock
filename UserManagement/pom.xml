@@ -97,7 +97,7 @@
 			        <classifier>exec</classifier>
 			      </configuration>
 			    </execution>
-          </executions>		        
+        </executions>		        
 			</plugin>
 		</plugins>
 	</build>

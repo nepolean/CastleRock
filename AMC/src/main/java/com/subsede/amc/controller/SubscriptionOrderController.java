@@ -19,15 +19,14 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.subsede.amc.catalog.model.Category;
 import com.subsede.amc.controller.dto.UserDecision;
 import com.subsede.amc.model.UserData;
-import com.subsede.amc.model.quote.NewQuoteInput;
+import com.subsede.amc.model.quote.NewQuoteDTO;
 import com.subsede.amc.model.quote.QEvents;
 import com.subsede.amc.model.quote.QStates;
 import com.subsede.amc.model.quote.Quotation;
@@ -36,7 +35,7 @@ import com.subsede.amc.model.quote.QuotationStateHandler;
 import com.subsede.util.SecurityHelper;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/quote")
 public class SubscriptionOrderController {
 
   private static Logger logger = LoggerFactory.getLogger(SubscriptionOrderController.class);
@@ -60,9 +59,9 @@ public class SubscriptionOrderController {
     this.quotationRepository = quotationRepository;
   }
 
-  @RequestMapping(path = "/quotation", method = RequestMethod.POST, consumes = "application/json")
-  public void createNewSubscription(
-      @RequestBody @Validated NewQuoteInput userInput) throws Exception {
+  @PostMapping("")
+  public void createNewSubscriptionOrder(
+      @RequestBody @Validated NewQuoteDTO userInput) throws Exception {
     logger.info("New quotation requested for {}", userInput);
     Map<String, Object> data = new HashMap<String, Object>();
     data.put(USER_KEY, userInput.getUserId());
@@ -72,11 +71,11 @@ public class SubscriptionOrderController {
     fireEvent(QStates.INITIAL, QEvents.CREATE_QUOTE, data);
   }
 
-  @RequestMapping(path = "/quotation/{id}/generate", method = RequestMethod.POST, consumes = "application/json")
+  @PostMapping(path = "/{id}/generate")
   public void generateQuotation(
       @PathVariable String id,
       @RequestBody @Validated UserData userData) throws Exception {
-    logger.info("Genereate quotation requested for {}", id);
+    logger.info("Genereate quotation requested for quote {}", id);
     userData = Objects.requireNonNull(userData, "UserData cannot be null");
     Map<String, Object> data = new HashMap<String, Object>();
     Quotation userQuotation = this.quotationRepository.findOne(id);
@@ -86,11 +85,11 @@ public class SubscriptionOrderController {
     fireEvent(userQuotation.getState(), QEvents.GENERATE_QUOTE, data);
   }
 
-  @RequestMapping(path = "/quotation/{id}/decision", method = RequestMethod.POST, consumes = "application/json")
+  @PostMapping(path = "/{id}/decision")
   public void acceptOrRejectQuotation(
       @PathVariable String id,
       @RequestBody @Validated UserDecision decision) throws Exception {
-    logger.info("User response provided for {}", id);
+    logger.info("User response provided for quote {}", id);
     decision = Objects.requireNonNull(decision, "Decision cannot be null");
     Map<String, Object> data = new HashMap<String, Object>();
     Quotation userQuotation = this.quotationRepository.findOne(id);
@@ -101,10 +100,11 @@ public class SubscriptionOrderController {
     fireEvent(userQuotation.getState(), event, data);
   }
 
-  @RequestMapping(path = "/quotation/{id}/pay", method = RequestMethod.POST, consumes = "application/json")
+  // this should not be here.. move to payment section.. and payment has to be against the payment request
+  @PostMapping(path = "/{id}/pay")
   public void pay(
       @PathVariable String id) throws Exception {
-    logger.info("Payment proceeded for {}", id);
+    logger.info("Payment requested for quote {}", id);
     Map<String, Object> data = new HashMap<String, Object>();
     Quotation userQuotation = this.quotationRepository.findOne(id);
     userQuotation = Objects.requireNonNull(userQuotation, "Quotation with id " + id + " not found.");
@@ -112,7 +112,7 @@ public class SubscriptionOrderController {
     fireEvent(userQuotation.getState(), QEvents.INITIATE_PAY, data);
   }
 
-  @RequestMapping(path = "/quotation/{id}/renew", method = RequestMethod.POST, consumes = "application/json")
+  @PostMapping(path = "/{id}/renew")
   public void renewQuotation(
       @PathVariable String id) throws Exception {
     logger.info("Renew quotation with id {}", id);
@@ -123,10 +123,6 @@ public class SubscriptionOrderController {
     fireEvent(userQuotation.getState(), QEvents.RENEW, data);
   }
 
-  @RequestMapping(path = "/quotation/test", method = RequestMethod.POST, consumes = "application/json")
-  public void someEnumInput(@RequestBody @Validated Category.AssetServiceType type) {
-    logger.info("Type {}", type);
-  }
 
   protected void fireEvent(QStates source, QEvents event, Object data) throws Exception {
     Message<QEvents> msg = MessageBuilder.withPayload(event)

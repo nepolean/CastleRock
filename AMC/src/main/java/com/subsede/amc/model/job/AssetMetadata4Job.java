@@ -2,17 +2,16 @@ package com.subsede.amc.model.job;
 
 import com.subsede.amc.model.Asset;
 
-public class AssetMetadata4Job implements JobMetadata {
+public class AssetMetadata4Job extends BaseMetadata implements ServiceMetadata {
 
   private Asset asset;
-  private String uniqueId;
-  private String name;
-
-  public AssetMetadata4Job(Asset asset, String uniqueId, String name) {
-    super();
+  public AssetMetadata4Job(Asset asset, String source, String uniqueId) {
+    super(source, uniqueId);
     this.asset = asset;
-    this.uniqueId = uniqueId;
-    this.name = name;
+  }
+
+  public AssetMetadata4Job(Asset userAsset) {
+    this.asset = asset;
   }
 
   public Asset getAsset() {
@@ -21,22 +20,6 @@ public class AssetMetadata4Job implements JobMetadata {
 
   public void setAsset(Asset asset) {
     this.asset = asset;
-  }
-
-  public String getUniqueId() {
-    return uniqueId;
-  }
-
-  public void setUniqueId(String uniqueId) {
-    this.uniqueId = uniqueId;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
   }
 
 }

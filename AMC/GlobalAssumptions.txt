@@ -1,1 +1,3 @@
 That the user has only 1 role.
+That the customers have asset registered for placing orders. 
+>> if to be opened up for outside users, need to relax the asset restriction

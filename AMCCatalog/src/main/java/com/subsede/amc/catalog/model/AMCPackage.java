@@ -1,90 +1,39 @@
 // There is a major change introduced today (30-APR-2017). Basically, got rid of PackageScheme.
 package com.subsede.amc.catalog.model;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
-import javax.validation.constraints.NotNull;
-
-import org.hibernate.validator.constraints.NotBlank;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
-import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 //@Document(collection = "Packages")
-public class AMCPackage extends BaseMasterEntity implements Product {
+public class AMCPackage extends BasePackages implements ISubscriptionPackage {
 
   @Transient
   private final static Logger logger = LoggerFactory.getLogger(AMCPackage.class);
 
-  public static final String TYPE = "PACKAGE";
-
-  @Id
-  private String id;
-  @NotNull
-  @NotBlank
-  private String name;
-  @NotNull
-  @NotBlank
-  private String description;
-  // @NotNull
-  // private List<ServiceInfo> serviceInfo;
-  @DBRef
-  private List<Service> services;
-
   private TenureBasedDiscount tenureBasedDisc;
-
-  // private DeliveryMethod dm;
-
-  @NotNull
-  private Category category;
 
   public AMCPackage() {
 
   }
 
   public AMCPackage(Category category, String name, String description) {
-    this.category = category;
-    this.name = name;
-    this.description = description;
-    // this.dm = DeliveryMethod.SUBSCRIPTION;
+    super(category, name, description);
+    TYPE = "SubscriptionPackage";
     isActive = false;
-  }
-
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public void setCategory(Category category) {
-    this.category = category;
-  }
-
-  public void setCategory(String category) {
-    try {
-      this.category = Category.valueOf(category);
-    } catch (Exception ex) {
-      throw new IllegalArgumentException("Invalid category specified.");
-    }
   }
 
   public void addServices(List<Service> services) {
     if (logger.isDebugEnabled())
-      logger.info("Add services to package");
+      logger.debug("Add services to package");
     services = Objects.requireNonNull(services, "No services data provided.");
     StringBuilder failedToAdd = new StringBuilder();
     services.forEach(service -> {
@@ -101,20 +50,12 @@ public class AMCPackage extends BaseMasterEntity implements Product {
       throw new IllegalArgumentException("The following services have failed to add. \n" + failedToAdd.toString());
   }
 
-  public void setServices(List<Service> services) {
+  public void setServices(Set<Service> services) {
     this.services = services;
   }
 
-  public List<Service> getServices() {
+  public Set<Service> getServices() {
     return this.services;
-  }
-
-  public String getDescription() {
-    return description;
-  }
-
-  public void setDescription(String description) {
-    this.description = description;
   }
 
   /**
@@ -134,10 +75,10 @@ public class AMCPackage extends BaseMasterEntity implements Product {
 
   public void addService(Service service) {
     if (logger.isInfoEnabled())
-      logger.info("Adding new service to the package");
+      logger.info("Adding a service to the package {}", service, name);
     service = validate(service);
     if (this.services == null)
-      this.services = new LinkedList<Service>();
+      this.services = new HashSet<Service>();
     this.services.add(service);
   }
 
@@ -264,39 +205,16 @@ public class AMCPackage extends BaseMasterEntity implements Product {
    */
 
   @Override
-  public String getType() {
-    return TYPE;
-  }
-
-  @Override
-  public boolean canSubscribe() {
-    return true;
-  }
-
-  @Override
-  public boolean canRequestOneTime() {
-    return false;
-  }
-
-  @Override
   public SubscriptionData fetchSubscriptionData() {
     return this.fetchSubscriptionData(null);
   }
 
-  @Override
-  public OneTimeData fetchOneTimeData() {
-    return null;
-  }
 
   @Override
   public SubscriptionData fetchSubscriptionData(UserInput<String, Object> input) {
     return this.getActualPrice(input);
   }
 
-  @Override
-  public OneTimeData fetchOneTimeData(UserInput<String, Object> input) {
-    return null;
-  }
 
   public TenureBasedDiscount getTenureBasedDisc() {
     return tenureBasedDisc;
@@ -304,11 +222,6 @@ public class AMCPackage extends BaseMasterEntity implements Product {
 
   public void setTenureBasedDisc(TenureBasedDiscount tenureBasedDisc) {
     this.tenureBasedDisc = tenureBasedDisc;
-  }
-
-  @Override
-  public Category getCategory() {
-    return this.category;
   }
 
 }

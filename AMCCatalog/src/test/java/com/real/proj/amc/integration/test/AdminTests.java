@@ -20,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.real.proj.unit.test.BaseTest;
 import com.subsede.amc.catalog.model.AMCPackage;
 import com.subsede.amc.catalog.model.BaseMasterEntity;
+import com.subsede.amc.catalog.model.BasePackages;
 import com.subsede.amc.catalog.model.BaseService;
 import com.subsede.amc.catalog.model.Coupon;
 import com.subsede.amc.catalog.model.Tax;
@@ -127,8 +128,8 @@ public class AdminTests extends BaseTest {
 
   @Test
   public void testCreateAMCPackage() {
-    AMCPackage pkg = createAMCPackage();
-    pkg = (AMCPackage) this.createEntity(pkg);
+    BasePackages pkg = createAMCPackage();
+    pkg = (BasePackages) this.createEntity(pkg);
     assertNotNull(pkg.getId());
   }
 

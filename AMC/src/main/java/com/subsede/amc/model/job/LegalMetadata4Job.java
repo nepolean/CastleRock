@@ -2,7 +2,7 @@ package com.subsede.amc.model.job;
 
 import java.util.List;
 
-public class LegalMetadata4Job implements JobMetadata {
+public class LegalMetadata4Job extends BaseMetadata implements ServiceMetadata {
 
   List<String> documents;
 
@@ -11,7 +11,7 @@ public class LegalMetadata4Job implements JobMetadata {
   }
 
   public List<String> getDocuments() {
-    return null;
+    return this.documents;
   }
 
 }

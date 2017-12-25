@@ -13,6 +13,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.subsede.amc.catalog.model.AMCPackage;
+import com.subsede.amc.catalog.model.Category;
+import com.subsede.amc.catalog.model.ISubscriptionPackage;
 import com.subsede.amc.catalog.model.Product;
 import com.subsede.amc.catalog.model.Rating;
 import com.subsede.amc.catalog.model.Service;
@@ -25,7 +28,7 @@ import com.subsede.amc.model.Location;
 import com.subsede.amc.model.UserData;
 import com.subsede.amc.model.job.AbstractJob;
 import com.subsede.amc.model.job.AssetMetadata4Job;
-import com.subsede.amc.model.job.JobMetadata;
+import com.subsede.amc.model.job.ServiceMetadata;
 import com.subsede.amc.model.job.JobType;
 import com.subsede.amc.model.quote.Quotation;
 import com.subsede.amc.repository.JobRepository;
@@ -41,12 +44,20 @@ public class SubscriptionJobScheduler {
   public void setJobRepository(JobRepository jobRepository) {
     this.jobRepository = jobRepository;
   }
+  
+  public void scheduleImmediate(List<AbstractJob> jobs) {
+    
+  }
+  
+  public void scheduleFrequency(List<AbstractJob> jobs) {
+    
+  }
 
   public void scheduleJob(Subscription subscription) {
     logger.info("Schedule jobs for subscription with id {}", subscription.getId());
-    Set<Product> services = subscription.getProducts();
+    Set<ISubscriptionPackage> services = subscription.getProducts();
     List<AbstractJob> jobs = new LinkedList<>();
-    for (Product service : services) {
+    for (ISubscriptionPackage service : services) {
       SubscriptionData serviceData = service.fetchSubscriptionData(subscription.getUserData().getInput());
       int visitsPerQuarter = serviceData.getVisitCount();
       int noOfQuarters = subscription.getUserData().getTenure();
@@ -76,11 +87,11 @@ public class SubscriptionJobScheduler {
         Date after = getDateAfter(start);
         if (logger.isDebugEnabled())
           logger.debug("Job for service {} is scheduled on {}", service.getName(), after);
-        JobMetadata metadata = new AssetMetadata4Job(
+        ServiceMetadata metadata = new AssetMetadata4Job(
             subscription.getAsset(),
             subscription.getClass().getName(),
             subscription.getId());
-        AbstractJob job = JobType.getJob(service, metadata, null);
+        AbstractJob job = JobType.getJob(service, metadata, subscription.getOwner());
         if (job != null)
           jobs.add(job);
         start += durationBetweenServices;
@@ -103,8 +114,10 @@ public class SubscriptionJobScheduler {
     for (Rating key : Rating.values())
       data.put(key, new SubscriptionData(100.0, 3));
     service.setSubscriptionData(new RatingBasedSubscriptionData(data));
+    ISubscriptionPackage pkg = new AMCPackage(Category.ASSET, "Maintenance", "Complete maintenance");
+    pkg.addService(service);
     Quotation quote = new Quotation(user, user, asset);
-    quote.addProduct(service);
+    quote.addProduct(pkg);
     quote.setUserData(new UserData(1, 4, 10000));
     Subscription subs = new Subscription(quote);
     new SubscriptionJobScheduler().schedule(

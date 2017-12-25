@@ -60,7 +60,6 @@ public class AssetBasedService extends BaseService implements Serializable {
   }
 
   public void setName(String name) {
-    logger.info("Service Name -> {}", name);
     this.name = name;
   }
 
@@ -82,7 +81,7 @@ public class AssetBasedService extends BaseService implements Serializable {
 
   protected UserInput<String, Object> getDefaultInput() {
     UserInput<String, Object> input = new UserInput<String, Object>();
-    input.add("RATING", Rating.FIVE);
+    input.add("RATING", Rating.THREE);
     return input;
   }
 

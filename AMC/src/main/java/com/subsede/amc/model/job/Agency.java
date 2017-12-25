@@ -3,6 +3,8 @@ package com.subsede.amc.model.job;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.validation.constraints.NotNull;
+
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -16,7 +18,7 @@ public class Agency {
   private String id;
   @NotBlank(message = "Name should not be empty")
   private String name;
-  @NotBlank(message = "Address should not be empty")
+  @NotNull(message = "Address should not be empty")
   private Location address;
   private boolean isActive;
   private Set<AgencyAdmin> adminUsers;

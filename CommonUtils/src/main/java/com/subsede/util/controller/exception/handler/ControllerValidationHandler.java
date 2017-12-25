@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.mongodb.DuplicateKeyException;
+import com.subsede.util.controller.exception.AuthorizationException;
 import com.subsede.util.controller.exception.DBException;
 import com.subsede.util.controller.exception.EntityNotFoundException;
 import com.subsede.util.controller.exception.InvalidSessionException;
@@ -37,7 +38,8 @@ public class ControllerValidationHandler {
   public void processInvalidSessionException(InvalidSessionException ex) {
 
   }
-
+  
+  
   @ExceptionHandler({ MethodArgumentNotValidException.class })
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ResponseBody
@@ -81,6 +83,11 @@ public class ControllerValidationHandler {
     return new SimpleError(HttpStatus.CONFLICT.value(), ex.getMessage(), Category.USER);
   }
 
+  @ExceptionHandler({AuthorizationException.class})
+  @ResponseStatus(HttpStatus.UNAUTHORIZED)
+  public void handleAuthorizationException(AuthorizationException ex) {
+    
+  }
 
   @ExceptionHandler({ com.subsede.util.controller.exception.DBException.class })
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

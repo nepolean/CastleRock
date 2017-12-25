@@ -11,9 +11,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.statemachine.StateMachine;
-import org.springframework.statemachine.config.EnumStateMachineConfigurerAdapter;
 
 import com.real.proj.amc.unit.test.ServiceTestHelper;
 import com.subsede.amc.catalog.model.AMCPackage;
@@ -25,7 +22,6 @@ import com.subsede.amc.catalog.repository.PackageRepository;
 import com.subsede.amc.catalog.repository.ServiceRepository;
 import com.subsede.amc.model.Asset;
 import com.subsede.amc.model.Location;
-import com.subsede.amc.model.job.JobSMConfig;
 import com.subsede.amc.model.job.Technician;
 import com.subsede.amc.repository.AssetRepository;
 import com.subsede.user.config.MVCConfig;

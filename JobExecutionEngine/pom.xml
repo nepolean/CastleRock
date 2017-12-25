@@ -3,11 +3,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>RealService</groupId>
-  <artifactId>AMC</artifactId>
+  <artifactId>JobExecutionEngine</artifactId>
   <version>1.0.0</version>
   <packaging>jar</packaging>
 
-  <name>AMC</name>
+  <name>JobExecutionEngine</name>
   <url>http://maven.apache.org</url>
 
   <properties>
@@ -18,7 +18,7 @@
   <parent>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-parent</artifactId>
-      <version>1.5.9.RELEASE</version>
+      <version>1.4.1.RELEASE</version>
   </parent>
   
   <dependencies>
@@ -42,38 +42,16 @@
         <artifactId>spring-boot-starter-test</artifactId>
         <scope>test</scope>
     </dependency>
-    
     <dependency>
-      <groupId>org.springframework.statemachine</groupId>
-      <artifactId>spring-statemachine-boot</artifactId>
-      <version>1.2.5.RELEASE</version>
+    	<groupId>RealService</groupId>
+    	<artifactId>AMC</artifactId>
+    	<version>1.0.0</version>
     </dependency>
-    
     <dependency>
     	<groupId>RealService</groupId>
     	<artifactId>CommonUtils</artifactId>
     	<version>1.0.0</version>
     </dependency>
-    <dependency>
-    	<groupId>RealService</groupId>
-    	<artifactId>AMCCatalog</artifactId>
-    	<version>1.0.0</version>
-    </dependency>
-    <dependency>
-    	<groupId>RealService</groupId>
-    	<artifactId>UserAccount</artifactId>
-    	<version>1.0.0</version>
-    </dependency>
-		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-crypto -->
-		<dependency>
-		    <groupId>org.springframework.security</groupId>
-		    <artifactId>spring-security-crypto</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>RealService</groupId>
-			<artifactId>Payment</artifactId>
-			<version>1.0.0</version>
-		</dependency>
   </dependencies>
   <build>
     <plugins>
@@ -95,14 +73,5 @@
           <url>https://repo.spring.io/libs-release</url>
       </pluginRepository>
   </pluginRepositories>      
-
-  <dependencyManagement>
-  	<dependencies>
-  		<dependency>
-  			<groupId>org.springframework.cloud</groupId>
-  			<artifactId>spring-cloud-dependencies</artifactId>
-  			<version>Camden.SR1</version>
-  		</dependency>
-  	</dependencies>
-  </dependencyManagement>
+   
 </project>

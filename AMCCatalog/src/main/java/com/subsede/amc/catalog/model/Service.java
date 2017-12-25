@@ -1,5 +1,7 @@
 package com.subsede.amc.catalog.model;
 
+import java.util.Optional;
+
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -21,5 +23,11 @@ public interface Service extends Product {
    * 
    */
   public abstract ServiceType getServiceType();
+
+  public abstract boolean canSubscribe();
+  
+  public abstract SubscriptionData fetchSubscriptionData(UserInput<String, Object> input);
+
+  public abstract Optional<Tax> getTax();
 
 }

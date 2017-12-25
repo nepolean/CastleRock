@@ -2,7 +2,7 @@ package com.subsede.amc.service;
 
 import java.util.Map;
 
-import com.subsede.amc.catalog.model.AMCPackage;
+import com.subsede.amc.catalog.model.BasePackages;
 import com.subsede.amc.catalog.model.Coupon;
 import com.subsede.amc.catalog.model.Rating;
 import com.subsede.amc.catalog.model.Tax;
@@ -16,15 +16,15 @@ public interface IAMCAdminService {
 
   public User createServiceProvider(User provider);
 
-  public AMCPackage createSubscriptionPackage(AMCPackage pkg);
+  public BasePackages createSubscriptionPackage(BasePackages pkg);
 
-  public AMCPackage disablePackage(AMCPackage pkg);
+  public BasePackages disablePackage(BasePackages pkg);
 
-  public AMCPackage enablePackage(AMCPackage pkg);
+  public BasePackages enablePackage(BasePackages pkg);
 
-  public AMCPackage modifyPrice(AMCPackage pkg, Rating rating, double price);
+  public BasePackages modifyPrice(BasePackages pkg, Rating rating, double price);
 
-  public AMCPackage addPrice(AMCPackage pkg, Map<Rating, Double> price);
+  public BasePackages addPrice(BasePackages pkg, Map<Rating, Double> price);
 
   public void rateAsset(String assetID, Rating rating);
 

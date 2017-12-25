@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.subsede.amc.catalog.model.AMCPackage;
+import com.subsede.amc.catalog.model.BasePackages;
 import com.subsede.amc.catalog.model.BaseService;
 import com.subsede.amc.catalog.model.Category;
 import com.subsede.amc.catalog.model.OneTimeData;
@@ -93,7 +94,7 @@ public class ServiceTestHelper {
     return pkg;
   }
 
-  public static AMCPackage createPackageWithDiscount() {
+  public static BasePackages createPackageWithDiscount() {
     AMCPackage pkg = createFullPackage();
     TenureBasedDiscount tenureBasedDisc = new TenureBasedDiscount();
     tenureBasedDisc.addDiscount(1, 10.0);

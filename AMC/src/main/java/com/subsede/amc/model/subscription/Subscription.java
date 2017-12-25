@@ -15,6 +15,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import com.subsede.amc.catalog.model.AMCPackage;
 import com.subsede.amc.catalog.model.BaseMasterEntity;
 import com.subsede.amc.catalog.model.BaseService;
+import com.subsede.amc.catalog.model.ISubscriptionPackage;
 import com.subsede.amc.catalog.model.Product;
 import com.subsede.amc.catalog.model.Service;
 import com.subsede.amc.model.Asset;
@@ -27,8 +28,6 @@ public class Subscription extends BaseMasterEntity {
 
   private static Logger logger = LoggerFactory.getLogger(Subscription.class);
 
-  @Id
-  String id;
   String quotationId;
   @DBRef(lazy = true)
   private Asset asset;
@@ -39,7 +38,7 @@ public class Subscription extends BaseMasterEntity {
   private Date startDate;
   private Date validUpto;
   private UserData userData;
-  private Set<Product> products;
+  private Set<ISubscriptionPackage> products;
   private List<Service> services = new LinkedList<Service>();
 
   public Subscription(Quotation quotation) {
@@ -51,7 +50,7 @@ public class Subscription extends BaseMasterEntity {
     this.products = quotation.getSelectedItems();
     saveServices();
     this.userData = quotation.getUserData();
-    this.startDate = new Date();
+    this.startDate = Calendar.getInstance().getTime();
     Calendar cal = Calendar.getInstance();
     cal.setTime(startDate);
     cal.add(Calendar.MONTH, userData.getTenureInMonths());
@@ -60,13 +59,8 @@ public class Subscription extends BaseMasterEntity {
   }
 
   private void saveServices() {
-    for (Product p : products) {
-      if (p instanceof AMCPackage) {
-        AMCPackage pkg = (AMCPackage) p;
-        this.services.addAll(pkg.getServices());
-      } else {
-        this.services.add((BaseService) p);
-      }
+    for (ISubscriptionPackage pkg : products) {
+      this.services.addAll(pkg.getServices());
     }
   }
 
@@ -126,11 +120,11 @@ public class Subscription extends BaseMasterEntity {
     this.userData = userData;
   }
 
-  public Set<Product> getProducts() {
+  public Set<ISubscriptionPackage> getProducts() {
     return products;
   }
 
-  public void setProducts(Set<Product> products) {
+  public void setProducts(Set<ISubscriptionPackage> products) {
     this.products = products;
   }
 

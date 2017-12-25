@@ -1,28 +1,23 @@
 package com.subsede.amc.catalog.model;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 
-public abstract class BaseService extends BaseMasterEntity implements Service, Product, Serializable {
+public abstract class BaseService extends BaseMasterEntity implements Service {
 
-  /**
-   * default serialVersion UID
-   */
-  private static final long serialVersionUID = 1L;
   private static final String TYPE = "SERVICE";
   private static Logger logger = LoggerFactory.getLogger(BaseService.class);
-  @Id
-  private String id;
+
   protected Category category;
   @NotNull
   @NotBlank(message = "Name cannot be empty.")
@@ -32,6 +27,9 @@ public abstract class BaseService extends BaseMasterEntity implements Service, P
   protected String description;
   @NotNull(message = "ServiceType cannot be null.")
   ServiceType serviceType;
+  
+  @DBRef
+  Tax tax;
 
   private boolean canSubscribe;
 
@@ -224,12 +222,10 @@ public abstract class BaseService extends BaseMasterEntity implements Service, P
     return TYPE;
   }
 
-  @Override
   public boolean canSubscribe() {
     return this.canSubscribe;
   }
 
-  @Override
   public boolean canRequestOneTime() {
     return this.canRequestOneTime;
   }
@@ -240,6 +236,15 @@ public abstract class BaseService extends BaseMasterEntity implements Service, P
 
   public boolean getCanRequestOneTime() {
     return this.canRequestOneTime;
+  }
+  
+  public void setTax(Tax tax) {
+    this.tax = tax;
+  }
+  
+  @Override
+  public Optional<Tax> getTax() {
+    return Optional.of(tax);
   }
 
   public static void main(String[] args) {
