@@ -14,18 +14,16 @@ import java.util.TimeZone;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.statemachine.annotation.WithStateMachine;
 import org.springframework.stereotype.Component;
 
-import com.subsede.amc.catalog.model.AMCPackage;
+import com.subsede.amc.catalog.model.BaseMasterEntity;
 import com.subsede.amc.catalog.model.Coupon;
-import com.subsede.amc.catalog.model.Product;
+import com.subsede.amc.catalog.model.ISubscriptionPackage;
 import com.subsede.amc.catalog.model.Service;
 import com.subsede.amc.catalog.model.SubscriptionData;
-import com.subsede.amc.catalog.model.ISubscriptionPackage;
 import com.subsede.amc.catalog.model.Tax;
 import com.subsede.amc.catalog.model.TenureBasedDiscount;
 import com.subsede.amc.catalog.model.UserInput;
@@ -37,12 +35,13 @@ import com.subsede.user.model.user.User;
 @Document(collection = "Quotations")
 @WithStateMachine
 @Component
-public class Quotation {
+public class Quotation extends BaseMasterEntity {
+  
+  public interface UserView { }
+  
+  public interface AdminView extends UserView { }
 
   private static Logger logger = LoggerFactory.getLogger(Quotation.class);
-
-  @Id
-  String id;
 
   double amount;
 
@@ -64,8 +63,6 @@ public class Quotation {
   @DBRef(lazy = true)
   private User createdBy;
 
-  private boolean isNewUser;
-
   private UserData data;
 
   private List<Tax> applicableTaxes;
@@ -79,8 +76,6 @@ public class Quotation {
   private List<EventHistory> history = new LinkedList<EventHistory>();
 
   private List<String> comments;
-
-  private boolean createdByAgent;
 
   private Set<ServiceAmount> serviceCosts = new LinkedHashSet<ServiceAmount>(10);
 
@@ -102,16 +97,12 @@ public class Quotation {
     this.createdFor = createdFor;
     this.createdBy = createdBy;
     this.asset = location;
-    isNewUser = Objects.isNull(createdFor.getUsername());
-    createdByAgent = !Objects.equals(createdFor, createdBy);
   }
 
   public Quotation(Asset asset, User agent) {
     this.createdFor = (User) asset.getOwner();
     this.createdBy = agent;
     this.asset = asset;
-    isNewUser = false;
-    createdByAgent = Objects.isNull(agent);
   }
 
   public Quotation(Quotation otherQuote) {
@@ -177,6 +168,7 @@ public class Quotation {
 
   public void createQuote() {
     logger.info("New quote requested");
+    
     resetQuote();
     calculateTotalPrice(data.getInput());
     calculateTax();
@@ -190,11 +182,16 @@ public class Quotation {
       logger.debug("Total taxamt = {}", this.taxAmount);
       logger.debug("Total netamt = {}", this.netAmount);
     }
-    this.createdOn = new Date();
+    
+    this.createdOn = Calendar.getInstance().getTime();
+    setExpiry();
+    logger.info("New quote generated. It will expire on {}", SimpleDateFormat.getDateInstance().format(validUpto));
+  }
+
+  private void setExpiry() {
     Calendar today = Calendar.getInstance();
     today.add(Calendar.DAY_OF_MONTH, 30);
     this.validUpto = today.getTime();
-    logger.info("New quote generated. It will expire on {}", SimpleDateFormat.getDateInstance().format(validUpto));
   }
 
   private void resetQuote() {
@@ -208,11 +205,6 @@ public class Quotation {
   }
 
   private void applyCoupons() {
-    if (Objects.nonNull(applicableCoupons))
-      for (Coupon cpn : applicableCoupons) {
-        // TODO redesign coupons
-        // cpn.applyDiscount(pkgs, totalAmount)
-      }
 
   }
 
@@ -329,6 +321,14 @@ public class Quotation {
   public boolean hasExpired() {
     return Objects.isNull(this.validUpto) ? false
         : Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime().after(this.validUpto);
+  }
+  
+  public boolean isUserAccepted() {
+    return this.userAccepted;
+  }
+  
+  public boolean isUserRejected() {
+    return this.userRejected;
   }
 
   @Override
@@ -487,7 +487,7 @@ public class Quotation {
     this.asset = asset;
   }
 
-  public User getCreatedBy() {
+  public User getRequestedBy() {
     return this.createdBy;
   }
 

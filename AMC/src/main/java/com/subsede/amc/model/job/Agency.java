@@ -6,16 +6,13 @@ import java.util.Set;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.subsede.amc.model.Location;
 
 @Document(collection = "Agencies")
-public class Agency {
+public class Agency extends com.subsede.amc.catalog.model.BaseMasterEntity {
 
-  @Id
-  private String id;
   @NotBlank(message = "Name should not be empty")
   private String name;
   @NotNull(message = "Address should not be empty")
@@ -27,6 +24,10 @@ public class Agency {
   public Agency(String name, Location address) {
     this.name = name;
     this.address = address;
+  }
+  
+  public String getId() {
+    return id;
   }
 
   public Location getAddress() {

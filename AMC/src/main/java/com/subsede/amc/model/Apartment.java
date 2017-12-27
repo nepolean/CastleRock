@@ -3,8 +3,6 @@ package com.subsede.amc.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.data.annotation.Transient;
-
 import com.mongodb.util.JSON;
 import com.subsede.amc.catalog.model.asset.AssetType;
 
@@ -43,6 +41,19 @@ public class Apartment extends Asset {
   public static class Block {
     private int name;
     private int noOfFlats;
+    public int getName() {
+      return name;
+    }
+    public void setName(int name) {
+      this.name = name;
+    }
+    public int getNoOfFlats() {
+      return noOfFlats;
+    }
+    public void setNoOfFlats(int noOfFlats) {
+      this.noOfFlats = noOfFlats;
+    }
+    
   }
 
   public static class Details {
@@ -59,6 +70,27 @@ public class Apartment extends Asset {
       this.uom = uom;
       blocks = new ArrayList<Block>(noOfBlocks);
     }
+
+    
+    public int getNoOfBlocks() {
+      return noOfBlocks;
+    }
+
+
+    public void setNoOfBlocks(int noOfBlocks) {
+      this.noOfBlocks = noOfBlocks;
+    }
+
+
+    public List<Block> getBlocks() {
+      return blocks;
+    }
+
+
+    public void setBlocks(List<Block> blocks) {
+      this.blocks = blocks;
+    }
+
 
     public int getNoOfFlats() {
       return noOfFlats;

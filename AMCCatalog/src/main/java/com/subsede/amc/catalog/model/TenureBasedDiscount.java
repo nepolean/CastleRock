@@ -18,6 +18,8 @@ public class TenureBasedDiscount {
   }
 
   public void addDiscount(int tenure, double discPct) {
+    if(logger.isDebugEnabled())
+      logger.debug("Tenure {} has discount {}", tenure, discPct);    
     this.discData.put(tenure, discPct);
   }
 

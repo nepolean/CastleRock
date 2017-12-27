@@ -49,7 +49,7 @@ public class UserService {
 
   @Autowired
   private HttpServletRequest request;
-
+  
   public User register(UserRegistrationDTO userRegistrationDTO)
       throws UserAlreadyExistsException, EmailAlreadyExistsException {
     User user = uRepository.findByUsername(userRegistrationDTO.getUsername());
@@ -239,7 +239,10 @@ public class UserService {
   public void sendPasswordResetLink(String username, String email) {
     User user = this.findByUsernameAndEmail(username, email);
     VerificationToken token = this.generateVerificationToken(user);
-    String applicationUrl = "http://localhost:8080/user/resetPassword";
+    StringBuffer url = request.getRequestURL();
+    String uri = request.getRequestURI();
+    String host = url.toString().replace(uri, "");
+    String applicationUrl = host + "/user/resetPassword";
     this.sendVerificationToken(user, applicationUrl, token.getToken());
   }
 

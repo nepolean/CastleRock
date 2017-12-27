@@ -2,16 +2,13 @@
 package com.subsede.amc.catalog.model;
 
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
-import org.springframework.data.mongodb.core.index.Indexed;
 
 //@Document(collection = "Packages")
 public class AMCPackage extends BasePackages implements ISubscriptionPackage {

@@ -1,9 +1,8 @@
 package com.subsede.amc.model;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.validation.constraints.NotNull;
@@ -12,12 +11,19 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.data.annotation.Reference;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.subsede.amc.catalog.model.BaseMasterEntity;
 import com.subsede.amc.catalog.model.asset.Amenity;
 import com.subsede.amc.catalog.model.asset.AssetType;
 import com.subsede.user.model.Customer;
-import com.subsede.user.model.user.User;
 
+
+@JsonTypeInfo(use = com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME, include = com.fasterxml.jackson.annotation.JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = Apartment.class, name = "Apartment"),
+    @JsonSubTypes.Type(value = Flat.class, name = "Flat")
+})
 @Document(collection = "Assets")
 public class Asset extends BaseMasterEntity {
 
@@ -28,8 +34,7 @@ public class Asset extends BaseMasterEntity {
   @Reference
   @NotNull(message = "Address should not be empty")
   Location location;
-  @Reference
-  Asset belongsTo;
+  String parentId;
   @Reference
   List<Customer> assetOwner;
   Set<Amenity> amenities;
@@ -125,12 +130,16 @@ public class Asset extends BaseMasterEntity {
     this.backgroundImage = backgroundImage;
   }
 
-  public void setParent(Asset parent) {
-    this.belongsTo = parent;
+  public void setParent(String parent) {
+    this.parentId = parent;
   }
   
-  public Asset getParent() {
-    return this.belongsTo;
+  public String getParent() {
+    return this.parentId;
   }
-
+  
+  public boolean isCommunityBased() {
+    return Objects.isNull(this.parentId);
+  }
+  
 }

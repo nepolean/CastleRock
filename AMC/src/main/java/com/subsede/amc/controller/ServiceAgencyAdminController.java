@@ -12,10 +12,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.subsede.amc.model.job.Agency;
@@ -40,21 +41,31 @@ public class ServiceAgencyAdminController {
     this.technicianRepository = technicianRepository;
   }
 
-  @RequestMapping(path = "/agency/{id}", method = { RequestMethod.POST })
+  @GetMapping(path = "/agency/{id}")
   public ResponseEntity<Agency> getAgencyFromID(
       @PathVariable String agencyId) {
     Agency agency = getAgency(agencyId);
     return new ResponseEntity<>(agency, HttpStatus.OK);
   }
+  
+  @GetMapping(path="/agency/valid")
+  public ResponseEntity<List<Agency>> getValidAgencies() {
+    return ResponseEntity.ok(this.agencyRepository.findByIsActive(Boolean.TRUE));
+  }
+  
+  @GetMapping(path="/agency/all")
+  public ResponseEntity<Page<Agency>> getValidAgencies(Pageable page) {
+    return ResponseEntity.ok(this.agencyRepository.findAll(page));
+  }
 
-  @RequestMapping(path = "/", method = { RequestMethod.POST, RequestMethod.PUT })
+  @PostMapping(path = "/agency/onboard")
   public ResponseEntity<Agency> createAgency(@RequestBody @Valid Agency agency) {
     logger.info("Create new agency {}", agency);
     agency = this.agencyRepository.save(agency);
     return new ResponseEntity<>(agency, HttpStatus.OK);
   }
 
-  @RequestMapping(path = "/agency/{id}/block", method = { RequestMethod.POST })
+  @PostMapping(path = "/agency/{id}/block")
   public ResponseEntity<Agency> blockAgency(
       @PathVariable String agencyId) {
     Agency agency = getAgency(agencyId);
@@ -63,7 +74,7 @@ public class ServiceAgencyAdminController {
     return new ResponseEntity<>(agency, HttpStatus.OK);
   }
 
-  @RequestMapping(path = "/agency/{id}/unblock", method = { RequestMethod.POST })
+  @PostMapping(path = "/agency/{id}/unblock")
   public ResponseEntity<Agency> unblockAgency(
       @PathVariable String agencyId) {
     Agency agency = getAgency(agencyId);
@@ -72,7 +83,7 @@ public class ServiceAgencyAdminController {
     return new ResponseEntity<>(agency, HttpStatus.OK);
   }
 
-  @RequestMapping(path = "/agency/{id}/technician", method = { RequestMethod.POST })
+  @PostMapping(path = "/agency/{id}/technician")
   public ResponseEntity<Technician> createTechnician(
       @PathVariable String agencyId,
       @RequestBody @Valid Technician technician) {
@@ -82,7 +93,7 @@ public class ServiceAgencyAdminController {
     return new ResponseEntity<>(technician, HttpStatus.OK);
   }
 
-  @RequestMapping(path = "/agency/{id}/technicians", method = { RequestMethod.GET })
+  @GetMapping(path = "/agency/{id}/technicians")
   public ResponseEntity<Page<Technician>> fetchTechnicians(
       @PathVariable String agencyId,
       Pageable page) {
@@ -90,7 +101,7 @@ public class ServiceAgencyAdminController {
     return new ResponseEntity<>(technicians, HttpStatus.OK);
   }
 
-  @RequestMapping(path = "/technician/skills", method = RequestMethod.GET)
+  @GetMapping(path = "/technician/skills")
   public ResponseEntity<Page<Technician>> getTechniciansWithMatchingSkills(
       @RequestBody @Valid List<String> skills,
       Pageable page) {

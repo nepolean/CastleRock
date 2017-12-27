@@ -1,6 +1,7 @@
 package com.subsede.amc.controller.asset;
 
 import java.security.Principal;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,11 +23,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.subsede.amc.model.Apartment;
 import com.subsede.amc.model.Asset;
 import com.subsede.amc.model.Flat;
 import com.subsede.amc.repository.AssetRepository;
 import com.subsede.amc.service.AssetService;
+import com.subsede.user.model.Customer;
+import com.subsede.user.model.user.User;
 import com.subsede.user.model.user.UserRegistrationDTO;
 import com.subsede.util.SecurityHelper;
 import com.subsede.util.controller.FileController;
@@ -52,19 +56,19 @@ public class AssetController extends FileController {
     this.secHelper = secHelper;
   }
 
-  @RequestMapping(path="", method=RequestMethod.POST)
+  @PostMapping(path="")
   public Asset newAsset(@Validated @RequestBody Asset asset, Principal loggedInUser) throws Exception {
     logger.info("New Asset created by {}", loggedInUser);
     return this.assetService.createAsset(asset);
   }
   
-  @RequestMapping(path="/{id}/sub", method=RequestMethod.POST)
+  @PostMapping(path="/{id}/child")
   public Asset newChildAsset(@PathVariable String parentId, @Validated @RequestBody Asset asset, Principal loggedInUser) throws Exception {
-    logger.info("New Asset created by {}", loggedInUser.getName());
+    logger.info("New Asset created by {}", loggedInUser);
     return this.assetService.createSubAsset(asset, parentId);
   }
 
-  @RequestMapping(path="/{id}/profile/image", method=RequestMethod.POST)
+  @PostMapping(path="/{id}/profile/image")
   public ResponseEntity<String> uploadProfileImage(@PathVariable String id, @RequestParam("path") MultipartFile path) {
     Asset asset = getAsset(id);
     String file = this.handleUploadFile(path);
@@ -73,7 +77,7 @@ public class AssetController extends FileController {
     return ResponseEntity.ok().body("The background image has been set");
   }
 
-  @RequestMapping(path="/{id}/pic", method=RequestMethod.POST)  
+  @PostMapping(path="/{id}/pic")  
   public ResponseEntity<String> uploadPic(@PathVariable String id, @RequestParam("path") MultipartFile path) {
     Asset asset = getAsset(id);
     if (asset.getImagePaths().size() == 3)
@@ -96,6 +100,18 @@ public class AssetController extends FileController {
     logger.info("Deleting owner {} from asset with id {}", username, id);
     this.assetService.deleteOwner(id, username);
     return ResponseEntity.ok().body("Owner deleted successfully");
+  }
+  
+  @GetMapping("/{id}/community")
+  @JsonView (User.PublicView.class)
+  public ResponseEntity<List<Customer>> getCommunity(@PathVariable String assetId) {
+    return ResponseEntity.ok().body(this.assetService.getCommunity(assetId));
+  }
+  
+  @GetMapping("/{id}/committe")
+  @JsonView (User.CommitteView.class)
+  public ResponseEntity<List<Customer>> getCommitte(@PathVariable String assetId) {
+    return ResponseEntity.ok().body(this.assetService.getCommitte(assetId));
   }
 
   @GetMapping("")

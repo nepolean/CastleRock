@@ -1,5 +1,7 @@
 package com.subsede.amc.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -20,6 +22,8 @@ public interface AssetRepository
   public Asset findByIdAndCreatedBy(String id, String createdBy);
 
   public Asset findByIdAndAssetOwner(String id, String username);
+
+  public List<Asset> findByParendId(String id);
 
   // public Asset findById(String assetId);
 

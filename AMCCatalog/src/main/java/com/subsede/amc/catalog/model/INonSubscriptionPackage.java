@@ -9,13 +9,15 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public interface INonSubscriptionPackage extends Product {
   
   public interface IPackageVariant {
+    
     String getName();
 
     double getPrice();
     
     String getUOM();
-
+    
   }
+  
   abstract Optional<Price> getPrice(String variant);
 
   abstract Map<String, IPackageVariant> getVariants();

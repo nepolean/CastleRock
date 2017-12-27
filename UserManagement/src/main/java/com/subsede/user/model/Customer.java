@@ -9,6 +9,7 @@ public class Customer extends User {
 
   private String address;
   private boolean isPrimary;
+  private boolean publicProfile;
 
   public Customer() {
     super.setUserType("CUSTOMER");

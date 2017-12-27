@@ -8,6 +8,7 @@ import java.util.Optional;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.Range;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -17,9 +18,11 @@ public class NonSubscriptionPackage extends BasePackages implements INonSubscrip
   private static final Logger logger = LoggerFactory.getLogger(NonSubscriptionPackage.class);
   
   @DBRef
-  Service service;
-  Map<String, IPackageVariant> variants;
-  double discountPct = 0.0;
+  private Service service;
+  
+  private Map<String, IPackageVariant> variants;
+  
+  private double discountPct = 0.0;
   
   public NonSubscriptionPackage(Category category, String name, String description) {
     super(category, name, description);
@@ -84,10 +87,14 @@ public class NonSubscriptionPackage extends BasePackages implements INonSubscrip
   }
 
   public static class PackageVariant implements IPackageVariant {
+    
     @NotNull
     @NotBlank (message = "Name should not be empty")
     private String name;
+    
+    @Range(min=1)
     private double price;
+    
     @NotNull
     @NotBlank (message = "UOM should not be empty")
     private String uom;

@@ -11,7 +11,7 @@ public class AssetMetadata4Job extends BaseMetadata implements ServiceMetadata {
   }
 
   public AssetMetadata4Job(Asset userAsset) {
-    this.asset = asset;
+    this.asset = userAsset;
   }
 
   public Asset getAsset() {

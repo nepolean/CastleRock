@@ -63,6 +63,10 @@ public class CompanyApplication implements CommandLineRunner {
     roleList.add(new Role("USER"));
     roleList.add(new Role("USER_ADMIN"));
     roleList.add(new Role("ADMIN"));
+    roleList.add(new Role("TECHNICIAN"));
+    roleList.add(new Role("AGENCY"));
+    roleList.add(new Role("SUPPORT"));
+    roleList.add(new Role("CUSTOMER"));
     rRepository.save(roleList);
 
     List<User> userList = new LinkedList<>();
@@ -76,6 +80,7 @@ public class CompanyApplication implements CommandLineRunner {
     user.setAccountLocked(false);
     user.addRole(rRepository.findByName("USER"));
     userList.add(user);
+    
     user = new User("admin1234", encodedPassword);
     user.setEmail("admin@gmail.com");
     user.setFirstName("Arun");
@@ -92,7 +97,7 @@ public class CompanyApplication implements CommandLineRunner {
     user.setFirstName("Arun");
     user.setMiddleName("Kumar");
     user.setLastName("Yathiraj");
-    customer.addRole(rRepository.findByName("USER"));
+    customer.addRole(rRepository.findByName("CUSTOMER"));
     customerList.add(customer);
 
     customer = new Customer("yathiraj", encodedPassword, "Manyata");

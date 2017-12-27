@@ -15,6 +15,7 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.validation.annotation.Validated;
@@ -60,7 +61,7 @@ public class SubscriptionOrderController {
   }
 
   @PostMapping("")
-  public void createNewSubscriptionOrder(
+  public ResponseEntity<Quotation> createNewSubscriptionOrder(
       @RequestBody @Validated NewQuoteDTO userInput) throws Exception {
     logger.info("New quotation requested for {}", userInput);
     Map<String, Object> data = new HashMap<String, Object>();
@@ -68,7 +69,9 @@ public class SubscriptionOrderController {
     data.put(ASSET_KEY, userInput.getAssetId());
     data.put(SELECTED_PACKAGES_KEY, userInput.getPackageID());
     data.put(SELECTED_SERVICES_KEY, userInput.getPackageID());
-    fireEvent(QStates.INITIAL, QEvents.CREATE_QUOTE, data);
+    Message<QEvents> response = fireEvent(QStates.INITIAL, QEvents.CREATE_QUOTE, data);
+    Quotation newQuote = (Quotation) response.getHeaders().get("NEW_QUOTE");
+    return ResponseEntity.ok(newQuote);
   }
 
   @PostMapping(path = "/{id}/generate")
@@ -124,11 +127,12 @@ public class SubscriptionOrderController {
   }
 
 
-  protected void fireEvent(QStates source, QEvents event, Object data) throws Exception {
+  protected Message<QEvents> fireEvent(QStates source, QEvents event, Object data) throws Exception {
     Message<QEvents> msg = MessageBuilder.withPayload(event)
         .setHeader("DATA_KEY", data)
         .build();
     this.quotationHandler.handlEvent(msg, source);
+    return msg;
   }
 
 }

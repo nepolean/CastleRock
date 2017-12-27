@@ -120,7 +120,9 @@ public class NonSubscriptionOrder extends BaseMasterEntity {
     return orderDate;
   }
 
-
+  public String getPaymentId() {
+    return paymentId;
+  }
 
   class SelectedPackage {
     

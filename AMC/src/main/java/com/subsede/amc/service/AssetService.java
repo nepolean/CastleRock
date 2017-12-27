@@ -1,36 +1,41 @@
 package com.subsede.amc.service;
 
+import java.util.Collections;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.subsede.amc.catalog.model.AMCPackage;
-import com.subsede.amc.catalog.model.asset.Amenity;
-import com.subsede.amc.catalog.model.asset.AssetType;
 import com.subsede.amc.model.Apartment;
 import com.subsede.amc.model.Asset;
 import com.subsede.amc.model.Location;
 import com.subsede.amc.model.UOM;
 import com.subsede.amc.repository.AssetRepository;
 import com.subsede.user.model.Customer;
-import com.subsede.user.model.user.User;
+import com.subsede.user.model.user.Role;
 import com.subsede.user.model.user.UserRegistrationDTO;
+import com.subsede.user.repository.user.RoleRepository;
 import com.subsede.user.repository.user.UserRepository;
-import com.subsede.user.services.user.UserService;
 import com.subsede.util.controller.exception.EntityNotFoundException;
 
 @Service
 public class AssetService implements IAgentAssetService, IAssetService {
 
+  private static Logger logger = LoggerFactory.getLogger(AssetService.class);
+  
   @Autowired
   private AssetRepository assetRepository;
-  @Autowired
-  private UserService userService;
+  
   @Autowired
   private UserRepository<Customer> cRepository;
+  
+  @Autowired
+  private RoleRepository rRepository;
+  
   @Autowired
   private PasswordEncoder pEncoder;
 
@@ -46,8 +51,30 @@ public class AssetService implements IAgentAssetService, IAssetService {
     return assetRepository.save(asset);
   }
 
-  public Asset createApartment(String loggedInUser) {
-    User authorizedUser = userService.findByUsername(loggedInUser);
+  public List<Customer> getCommunity(String assetId) {
+    logger.info("Get community details for asset {}", assetId);
+    Asset asset = this.getAsset(assetId);
+    if (!asset.isCommunityBased())
+      throw new IllegalArgumentException("The specified asset is not community based asset");
+    String parent = asset.getParent();
+    List<Asset> allChild = this.assetRepository.findByParendId(parent);
+    List<Customer> community = Collections.emptyList();
+    for (Asset child : allChild)
+      community.addAll(child.getAssetOwner());
+    return community;
+  }
+  
+  public List<Customer> getCommitte(String assetId) {
+    logger.info("Get committe details for asset {}", assetId);
+    Asset asset = this.getAsset(assetId);
+    if (!asset.isCommunityBased())
+      throw new IllegalArgumentException("The specified asset is not community based asset");
+    String parentId = asset.getParent();
+    Asset parent = this.getAsset(parentId);
+    return parent.getAssetOwner();
+  }
+  
+  public Asset createSampleApartment(String loggedInUser) {
     Asset newAsset = new Apartment("Springfield", new Location(), new Apartment.Details(100, 2, 1000.0, UOM.SFT));
     // newAsset.setCreatedBy(authorizedUser);
     Asset saved = assetRepository.save(newAsset);
@@ -84,6 +111,13 @@ public class AssetService implements IAgentAssetService, IAssetService {
   @Override
   public void addOwner(String assetId, UserRegistrationDTO owner) {
     Asset asset = getAsset(assetId);
+    Customer savedObj = newCustomer(owner);
+    asset.addOwner(savedObj);
+    this.assetRepository.save(asset);
+  }
+
+  public Customer newCustomer(UserRegistrationDTO owner) {
+    Role role = this.rRepository.findByName("CUSTOMER");
     Customer customer = new Customer(
         owner.getUsername(),
         pEncoder.encode(owner.getPassword()),
@@ -95,9 +129,9 @@ public class AssetService implements IAgentAssetService, IAssetService {
     customer.setMobileNo(owner.getMobileNo());
     if(owner.isPrimary()) customer.setPrimary();
     customer.setAccountLocked(false);
+    customer.addRole(role);
     Customer savedObj = this.cRepository.save(customer);
-    asset.addOwner(savedObj);
-    this.assetRepository.save(asset);
+    return savedObj;
   }
 
   public void deleteOwner(String assetId, String username) {
@@ -125,7 +159,7 @@ public class AssetService implements IAgentAssetService, IAssetService {
   @Override
   public Asset createSubAsset(Asset asset, String parentId) {
     Asset parent = this.getAsset(parentId);
-    asset.setParent(parent);
+    asset.setParent(parent.getId());
     return this.assetRepository.save(parent);
   }
 

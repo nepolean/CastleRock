@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.subsede.amc.catalog.model.AMCPackage;
-import com.subsede.amc.catalog.model.BasePackages;
 import com.subsede.amc.catalog.model.BaseService;
 import com.subsede.amc.catalog.model.Coupon;
 import com.subsede.amc.catalog.model.GeneralService;

@@ -24,12 +24,12 @@ public class JobActionHandler implements JobStateChangeListener {
 
   private static final Logger logger = LoggerFactory.getLogger(JobActionHandler.class);
 
-  private SecurityHelper secHelper;
+  //private SecurityHelper secHelper;
   private JobRepository jobRepository;
 
   @Autowired
   public void setSecurityHelper(SecurityHelper secHelper) {
-    this.secHelper = secHelper;
+  //  this.secHelper = secHelper;
   }
 
   @Autowired

@@ -1,21 +1,14 @@
 package com.subsede.amc.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.subsede.amc.catalog.model.asset.AssetBasedService;
 import com.subsede.amc.catalog.model.asset.AssetType;
 
 public class Flat extends Asset {
 
   private static Flat flat = null;
   Details details;
-  private List<AssetBasedService> services;
 
   private Flat() {
     super("Test Flat", new Location(), AssetType.FLAT);
-    services = new ArrayList<AssetBasedService>();
-    // services.add(new ElectricalService());
     details = new Details();
   }
 
@@ -61,14 +54,6 @@ public class Flat extends Asset {
 
   public void setDetails(Details details) {
     this.details = details;
-  }
-
-  public List<AssetBasedService> getServices() {
-    return services;
-  }
-
-  public void setServices(List<AssetBasedService> services) {
-    this.services = services;
   }
 
   public static Flat getMetadata() {

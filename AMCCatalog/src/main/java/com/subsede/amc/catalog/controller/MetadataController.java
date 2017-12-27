@@ -19,12 +19,12 @@ import com.subsede.amc.catalog.model.PackageScheme;
 import com.subsede.amc.catalog.model.Rating;
 import com.subsede.amc.catalog.model.asset.AssetType;
 import com.subsede.amc.catalog.model.deleted.FixedPricingScheme;
+import com.subsede.amc.catalog.model.deleted.FixedPricingScheme.FixedPrice;
 import com.subsede.amc.catalog.model.deleted.PriceData;
 import com.subsede.amc.catalog.model.deleted.RatingBasedPricingScheme;
+import com.subsede.amc.catalog.model.deleted.RatingBasedPricingScheme.RatingBasedPrice;
 import com.subsede.amc.catalog.model.deleted.ServiceData;
 import com.subsede.amc.catalog.model.deleted.SubscriptionService;
-import com.subsede.amc.catalog.model.deleted.FixedPricingScheme.FixedPrice;
-import com.subsede.amc.catalog.model.deleted.RatingBasedPricingScheme.RatingBasedPrice;
 
 @RestController
 public class MetadataController {

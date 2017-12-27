@@ -14,17 +14,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 public abstract class BaseService extends BaseMasterEntity implements Service {
-
-  private static final String TYPE = "SERVICE";
+  
   private static Logger logger = LoggerFactory.getLogger(BaseService.class);
 
+  private static final String TYPE = "SERVICE";
+  
   protected Category category;
+  
   @NotNull
-  @NotBlank(message = "Name cannot be empty.")
+  @NotBlank(message = "Service name should not be empty.") 
   protected String name;
+  
   @NotNull
-  @NotBlank(message = "Description cannot be empty.")
+  @NotBlank(message = "Description should not be empty.")
   protected String description;
+  
   @NotNull(message = "ServiceType cannot be null.")
   ServiceType serviceType;
   

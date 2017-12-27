@@ -9,17 +9,23 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public abstract class BaseMasterEntity {
+  
   protected String id;
+  
   @JsonIgnore
   protected Date createdOn;
+  
   @JsonIgnore
   protected Date lastModified;
+  
   @JsonIgnore
   protected String createdBy;
+  
   @JsonIgnore
   protected String modifiedBy;
-  // protected boolean markForDeletion;
+  
   protected boolean isActive;
+  
   protected boolean isDeleted;
 
   protected BaseMasterEntity() {

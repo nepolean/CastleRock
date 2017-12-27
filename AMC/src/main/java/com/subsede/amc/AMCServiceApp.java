@@ -48,7 +48,8 @@ import com.subsede.user.repository.user.UserRepository;
     "com.subsede.amc.catalog.model.subscription",
     "com.subsede.util",
     "com.subsede.user.services.user",
-    "com.subsede.user.services.mailer" })
+    "com.subsede.user.services.mailer",
+    "com.subsede.payment.service"})
 @EnableMongoRepositories({
     "com.subsede.util.user.service",
     "com.subsede.amc.catalog.service",
@@ -56,7 +57,8 @@ import com.subsede.user.repository.user.UserRepository;
     "com.subsede.amc.catalog.model.quote",
     "com.subsede.user.repository.user",
     "com.subsede.amc.repository" ,
-    "com.subsede.amc.model.quote"})
+    "com.subsede.amc.model.quote",
+    "com.subsede.payment.repository"})
 @EnableAutoConfiguration
 @Import({MVCConfig.class, SecurityConfig.class})
 public class AMCServiceApp implements CommandLineRunner {

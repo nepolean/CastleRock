@@ -1,4 +1,4 @@
-package com.subsede.amc.controller;
+package com.subsede.amc.controller.dto;
 
 import org.hibernate.validator.constraints.NotBlank;
 

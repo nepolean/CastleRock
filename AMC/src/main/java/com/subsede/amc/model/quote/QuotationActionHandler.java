@@ -285,6 +285,7 @@ public class QuotationActionHandler implements QuotationStateChangeListener {
       logger.debug("selected product list : {}", packages);
     rejectIfPackagesMismatch(selectedPackages, packages);
     allSelectedProducts.addAll(packages);
+    
     //List<Service> services = this.serviceRepository.findValidServices(selectedServices);
     //if (logger.isDebugEnabled())
     //  logger.debug("Selected Services {}", services);
@@ -296,7 +297,8 @@ public class QuotationActionHandler implements QuotationStateChangeListener {
     allSelectedProducts.forEach(item -> newQuote.addProduct(item));
     newQuote.setState(targetState);
     this.updateHistory(message, newQuote, "Quotation is created");
-    this.quoteRepository.save(newQuote);
+    Quotation savedQuote = this.quoteRepository.save(newQuote);
+    message.getHeaders().put("NEW_QUOTE", savedQuote);
     logger.info("New quote created");
   }
 

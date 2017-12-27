@@ -8,15 +8,11 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.subsede.amc.catalog.model.AMCPackage;
 import com.subsede.amc.catalog.model.BaseMasterEntity;
-import com.subsede.amc.catalog.model.BaseService;
 import com.subsede.amc.catalog.model.ISubscriptionPackage;
-import com.subsede.amc.catalog.model.Product;
 import com.subsede.amc.catalog.model.Service;
 import com.subsede.amc.model.Asset;
 import com.subsede.amc.model.UserData;
@@ -29,16 +25,24 @@ public class Subscription extends BaseMasterEntity {
   private static Logger logger = LoggerFactory.getLogger(Subscription.class);
 
   String quotationId;
+  
   @DBRef(lazy = true)
   private Asset asset;
+  
   @DBRef
   private User owner;
+  
   @DBRef(lazy = true)
   private User agent;
+  
   private Date startDate;
+  
   private Date validUpto;
+  
   private UserData userData;
+  
   private Set<ISubscriptionPackage> products;
+  
   private List<Service> services = new LinkedList<Service>();
 
   public Subscription(Quotation quotation) {
@@ -46,7 +50,7 @@ public class Subscription extends BaseMasterEntity {
     this.quotationId = quotation.getId();
     this.owner = quotation.getCreatedFor();
     this.asset = quotation.getAsset();
-    this.agent = quotation.getCreatedBy();
+    this.agent = quotation.getRequestedBy();
     this.products = quotation.getSelectedItems();
     saveServices();
     this.userData = quotation.getUserData();

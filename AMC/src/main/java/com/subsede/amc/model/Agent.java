@@ -10,10 +10,6 @@ import com.subsede.user.model.user.User;
 
 public class Agent extends User {
 
-  /**
-   * default serial version UID
-   */
-  private static final long serialVersionUID = 1L;
   @DBRef
   List<Quotation> myQuotations;
   @DBRef

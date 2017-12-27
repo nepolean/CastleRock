@@ -1,6 +1,5 @@
 package com.subsede.amc.catalog.model;
 
-import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -10,15 +9,15 @@ import javax.validation.constraints.Min;
 
 import org.hibernate.validator.constraints.Range;
 
-public class OneTimeData extends OneTimeMetadata implements Serializable {
+public class OneTimeData extends OneTimeMetadata {
 
-  private static final long serialVersionUID = 1L;
   @Range
-  @Min(value = 1, message = "Price cannot be less than 1.")
+  @Min(value = 1, message = "Price should not be less than 1.")
   private double price;
+  
   @Range
-  @Min(value = 0, message = "Discount cannot be < 0.")
-  @Max(value = 100, message = "Discount cannot be > 100.")
+  @Min(value = 0, message = "Discount should not be less than 0.")
+  @Max(value = 100, message = "Discount should not be more than 100.")
   private double discountPct;
 
   public OneTimeData() {

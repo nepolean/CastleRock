@@ -22,7 +22,11 @@ import com.subsede.user.validators.ValidPatterns;
 @Document(collection = "Users")
 public class User {
 
-  public interface UserView {
+  public interface PublicView { }
+  
+  public interface CommitteView extends PublicView { }
+  
+  public interface UserView extends CommitteView {
   };
 
   public interface AdminView extends UserView {
@@ -66,6 +70,8 @@ public class User {
   @Pattern(regexp = ValidPatterns.PATTERN_FOR_VALID_INDIAN_MOBILE_NUMBER, message = "MobileNo should not contain characters other than digits")
   private String mobileNo;
 
+  private String profilePic;
+  
   private boolean enabled = true;
   private boolean accountExpired = false;
   private boolean accountLocked = true;
@@ -119,7 +125,7 @@ public class User {
     this.password = password;
   }
 
-  @JsonView(UserView.class)
+  @JsonView(PublicView.class)
   public String getFirstName() {
     return firstName;
   }
@@ -128,7 +134,7 @@ public class User {
     this.firstName = firstName;
   }
 
-  @JsonView(UserView.class)
+  @JsonView(PublicView.class)
   public String getMiddleName() {
     return middleName;
   }
@@ -137,7 +143,7 @@ public class User {
     this.middleName = middleName;
   }
 
-  @JsonView(UserView.class)
+  @JsonView(PublicView.class)
   public String getLastName() {
     return lastName;
   }
@@ -146,6 +152,7 @@ public class User {
     this.lastName = lastName;
   }
 
+  @JsonView(CommitteView.class)
   public String getMobileNo() {
     return mobileNo;
   }
@@ -233,6 +240,15 @@ public class User {
     this.manager = manager;
   }
 
+  public void setProfilePic(String profilePic) {
+    this.profilePic = profilePic;
+  }
+  
+  @JsonView(PublicView.class)
+  public String getProfilePic() {
+    return this.profilePic;
+  }
+  
   @Override
   public int hashCode() {
     final int prime = 31;
