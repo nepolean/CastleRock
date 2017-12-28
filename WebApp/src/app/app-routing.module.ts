@@ -11,8 +11,11 @@ const routes: Routes = [
   },
   {
     path: 'admin-dashboard',
-   // canLoad: [ AppAuthGuard ],
     loadChildren: 'app/admin-account/admin-account.module#AdminAccountModule'
+  },
+  {
+    path: 'agent-dashboard',
+    loadChildren: 'app/agent-account/agent-account.module#AgentAccountModule'
   },
   {
     path: '**',
