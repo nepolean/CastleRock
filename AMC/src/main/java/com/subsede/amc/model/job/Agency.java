@@ -17,7 +17,7 @@ public class Agency extends com.subsede.amc.catalog.model.BaseMasterEntity {
   private String name;
   @NotNull(message = "Address should not be empty")
   private Location address;
-  private boolean isActive;
+  //private boolean isActive;
   private Set<AgencyAdmin> adminUsers;
   private Set<Technician> technicians;
 

@@ -99,6 +99,8 @@ public class AMCServiceApp implements CommandLineRunner {
 
   public static void main(String[] args) {
     logger.info("The AMC Service is starting..");
+    System.setProperty("ENVIRONMENT", "TEST");
+
     SpringApplication.run(AMCServiceApp.class, args);
     logger.info("The AMC Service started successfully..");
 

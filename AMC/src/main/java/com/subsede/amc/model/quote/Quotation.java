@@ -51,8 +51,6 @@ public class Quotation extends BaseMasterEntity {
 
   double netAmount;
 
-  Date createdOn;
-
   Date validUpto;
 
   @DBRef(lazy = true)
@@ -61,7 +59,7 @@ public class Quotation extends BaseMasterEntity {
   private User createdFor;
 
   @DBRef(lazy = true)
-  private User createdBy;
+  private User requestedBy;
 
   private UserData data;
 
@@ -95,19 +93,19 @@ public class Quotation extends BaseMasterEntity {
 
   public Quotation(User createdFor, User createdBy, Asset location) {
     this.createdFor = createdFor;
-    this.createdBy = createdBy;
+    this.requestedBy = createdBy;
     this.asset = location;
   }
 
   public Quotation(Asset asset, User agent) {
     this.createdFor = (User) asset.getOwner();
-    this.createdBy = agent;
+    this.requestedBy = agent;
     this.asset = asset;
   }
 
   public Quotation(Quotation otherQuote) {
     this.createdFor = otherQuote.createdFor;
-    this.createdBy = otherQuote.createdBy;
+    this.requestedBy = otherQuote.requestedBy;
     this.asset = otherQuote.asset;
     this.data = otherQuote.data;
     this.applicableTaxes = otherQuote.applicableTaxes;
@@ -488,10 +486,10 @@ public class Quotation extends BaseMasterEntity {
   }
 
   public User getRequestedBy() {
-    return this.createdBy;
+    return this.requestedBy;
   }
 
   public void setCreatedBy(User createdBy) {
-    this.createdBy = createdBy;
+    this.requestedBy = createdBy;
   }
 }

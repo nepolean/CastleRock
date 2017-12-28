@@ -57,7 +57,7 @@ public class AssetService implements IAgentAssetService, IAssetService {
     if (!asset.isCommunityBased())
       throw new IllegalArgumentException("The specified asset is not community based asset");
     String parent = asset.getParent();
-    List<Asset> allChild = this.assetRepository.findByParendId(parent);
+    List<Asset> allChild = this.assetRepository.findByParentId(parent);
     List<Customer> community = Collections.emptyList();
     for (Asset child : allChild)
       community.addAll(child.getAssetOwner());

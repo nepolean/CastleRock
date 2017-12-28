@@ -15,7 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.subsede.amc.catalog.model.AMCPackage;
 import com.subsede.amc.catalog.model.BaseService;
+import com.subsede.amc.catalog.model.Category;
 import com.subsede.amc.catalog.model.Coupon;
 import com.subsede.amc.catalog.model.GeneralService;
 import com.subsede.amc.catalog.model.ISubscriptionPackage;
@@ -157,9 +160,15 @@ public class AMCAdminController {
     return new ResponseEntity<Amenity>(amenity, HttpStatus.OK);
   }
 
-  /******************* Service *****************************/
+  /******************* Service 
+   * @return *****************************/
+  
+  @GetMapping(path="/service/categories")
+  public ResponseEntity<Category[]> getCategories() {
+    return ResponseEntity.ok(Category.values());
+  }
 
-  @RequestMapping(path = "/service/asset", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+  @PostMapping(path = "/service/asset")
   public ResponseEntity<AssetBasedService> createNewAssetService(
       @RequestBody @Validated AssetBasedService baseService) {
     logger.info("Create new service with details {}", baseService);
@@ -167,7 +176,7 @@ public class AMCAdminController {
     return new ResponseEntity<AssetBasedService>(newService, HttpStatus.OK);
   }
 
-  @RequestMapping(path = "/service/general", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+  @PostMapping(path = "/service/general")
   public ResponseEntity<GeneralService> createNewGeneralService(
       @RequestBody @Validated GeneralService baseService) {
     logger.info("Create new service with details {}, category {}", baseService, baseService.getCategory());
@@ -175,7 +184,7 @@ public class AMCAdminController {
     return new ResponseEntity<GeneralService>(newService, HttpStatus.OK);
   }
 
-  @RequestMapping(path = "/service/{id}/general/subscription", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+  @PostMapping(path = "/service/{id}/general/subscription")
   public ResponseEntity<Service> setSubscriptionData(
       @PathVariable @Validated String id,
       @RequestBody @Validated SubscriptionData ratingBasedMetadata) {
@@ -183,7 +192,7 @@ public class AMCAdminController {
     return updateServiceData(id, ratingBasedMetadata);
   }
 
-  @RequestMapping(path = "/service/{id}/asset/subscription", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+  @PostMapping(path = "/service/{id}/asset/subscription")
   public ResponseEntity<Service> setAssetSubscriptionData(
       @PathVariable @Validated String id,
       @RequestBody @Validated RatingBasedSubscriptionData ratingBasedMetadata) {
@@ -200,7 +209,7 @@ public class AMCAdminController {
     return new ResponseEntity<Service>(newService, HttpStatus.OK);
   }
 
-  @RequestMapping(path = "/service/{id}/general/onetime", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+  @PostMapping(path = "/service/{id}/general/onetime")
   public ResponseEntity<Service> setOneTimeData(
       @PathVariable @Validated String id,
       @RequestBody @Validated OneTimeData oneTimeData) {
@@ -208,7 +217,7 @@ public class AMCAdminController {
     return updateOneTimeData(id, oneTimeData);
   }
 
-  @RequestMapping(path = "/service/{id}/asset/onetime", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+  @PostMapping(path = "/service/{id}/asset/onetime")
   public ResponseEntity<Service> setAssetOneTimeData(
       @PathVariable @Validated String id,
       @RequestBody @Validated OneTimeMetadata ratingBasedMetadata) {
@@ -225,27 +234,25 @@ public class AMCAdminController {
     return new ResponseEntity<Service>(newService, HttpStatus.OK);
   }
 
-  @RequestMapping(path = "/service/enable", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<String> enableServices(@RequestBody @Validated List<String> services) {
-    logger.info("Enable services ({})", services.size());
-    Iterable<Service> allServices = this.serviceRepo.findAll(services);
-    for (Service eachService : allServices)
-      ((BaseService) eachService).setActive(true);
-    this.serviceRepo.save(allServices);
+  @PostMapping(path = "/service/{id}/enable")
+  public ResponseEntity<String> enableServices(@PathVariable @Validated String serviceId) {
+    logger.info("Enable service ({})", serviceId);
+    Service service = this.serviceRepo.findOne(serviceId);
+    ((BaseService) service).setActive(true);
+    this.serviceRepo.save(service);
     return new ResponseEntity<String>("Successfully enabled all the services.", HttpStatus.OK);
   }
 
-  @RequestMapping(path = "/service/disable", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<String> disableServices(@RequestBody @Validated List<String> services) {
-    logger.info("Disable services ({})", services.size());
-    Iterable<Service> allServices = this.serviceRepo.findAll(services);
-    for (Service eachService : allServices)
-      ((BaseService) eachService).setActive(false);
-    this.serviceRepo.save(allServices);
+  @PostMapping(path = "/service/{id}/disable")
+  public ResponseEntity<String> disableServices(@PathVariable String serviceId) {
+    logger.info("Disable service {}", serviceId);
+    Service service = this.serviceRepo.findOne(serviceId);
+    ((BaseService) service).setActive(false);
+    this.serviceRepo.save(service);
     return new ResponseEntity<String>("Successfully disabled all the services.", HttpStatus.OK);
   }
 
-  @RequestMapping(path = "/service", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(path = "/services")
   public ResponseEntity<Page<Service>> getServices(Pageable pageable) {
     logger.info("Requested for services for page : {}", pageable.getPageNumber());
     Page<Service> services = this.serviceRepo.findAll(pageable);
@@ -254,7 +261,7 @@ public class AMCAdminController {
     return new ResponseEntity<Page<Service>>(services, HttpStatus.OK);
   }
 
-  @RequestMapping(path = "/services/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(path = "/services/{id}")
   public ResponseEntity<Service> getService(@PathVariable String id) {
     Service service = getServiceObject(id);
     return new ResponseEntity<Service>(service, HttpStatus.OK);

@@ -23,7 +23,7 @@ public interface AssetRepository
 
   public Asset findByIdAndAssetOwner(String id, String username);
 
-  public List<Asset> findByParendId(String id);
+  public List<Asset> findByParentId(String id);
 
   // public Asset findById(String assetId);
 

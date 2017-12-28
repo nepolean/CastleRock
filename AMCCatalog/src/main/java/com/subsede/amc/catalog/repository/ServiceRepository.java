@@ -11,7 +11,8 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import com.subsede.amc.catalog.model.Service;
 
 public interface ServiceRepository
-    extends MongoRepository<Service, String>, PagingAndSortingRepository<Service, String> {
+    extends MongoRepository<Service, String>, 
+            PagingAndSortingRepository<Service, String> {
 
   @Query("{'isActive': true, 'isDeleted':false}}")
   public Page<Service> findValidServices(Pageable page);
