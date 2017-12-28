@@ -1,30 +1,30 @@
 # Created by .ignore support plugin (hsz.mobi)
-	.metadata/
-	.recommenders/
-	AMC/.classpath
-	AMC/.gitignore
-	AMC/.project
-	AMC/.settings/
-	AMCCatalog/.classpath
-	AMCCatalog/.gitignore
-	AMCCatalog/.project
-	AMCCatalog/.settings/
-	CommonUtils/.classpath
-	CommonUtils/.gitignore
-	CommonUtils/.project
-	CommonUtils/.settings/
-	JobExecutionEngine/.classpath
-	JobExecutionEngine/.gitignore
-	JobExecutionEngine/.project
-	JobExecutionEngine/.settings/
-	Notification/.classpath
-	Notification/.gitignore
-	Notification/.project
-	Notification/.settings/
-	Notification/Recovery_75465697535940_1598924227
-	RemoteSystemsTempFiles/
-	UserForum/.classpath
-	UserForum/.gitignore
-	UserForum/.project
-	UserForum/.settings/
+.metadata/
+.recommenders/
+AMC/.classpath
+AMC/.gitignore
+AMC/.project
+AMC/.settings/
+AMCCatalog/.classpath
+AMCCatalog/.gitignore
+AMCCatalog/.project
+AMCCatalog/.settings/
+CommonUtils/.classpath
+CommonUtils/.gitignore
+CommonUtils/.project
+CommonUtils/.settings/
+JobExecutionEngine/.classpath
+JobExecutionEngine/.gitignore
+JobExecutionEngine/.project
+JobExecutionEngine/.settings/
+Notification/.classpath
+Notification/.gitignore
+Notification/.project
+Notification/.settings/
+Notification/Recovery_75465697535940_1598924227
+RemoteSystemsTempFiles/
+UserForum/.classpath
+UserForum/.gitignore
+UserForum/.project
+UserForum/.settings/
 
