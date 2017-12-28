@@ -1,3 +1,5 @@
+import { Tax } from "app/admin-account/tax/tax";
+
 export class MaintenanceService {
 
   public id: string;
@@ -5,6 +7,7 @@ export class MaintenanceService {
   public description: string;
   public applicableTo: string[];
   public amenities: string[];
+  public skills: string[];
   public category: string;
   public canSubscribe: boolean;
   public canRequestOneTime: boolean;
@@ -13,6 +16,7 @@ export class MaintenanceService {
   public deleted: boolean;
   public subscriptionServiceData: any;
   public oneTimeServiceData: any;
+  public tax: Tax;
   constructor() {}
 
 }

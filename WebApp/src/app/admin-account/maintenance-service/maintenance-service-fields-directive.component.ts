@@ -4,7 +4,8 @@ import { FormValidationMessageService } from '../../common/page-utils/form/form-
 import { MaintenanceService } from './maintenance-service';
 import { IMyOptions, IMyDateRangeModel } from 'mydaterangepicker';
 import { Category } from 'app/admin-account/maintenance-service/category';
-import { Tax } from '../../common/objects/tax'
+import { Tax } from 'app/admin-account/tax/tax';
+
 @Component({
     moduleId: module.id,
     selector: 'maintenance-service-fields',
@@ -49,6 +50,10 @@ export class MaintenanceServiceFieldsDirective {
         this.getTaxes();
     }
     getTaxes() {
+        console.log("get taxes");
+        this.taxes.push(
+           new Tax(1, "GST", 5));
+        console.log("get taxes", this.taxes);
         //TODO need to implement api here
     }
     

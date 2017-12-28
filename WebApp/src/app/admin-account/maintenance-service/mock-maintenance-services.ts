@@ -14,6 +14,14 @@ export const MAINTENANCESERVICES: MaintenanceService[] = [{
   "amenities": [
     "Sewage"
   ],
+  "skills": [
+    "Sewage"
+  ],
+  "tax": {
+    "id": "1",
+    "type": "GST",
+    "percentage": 5
+  },
   "subscriptionServiceData": {
     "subscriptionData": [
       {
