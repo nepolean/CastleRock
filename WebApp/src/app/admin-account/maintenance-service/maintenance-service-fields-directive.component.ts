@@ -2,39 +2,70 @@ import { Component, Input, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { FormValidationMessageService } from '../../common/page-utils/form/form-validation-message.service';
 import { MaintenanceService } from './maintenance-service';
-import { IMyOptions, IMyDateRangeModel} from 'mydaterangepicker';
-
+import { IMyOptions, IMyDateRangeModel } from 'mydaterangepicker';
+import { Category } from 'app/admin-account/maintenance-service/category';
+import { Tax } from '../../common/objects/tax'
 @Component({
-  moduleId: module.id,
-  selector: 'maintenance-service-fields',
-  templateUrl: 'maintenance-service-fields-directive.html'
+    moduleId: module.id,
+    selector: 'maintenance-service-fields',
+    templateUrl: 'maintenance-service-fields-directive.html'
 })
+
 //export class MaintenanceServiceFieldsDirective implements OnInit {
 export class MaintenanceServiceFieldsDirective {
 
     @Input() maintenanceService: MaintenanceService;
     @Input() editMode: boolean;
 
+    category: Category = new Category();
+    categoryNames: string[] = this.category.getCategories();
+    amenityTypes: string[] = [];
+    skillTypes: string[] = [];
+    taxes: Tax[] = [];
+
+
+    private onCategorySelection(categoryName): void {
+        console.log("category selected", categoryName);
+        if (categoryName == "ASSET") {
+            this.amenityTypes = this.category.getAmenities(categoryName);
+            console.log("amenties ", this.amenityTypes);
+        } else
+            this.onAmenitySelection(categoryName, null);
+    }
+
+    onAmenitySelection(categoryName: string, amenityNames: string[]) {
+        console.log("categoryName :", categoryName);
+        console.log("amenityNames : ", amenityNames);
+        this.skillTypes = this.category.getSkills(categoryName, amenityNames);
+    }
+
     private myDateRangePickerOptions: IMyOptions = {};
     private dateRange: Object = {};
 
     constructor(private FormValidationMessageService: FormValidationMessageService) {
-
     }
 
-    /*ngOnInit(): void {
+    ngOnInit(): void {
+        this.getTaxes();
+    }
+    getTaxes() {
+        //TODO need to implement api here
+    }
+    
+    /* ngOnInit(): void {
         this.setDateRangeOptions();
         this.setDateRange();
-    }
+    } 
 
+   
     private setDateRangeOptions(): void {
         const date = new Date();
         this.myDateRangePickerOptions.dateFormat = 'dd mmm yyyy';
         this.myDateRangePickerOptions.inputValueRequired = true;
         this.myDateRangePickerOptions.disableUntil = {
-                year: date.getFullYear(),
-                month: date.getMonth() + 1,
-                day: date.getDate()
+            year: date.getFullYear(),
+            month: date.getMonth() + 1,
+            day: date.getDate()
         };
         this.myDateRangePickerOptions.editableDateRangeField = false;
         this.myDateRangePickerOptions.indicateInvalidDateRange = true;
@@ -66,5 +97,5 @@ export class MaintenanceServiceFieldsDirective {
         // event properties are: event.date, event.jsdate, event.formatted and event.epoc
         this.maintenanceService.validFrom = event.beginJsDate ? event.beginJsDate.toISOString().slice(0, 10) : '';
         this.maintenanceService.validTo = event.endJsDate ? event.endJsDate.toISOString().slice(0, 10) : '';
-    }*/
+    } */
 }
