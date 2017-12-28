@@ -50,10 +50,11 @@ export class MaintenanceServiceFieldsDirective {
         this.getTaxes();
     }
     getTaxes() {
-        console.log("get taxes");
-        this.taxes.push(
-           new Tax(1, "GST", 5));
-        console.log("get taxes", this.taxes);
+        var newTax = new Tax();
+        newTax.id = '1';
+        newTax.type = 'GST';
+        newTax.percentage = 5;
+        this.taxes.push(newTax);
         //TODO need to implement api here
     }
     
