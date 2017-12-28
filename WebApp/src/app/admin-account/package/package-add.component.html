@@ -3,19 +3,24 @@
 		<div style="border-bottom: 1px solid black;">
 			<h1 class="dashboard-heading">Add Package</h1>
 		</div>
-		<form class="form-inline dashboard-action-form">
-			<div class="btn-group">
-				<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" title="Action menu">
-					<i class="fa fa-list fa-lg"></i>
-				</button>
-				<ul class="dropdown-menu">
-					<li><a routerLink="/admin-dashboard/packages"><i class="fa fa-list" style="padding-right: 5px"></i>List Packages</a></li>
-				</ul>
+		<ul class="nav nav-tabs">
+				<li class="active"><a data-toggle="tab" href="#home">Subscription</a></li>
+				<li><a data-toggle="tab" href="#menu1">Non Subscription</a></li>
+		</ul>			  
+		<div class="tab-content">
+			<div id="home" class="tab-pane fade in active">
+				<h3>Subscription</h3>
+				<p>Some content.</p>
 			</div>
-		</form>
+			<div id="menu1" class="tab-pane fade">
+				<h3>NonSubscription</h3>
+				<p>Some content in menu 1.</p>
+			</div>
+		</div>
 	</div>
 </div>
-<div class="row">
+
+<!-- <div class="row">
 	<div class="col-xs-12">
 		<form role="form" #packageForm="ngForm" (ngSubmit)="onSubmit()">
 			<fieldset>
@@ -48,4 +53,4 @@
 			</fieldset>
 		</form>
 	</div>
-</div>
+</div> -->
