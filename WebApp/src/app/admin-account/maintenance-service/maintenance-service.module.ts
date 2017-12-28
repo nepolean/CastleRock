@@ -15,6 +15,7 @@ import { MaintenanceServicePaginatorComponent } from './maintenance-service-pagi
 import { MaintenanceServiceEditComponent } from './maintenance-service-edit.component';
 import { MaintenanceServiceAddComponent } from './maintenance-service-add.component';
 import { MaintenanceServiceService } from './mock-maintenance-service.service';
+import { RealMaintenanceServiceService } from 'app/admin-account/maintenance-service/maintenance-service.service';
 
 @NgModule({
   imports: [
@@ -37,7 +38,8 @@ import { MaintenanceServiceService } from './mock-maintenance-service.service';
     MaintenanceServiceEditComponent
   ],
   providers: [
-    MaintenanceServiceService
+    MaintenanceServiceService,
+    RealMaintenanceServiceService
   ]
 })
 export class MaintenanceServiceModule { }

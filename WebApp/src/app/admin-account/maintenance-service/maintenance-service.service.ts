@@ -8,9 +8,10 @@ export class RealMaintenanceServiceService {
 
   private headers = new Headers({
     'Content-Type': 'application/json',
-    'Accept': 'application/json'
+    'Accept': 'application/json',
+    'Access-Control-Allow-Origin': 'http://localhost'
   });
-  private servicesUrl = '/api/v1/admin/services';
+  private servicesUrl = '/api/v1/admin/service/asset';
   constructor(private http: Http) { }
 
   getMaintenanceServices(filters?: any): Observable<Response> {

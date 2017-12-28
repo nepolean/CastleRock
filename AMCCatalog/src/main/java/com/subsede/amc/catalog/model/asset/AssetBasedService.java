@@ -53,7 +53,7 @@ public class AssetBasedService extends BaseService implements Serializable {
       String description,
       List<AssetType> applicableTo,
       List<String> amenities,
-      ServiceType serviceType) {
+      List<String> serviceType) {
     super(Category.ASSET, name, description, serviceType);
     this.applicableTo = applicableTo;
     this.amenities = amenities;

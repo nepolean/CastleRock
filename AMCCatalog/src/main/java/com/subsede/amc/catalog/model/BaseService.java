@@ -2,6 +2,7 @@ package com.subsede.amc.catalog.model;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -29,8 +30,8 @@ public abstract class BaseService extends BaseMasterEntity implements Service {
   @NotBlank(message = "Description should not be empty.")
   protected String description;
   
-  @NotNull(message = "ServiceType cannot be null.")
-  ServiceType serviceType;
+  @NotNull(message = "Skills should not be null.")
+  List<String> skills;
   
   @DBRef
   Tax tax;
@@ -49,11 +50,11 @@ public abstract class BaseService extends BaseMasterEntity implements Service {
       Category category,
       String name,
       String description,
-      ServiceType serviceType) {
+      List<String> serviceType) {
     this.category = category;
     this.name = name;
     this.description = description;
-    this.serviceType = serviceType;
+    this.skills = serviceType;
   }
 
   public String getId() {
@@ -93,12 +94,12 @@ public abstract class BaseService extends BaseMasterEntity implements Service {
     this.category = Category.valueOf(category);
   }
 
-  public ServiceType getServiceType() {
-    return serviceType;
+  public List<String> getSkills() {
+    return skills;
   }
 
-  public void setServiceType(ServiceType serviceType) {
-    this.serviceType = serviceType;
+  public void setSkills(List<String> serviceType) {
+    this.skills = serviceType;
   }
 
   public void setSubscriptionData(ServiceMetadata subcriptionData) {

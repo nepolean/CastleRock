@@ -12,7 +12,7 @@ public class JobType {
       return new AssetBasedJob(
           service.getName(),
           metadata.getAsset(),
-          service.getServiceType(),
+          service.getSkills(),
           metadata.getSource(),
           metadata.getUniqueId());
     case LEGAL:
@@ -20,7 +20,7 @@ public class JobType {
       return new LegalJob(
           service.getName(),
           legalData.getDocuments(),
-          service.getServiceType(),
+          service.getSkills(),
           legalData.getSource(),
           legalData.getUniqueId(),
           customer);
@@ -28,7 +28,7 @@ public class JobType {
       PaymentMetadata4Job pmtData = (PaymentMetadata4Job) jobMetadata;
       return new BillPaymentJob(
           service.getName(),
-          service.getServiceType(),
+          service.getSkills(),
           pmtData.getSource(),
           pmtData.getUniqueId(),
           customer);

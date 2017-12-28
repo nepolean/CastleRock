@@ -1,12 +1,14 @@
 package com.subsede.amc.catalog.model;
 
+import java.util.List;
+
 public class GeneralService extends BaseService {
 
   public GeneralService(
       Category category,
       String name,
       String description,
-      ServiceType serviceType) {
+      List<String> serviceType) {
     super(category, name, description, serviceType);
   }
 

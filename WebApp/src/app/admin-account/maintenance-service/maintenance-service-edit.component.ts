@@ -6,7 +6,7 @@ import { MaintenanceServiceAbstractFormComponent } from './maintenance-service-a
 import { MaintenanceService } from './maintenance-service';
 import { SubscriptionPlan } from './service-data';
 import { OneTimePlan } from './service-data';
-import { MaintenanceServiceService } from './mock-maintenance-service.service';
+import { RealMaintenanceServiceService } from './maintenance-service.service';
 import { MaintenanceServiceFieldsDirective } from './maintenance-service-fields-directive.component';
 import { SubscriptionPlanFieldsDirective } from './subscription-plan-fields-directive.component';
 import 'rxjs/add/operator/switchMap';
@@ -28,7 +28,7 @@ export class MaintenanceServiceEditComponent extends MaintenanceServiceAbstractF
     constructor(
         protected router: Router,
         protected route: ActivatedRoute,
-        protected maintenanceServiceService: MaintenanceServiceService,
+        protected maintenanceServiceService: RealMaintenanceServiceService,
         protected FormValidationMessageService: FormValidationMessageService) {
             super(router, route, maintenanceServiceService, FormValidationMessageService);
     }

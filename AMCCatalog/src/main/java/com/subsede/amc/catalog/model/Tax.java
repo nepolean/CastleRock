@@ -21,6 +21,10 @@ public class Tax extends BaseMasterEntity {
   public Tax() {
 
   }
+  
+  public Tax(String id) {
+    this.id = id;
+  }
 
   public Tax(String type, double percentage) {
     this.type = type;

@@ -5,6 +5,7 @@ import { FormValidationMessageService } from '../../common/page-utils/form/form-
 import { AbstractFormComponent } from '../../common/page-utils/form/abstract-form.component';
 import { MaintenanceService } from './maintenance-service';
 import { MaintenanceServiceService } from './mock-maintenance-service.service';
+import { RealMaintenanceServiceService } from 'app/admin-account/maintenance-service/maintenance-service.service';
 
 @Component({
   moduleId: module.id,
@@ -18,7 +19,7 @@ export class MaintenanceServiceAbstractFormComponent extends AbstractFormCompone
     constructor(
         protected router: Router,
         protected route: ActivatedRoute,
-        protected maintenanceServiceService: MaintenanceServiceService,
+        protected maintenanceServiceService: RealMaintenanceServiceService,
         protected FormValidationMessageService: FormValidationMessageService) {
             super();
     }

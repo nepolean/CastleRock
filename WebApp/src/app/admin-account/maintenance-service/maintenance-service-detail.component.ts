@@ -6,7 +6,7 @@ import { MaintenanceServiceAbstractFormComponent } from './maintenance-service-a
 import { MaintenanceServiceActionButtonsDirective } from './maintenance-service-action-buttons-directive.component';
 import { MaintenanceServiceActionModalsDirective } from './maintenance-service-action-modals-directive.component';
 import { MaintenanceService } from './maintenance-service';
-import { MaintenanceServiceService } from './mock-maintenance-service.service';
+import { RealMaintenanceServiceService } from './maintenance-service.service';
 import 'rxjs/add/operator/switchMap';
 
 @Component({
@@ -21,7 +21,7 @@ export class MaintenanceServiceDetailComponent extends MaintenanceServiceAbstrac
     constructor(
         protected router: Router,
         protected route: ActivatedRoute,
-        protected maintenanceServiceService: MaintenanceServiceService,
+        protected maintenanceServiceService: RealMaintenanceServiceService,
         protected FormValidationMessageService: FormValidationMessageService) {
             super(router, route, maintenanceServiceService, FormValidationMessageService);
     }

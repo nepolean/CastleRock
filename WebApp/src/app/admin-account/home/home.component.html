@@ -24,7 +24,7 @@
 							<span class="fa fa-lg">6</span>
 							<span class="dashboard-tile-title">Users</span>
 						</li>
-						<li>
+						<li [attr.class]="router.url.indexOf('/admin-dashboard/packages') != -1 ? 'active' : ''" (click)="goToLink('/admin-dashboard/packages')">
 							<span class="fa fa-lg">8</span>
 							<span class="dashboard-tile-title">Packages</span>
 						</li>

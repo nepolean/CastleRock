@@ -4,7 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormValidationMessageService } from '../../common/page-utils/form/form-validation-message.service';
 import { AbstractFormComponent } from '../../common/page-utils/form/abstract-form.component';
 import { MaintenanceService } from './maintenance-service';
-import { MaintenanceServiceService } from './mock-maintenance-service.service';
+import { RealMaintenanceServiceService } from './maintenance-service.service';
 import { MaintenanceServiceFieldsDirective } from './maintenance-service-fields-directive.component';
 
 @Component({
@@ -21,7 +21,7 @@ export class MaintenanceServiceAddComponent extends AbstractFormComponent {
     constructor(
         private router: Router,
         private route: ActivatedRoute,
-        private maintenanceServiceService: MaintenanceServiceService,
+        private maintenanceServiceService: RealMaintenanceServiceService,
         private FormValidationMessageService: FormValidationMessageService) {
             super();
     }

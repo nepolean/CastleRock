@@ -1,5 +1,6 @@
 package com.subsede.amc.catalog.model;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -22,7 +23,7 @@ public interface Service extends Product {
    * provides information about the skills needed to perform the job
    * 
    */
-  public abstract ServiceType getServiceType();
+  public abstract List<String> getSkills();
 
   public abstract boolean canSubscribe();
   

@@ -6,7 +6,7 @@ import { MaintenanceServiceAbstractFormComponent } from './maintenance-service-a
 import { MaintenanceService } from './maintenance-service';
 import { Paginator } from '../../common/page-utils/paginator/paginator';
 import { MaintenanceServicePaginatorComponent } from './maintenance-service-paginator.component';
-import { MaintenanceServiceService } from './mock-maintenance-service.service';
+import { RealMaintenanceServiceService } from './maintenance-service.service';
 import { MaintenanceServiceFieldsDirective } from './maintenance-service-fields-directive.component';
 import 'rxjs/add/operator/switchMap';
 
@@ -24,7 +24,7 @@ export class MaintenanceServiceComponent extends MaintenanceServiceAbstractFormC
     constructor(
         protected router: Router,
         protected route: ActivatedRoute,
-        protected maintenanceServiceService: MaintenanceServiceService,
+        protected maintenanceServiceService: RealMaintenanceServiceService,
         protected FormValidationMessageService: FormValidationMessageService) {
             super(router, route, maintenanceServiceService, FormValidationMessageService);
     }

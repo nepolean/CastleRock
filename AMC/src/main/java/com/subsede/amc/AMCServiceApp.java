@@ -8,9 +8,13 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import com.real.proj.amc.unit.test.ServiceTestHelper;
 import com.subsede.amc.catalog.model.AMCPackage;
@@ -183,4 +187,15 @@ public class AMCServiceApp implements CommandLineRunner {
       System.out.println("Dummy Technician Saved");
     }
   }
+  
+  @Bean
+  public WebMvcConfigurer corsConfigurer() {
+      return new WebMvcConfigurerAdapter() {
+          @Override
+          public void addCorsMappings(CorsRegistry registry) {
+              registry.addMapping("/*").allowedOrigins("http://localhost");
+          }
+      };
+  }
+
 }

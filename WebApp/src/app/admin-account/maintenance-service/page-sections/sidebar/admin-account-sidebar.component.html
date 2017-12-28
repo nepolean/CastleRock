@@ -1,0 +1,92 @@
+<!-- Sidebar -->
+<div id="sidebar">
+	<ul id="sidebar-menu" class="sidebar-nav">
+		<li class="sidebar-brand">
+			<a id="sidebar-menu-toggle" (click)="toggleSideBar()">
+				<span style="float: left">Dashboard</span>
+				<span id="sidebar-main-icon" class="glyphicon glyphicon-align-justify"></span>
+			</a>
+		</li>
+	</ul>
+	<ul class="sidebar-nav">
+		<li>
+			<a [attr.class]="router.url.indexOf('/admin-dashboard/home/messages') != -1 ? 'active' : ''" routerLink="/admin-dashboard/home/messages" title="Home">
+				<span style="float: left">Home</span>
+				<span class="sidebar-sub-icon glyphicon fa fa-home fa-lg"></span>
+			</a>
+		</li>
+		<li>
+			<a [attr.class]="router.url.indexOf('/admin-dashboard/users') != -1 ? 'active' : ''" routerLink="/admin-dashboard/users" title="Users">
+				<span style="float: left">Users</span>
+				<span class="sidebar-sub-icon glyphicon fa fa-user fa-lg"></span>
+			</a>
+		</li>
+		<li>
+			<a title="Packages">
+				<span style="float: left">Packages</span>
+				<span class="sidebar-sub-icon glyphicon fa fa-briefcase fa-lg"></span>
+			</a>
+		</li>
+		<li>
+			<a [attr.class]="router.url.indexOf('/admin-dashboard/services') != -1 ? 'active' : ''" routerLink="/admin-dashboard/services" title="Services">
+				<span style="float: left">Services</span>
+				<span class="sidebar-sub-icon glyphicon fa fa-tasks fa-lg"></span>
+			</a>
+		</li>
+		<li>
+			<a [attr.class]="router.url.indexOf('/admin-dashboard/taxes') != -1 ? 'active' : ''" routerLink="/admin-dashboard/taxes" title="Taxes">
+				<span style="float: left">Taxes</span>
+				<span class="sidebar-sub-icon glyphicon fa fa-rupee fa-lg"></span>
+			</a>
+		</li>
+		<li>
+			<a [attr.class]="router.url.indexOf('/admin-dashboard/coupons') != -1 ? 'active' : ''" routerLink="/admin-dashboard/coupons" title="Coupons">
+				<span style="float: left">Coupons</span>
+				<span class="sidebar-sub-icon glyphicon fa fa-ticket fa-lg"></span>
+			</a>
+		</li>
+		<!--<li>
+			<a [attr.class]="router.url.indexOf('/dashboard/service') != -1 ? 'active' : ''" routerLink="/dashboard/service" title="Services">
+				<span style="float: left">Services</span>
+				<span class="sidebar-sub-icon glyphicon fa fa-tasks fa-lg"></span>
+			</a>
+		</li>
+		<li>
+			<a [attr.class]="router.url.indexOf('/dashboard/subscription') != -1 ? 'active' : ''" routerLink="/dashboard/subscription" title="Subscriptions">
+				<span style="float: left">Subscriptions</span>
+				<span class="sidebar-sub-icon glyphicon fa fa-newspaper-o fa-lg"></span>
+			</a>
+		</li>
+		<li>
+			<a [attr.class]="router.url.indexOf('/dashboard/property') != -1 ? 'active' : ''" routerLink="/dashboard/property" title="Properties">
+				<span style="float: left">Properties</span>
+				<span class="sidebar-sub-icon glyphicon fa fa-building-o fa-lg"></span>
+			</a>
+		</li>
+		<li>
+			<a title="Communities">
+				<span style="float: left">Communities</span>
+				<span class="sidebar-sub-icon glyphicon fa fa-group fa-lg"></span>
+			</a>
+		</li>
+		<li>
+			<a title="Payments">
+				<span style="float: left">Payments</span>
+				<span class="sidebar-sub-icon glyphicon fa fa-money fa-lg"></span>
+			</a>
+		</li>
+		<li>
+			<a [attr.class]="router.url.indexOf('/dashboard/ticket') != -1 ? 'active' : ''" routerLink="/dashboard/ticket" title="Help Center">
+				<span style="float: left">Help Center</span>
+				<span class="sidebar-sub-icon glyphicon fa fa-life-ring fa-lg"></span>
+			</a>
+		</li>-->
+		<li>
+			<a [attr.class]="router.url.indexOf('/admin-dashboard/profile') != -1 ? 'active' : ''" routerLink="/admin-dashboard/profile-edit" title="Profile">
+				<span style="float: left">Profile</span>
+				<span class="sidebar-sub-icon glyphicon fa fa-info fa-lg"></span>
+			</a>
+		</li>
+	</ul>
+</div>
+<!--/#Sidebar -->

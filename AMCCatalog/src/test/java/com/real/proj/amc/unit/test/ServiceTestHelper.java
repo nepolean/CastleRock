@@ -1,6 +1,7 @@
 package com.real.proj.amc.unit.test;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +59,7 @@ public class ServiceTestHelper {
     String desc = "The plumbing service takes care of plumbing needs.";
     List<AssetType> applicableTo = createSampleApplicableList();
     List<String> amenities = createSampleAmenities();
-    return new AssetBasedService(name, desc, applicableTo, amenities, Category.ASSET.getServiceTypes()[0]);
+    return new AssetBasedService(name, desc, applicableTo, amenities, Collections.emptyList());
   }
 
   static List<AssetType> createSampleApplicableList() {

@@ -29,9 +29,12 @@ export class Category {
 			amenityNames.push('default');
 		}
 		for (let amenityName of amenityNames) {
-			let skill: string = this.categories[categoryName][amenityName];
-			skills.push(skill);
+			let skillArray: string[] = this.categories[categoryName][amenityName];			
+			for(let skill of skillArray){
+				skills.push(skill);
+			}
 		}
+		console.log("skills array",skills);
 		return skills;
 	}
 }
