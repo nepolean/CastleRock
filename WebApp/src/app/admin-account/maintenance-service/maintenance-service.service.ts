@@ -10,7 +10,7 @@ export class RealMaintenanceServiceService {
     'Content-Type': 'application/json',
     'Accept': 'application/json'
   });
-  private servicesUrl = '/api/admin/services';
+  private servicesUrl = '/api/v1/admin/services';
   constructor(private http: Http) { }
 
   getMaintenanceServices(filters?: any): Observable<Response> {
