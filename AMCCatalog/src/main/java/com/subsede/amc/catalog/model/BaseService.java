@@ -1,5 +1,8 @@
 package com.subsede.amc.catalog.model;
 
+import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.PROPERTY;
+import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -14,11 +17,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
-public abstract class BaseService extends BaseMasterEntity implements Service {
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.subsede.amc.catalog.model.asset.AssetBasedService;
+
+@JsonTypeInfo(use = NAME, include = PROPERTY, property = "type")
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = AssetBasedService.class, name = "AssetService"),
+    @JsonSubTypes.Type(value = GeneralService.class, name = "GenericService")
+})
+public class BaseService extends BaseMasterEntity implements Service {
   
   private static Logger logger = LoggerFactory.getLogger(BaseService.class);
 
-  private static final String TYPE = "SERVICE";
+  protected String type = "SERVICE";
   
   protected Category category;
   
@@ -42,7 +54,7 @@ public abstract class BaseService extends BaseMasterEntity implements Service {
 
   protected Map<DeliveryMethod, TimeLine<ServiceMetadata>> detailsTracker;
 
-  protected BaseService() {
+  public BaseService() {
 
   }
 
@@ -135,9 +147,9 @@ public abstract class BaseService extends BaseMasterEntity implements Service {
 
   }
 
-  protected abstract void rejectIfDataIsNotValid(
+  protected void rejectIfDataIsNotValid(
       DeliveryMethod delivery,
-      ServiceMetadata sld);
+      ServiceMetadata sld) { }
 
   private synchronized void addToTracker(DeliveryMethod dm, ServiceMetadata sld, Date applicableFrom) {
     if (this.detailsTracker == null)
@@ -220,11 +232,11 @@ public abstract class BaseService extends BaseMasterEntity implements Service {
     return null;
   }
 
-  protected abstract UserInput<String, Object> getDefaultInput();
+  protected UserInput<String, Object> getDefaultInput() { return null;}
 
   @Override
   public String getType() {
-    return TYPE;
+    return type;
   }
 
   public boolean canSubscribe() {
@@ -249,7 +261,7 @@ public abstract class BaseService extends BaseMasterEntity implements Service {
   
   @Override
   public Optional<Tax> getTax() {
-    return Optional.of(tax);
+    return Optional.ofNullable(this.tax);
   }
 
   public static void main(String[] args) {

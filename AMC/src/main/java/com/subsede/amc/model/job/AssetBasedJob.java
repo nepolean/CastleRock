@@ -1,5 +1,7 @@
 package com.subsede.amc.model.job;
 
+import java.util.List;
+
 import com.subsede.amc.catalog.model.ServiceType;
 import com.subsede.amc.model.Asset;
 
@@ -10,7 +12,7 @@ public class AssetBasedJob extends AbstractJob {
   public AssetBasedJob(
       String name,
       Asset asset,
-      ServiceType serviceType,
+      List<String> serviceType,
       String sourceType,
       String sourceId) {
     super(name, serviceType, sourceType, sourceId, asset.getOwner());

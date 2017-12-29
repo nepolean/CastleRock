@@ -20,7 +20,7 @@ public class AbstractJob extends BaseMasterEntity implements MaintenanceJob {
   private String id;
   private String name;
   /* service related information */
-  private ServiceType serviceType;
+  private List<String> skills;
   /* source of this request */
   private String sourceType;
   private String sourceId;
@@ -35,12 +35,12 @@ public class AbstractJob extends BaseMasterEntity implements MaintenanceJob {
 
   public AbstractJob(
       String name,
-      ServiceType serviceType,
+      List<String> serviceType,
       String sourceType,
       String sourceId,
       User customer) {
     this.name = name;
-    this.serviceType = serviceType;
+    this.skills = serviceType;
     this.sourceType = sourceType;
     this.sourceId = sourceId;
     this.customer = customer;
@@ -123,12 +123,12 @@ public class AbstractJob extends BaseMasterEntity implements MaintenanceJob {
     this.name = name;
   }
 
-  public ServiceType getServiceType() {
-    return serviceType;
+  public List<String> getSkills() {
+    return skills;
   }
 
-  public void setServiceType(ServiceType serviceType) {
-    this.serviceType = serviceType;
+  public void setSkills(List<String> serviceType) {
+    this.skills = serviceType;
   }
 
   public String getSourceType() {

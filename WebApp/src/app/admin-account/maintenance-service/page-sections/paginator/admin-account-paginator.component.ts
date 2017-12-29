@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { Paginator } from '../../../common/page-utils/paginator/paginator';
-import { AbstractPaginatorComponent } from '../../../common/page-utils/paginator/abstract-paginator.component';
+import { AbstractPaginatorComponent } from 'app/common/page-utils/paginator/abstract-paginator.component';
+import { Paginator } from 'app/common/page-utils/paginator/paginator';
 
 @Component({
   moduleId: module.id,

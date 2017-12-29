@@ -26,7 +26,7 @@ public class AgentViewController {
   }
   
   public Page<Asset> getMyAssets() {
-    
+    return null;
   }
   
 

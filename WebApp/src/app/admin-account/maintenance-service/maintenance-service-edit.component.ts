@@ -18,121 +18,128 @@ import 'rxjs/add/operator/switchMap';
 })
 export class MaintenanceServiceEditComponent extends MaintenanceServiceAbstractFormComponent implements OnInit {
 
-    private maintenanceService: MaintenanceService = new MaintenanceService();
-    private selectedSubscriptionPlan: SubscriptionPlan = new SubscriptionPlan();
-    private subscriptionPlan: SubscriptionPlan = new SubscriptionPlan();
-    private selectedOneTimePlan: OneTimePlan = new OneTimePlan();
-    private oneTimePlan: OneTimePlan = new OneTimePlan();
-    private editMode: boolean = true;
+  private maintenanceService: MaintenanceService = new MaintenanceService();
+  private selectedSubscriptionPlan: SubscriptionPlan = new SubscriptionPlan();
+  private subscriptionPlan: SubscriptionPlan = new SubscriptionPlan();
+  private selectedOneTimePlan: OneTimePlan = new OneTimePlan();
+  private oneTimePlan: OneTimePlan = new OneTimePlan();
+  private editMode: boolean = true;
 
-    constructor(
-        protected router: Router,
-        protected route: ActivatedRoute,
-        protected maintenanceServiceService: RealMaintenanceServiceService,
-        protected FormValidationMessageService: FormValidationMessageService) {
-            super(router, route, maintenanceServiceService, FormValidationMessageService);
-    }
+  constructor(
+    protected router: Router,
+    protected route: ActivatedRoute,
+    protected maintenanceServiceService: RealMaintenanceServiceService,
+    protected FormValidationMessageService: FormValidationMessageService) {
+    super(router, route, maintenanceServiceService, FormValidationMessageService);
+  }
 
-    ngOnInit(): void {
-        this.route.params
-            .switchMap((params: Params) => this.maintenanceServiceService.getMaintenanceService(params['id']))
-            .subscribe(
-                response => this.handleSuccess(response),
-                error => this.handleError(error)
-        );
-    }
+  ngOnInit(): void {
+    this.route.params
+      .switchMap((params: Params) => this.maintenanceServiceService.getMaintenanceService(params['id']))
+      .subscribe(
+      response => this.handleSuccess(response),
+      error => this.handleError(error)
+      );
+  }
 
-    public handleSuccess(successResponse: any): void {
-        this.maintenanceService = successResponse.json() as MaintenanceService;
+  public handleSuccess(successResponse: any): void {
+    this.maintenanceService = successResponse.json() as MaintenanceService;
+    console.log('Maintenance Service', this.maintenanceService);
+    console.log(this.maintenanceService.subscriptionServiceData);
+    if (this.maintenanceService.subscriptionServiceData == null) {
+      this.maintenanceService.subscriptionServiceData = {};
+      this.maintenanceService.subscriptionServiceData.subscriptionData = [];
     }
+  }
 
-    private updateMaintenanceService(): void {
-        this.setLoadingState();
-        this.maintenanceServiceService.updateMaintenanceService(this.maintenanceService)
-        .subscribe(
-            response => this.handleUpdatedSuccess(response),
-            error => this.handleError(error)
-        );
-    }
+  private updateMaintenanceService(): void {
+    this.setLoadingState();
+    this.maintenanceServiceService.updateMaintenanceService(this.maintenanceService)
+      .subscribe(
+      response => this.handleUpdatedSuccess(response),
+      error => this.handleError(error)
+      );
+  }
 
-    private onSubmit(): void {
-        this.updateMaintenanceService();
-    }
+  private onSubmit(): void {
+    this.updateMaintenanceService();
+  }
 
-    public handleUpdatedSuccess(successResponse: any): void {
-        super.handleSuccess(successResponse);
-        this.goToNext();
-        //this.router.navigate(['/admin-dashboard/services/view', this.maintenanceService.id]);
-    }
+  public handleUpdatedSuccess(successResponse: any): void {
+    super.handleSuccess(successResponse);
+    this.goToNext();
+    //this.router.navigate(['/admin-dashboard/services/view', this.maintenanceService.id]);
+  }
 
-    private selectSubscriptionPlan(subscriptionPlan: SubscriptionPlan): void {
-        this.selectedSubscriptionPlan = subscriptionPlan;
-    }
+  private selectSubscriptionPlan(subscriptionPlan: SubscriptionPlan): void {
+    this.selectedSubscriptionPlan = subscriptionPlan;
+  }
 
-    private editSubscriptionPlan(): void {
-        this.selectedSubscriptionPlan.discount = this.selectedSubscriptionPlan.subscriptionPrice * this.selectedSubscriptionPlan.discountPct / 100;
-    }
+  private editSubscriptionPlan(): void {
+    this.selectedSubscriptionPlan.discount = this.selectedSubscriptionPlan.subscriptionPrice * this.selectedSubscriptionPlan.discountPct / 100;
+  }
 
-    private addSubscriptionPlan(): void {
-        let newSubscriptionPlan = new SubscriptionPlan();
-        newSubscriptionPlan.name = this.subscriptionPlan.name;
-        newSubscriptionPlan.visitCount = this.subscriptionPlan.visitCount;
-        newSubscriptionPlan.subscriptionPrice = this.subscriptionPlan.subscriptionPrice;
-        newSubscriptionPlan.discountPct = this.subscriptionPlan.discountPct;
-        newSubscriptionPlan.discount = newSubscriptionPlan.subscriptionPrice * newSubscriptionPlan.discountPct / 100;
-        this.maintenanceService.subscriptionServiceData.subscriptionData.push(newSubscriptionPlan);
-    }
+  private addSubscriptionPlan(): void {
+    let newSubscriptionPlan = new SubscriptionPlan();
+    newSubscriptionPlan.name = this.subscriptionPlan.name;
+    newSubscriptionPlan.visitCount = this.subscriptionPlan.visitCount;
+    newSubscriptionPlan.subscriptionPrice = this.subscriptionPlan.subscriptionPrice;
+    newSubscriptionPlan.discountPct = this.subscriptionPlan.discountPct;
+    newSubscriptionPlan.discount = newSubscriptionPlan.subscriptionPrice * newSubscriptionPlan.discountPct / 100;
+    this.maintenanceService.subscriptionServiceData.subscriptionData.push(newSubscriptionPlan);
+    console.log('after adding subscription plan', this.maintenanceService);
+  }
 
-    private deleteSubscriptionPlan(subscriptionPlan: any): void {
-        this.maintenanceService.subscriptionServiceData.subscriptionData.splice(this.maintenanceService.subscriptionServiceData.subscriptionData.indexOf(this.selectedSubscriptionPlan),1);
-    }
+  private deleteSubscriptionPlan(subscriptionPlan: any): void {
+    this.maintenanceService.subscriptionServiceData.subscriptionData.splice(this.maintenanceService.subscriptionServiceData.subscriptionData.indexOf(this.selectedSubscriptionPlan), 1);
+  }
 
-    private saveSubscriptionPlan(): void {
-        this.updateSubscriptionPlan();
-    }
+  private saveSubscriptionPlan(): void {
+    this.updateSubscriptionPlan();
+  }
 
-    private updateSubscriptionPlan(): void {
-        this.setLoadingState();
-        this.maintenanceServiceService.updateSubscriptionPlan(this.maintenanceService.id, this.maintenanceService.subscriptionServiceData)
-        .subscribe(
-            response => this.handleUpdatedSuccess(response),
-            error => this.handleError(error)
-        );
-    }
+  private updateSubscriptionPlan(): void {
+    this.setLoadingState();
+    this.maintenanceServiceService.updateSubscriptionPlan(this.maintenanceService.id, this.maintenanceService.subscriptionServiceData)
+      .subscribe(
+      response => this.handleUpdatedSuccess(response),
+      error => this.handleError(error)
+      );
+  }
 
-    private selectOneTimePlan(oneTimePlan: OneTimePlan): void {
-        this.selectedOneTimePlan = oneTimePlan;
-    }
+  private selectOneTimePlan(oneTimePlan: OneTimePlan): void {
+    this.selectedOneTimePlan = oneTimePlan;
+  }
 
-    private editOneTimePlan(): void {
-    }
+  private editOneTimePlan(): void {
+  }
 
-    private addOneTimePlan(): void {
-        let newOneTimePlan = new OneTimePlan();
-        newOneTimePlan.name = this.oneTimePlan.name;
-        newOneTimePlan.price = this.oneTimePlan.price;
-        this.maintenanceService.oneTimeServiceData.oneTimeData.push(newOneTimePlan);
-    }
+  private addOneTimePlan(): void {
+    let newOneTimePlan = new OneTimePlan();
+    newOneTimePlan.name = this.oneTimePlan.name;
+    newOneTimePlan.price = this.oneTimePlan.price;
+    this.maintenanceService.oneTimeServiceData.oneTimeData.push(newOneTimePlan);
+  }
 
-    private deleteOneTimePlan(oneTimePlan: any): void {
-        this.maintenanceService.oneTimeServiceData.oneTimeData.splice(this.maintenanceService.oneTimeServiceData.oneTimeData.indexOf(this.selectedOneTimePlan),1);
-    }
+  private deleteOneTimePlan(oneTimePlan: any): void {
+    this.maintenanceService.oneTimeServiceData.oneTimeData.splice(this.maintenanceService.oneTimeServiceData.oneTimeData.indexOf(this.selectedOneTimePlan), 1);
+  }
 
-    private saveOneTimePlan(): void {
-        this.updateOneTimePlan();
-    }
+  private saveOneTimePlan(): void {
+    this.updateOneTimePlan();
+  }
 
-    private updateOneTimePlan(): void {
-        this.setLoadingState();
-        this.maintenanceServiceService.updateOneTimePlan(this.maintenanceService.id, this.maintenanceService.oneTimeServiceData)
-        .subscribe(
-            response => this.handleUpdatedSuccess(response),
-            error => this.handleError(error)
-        );
-    }
+  private updateOneTimePlan(): void {
+    this.setLoadingState();
+    this.maintenanceServiceService.updateOneTimePlan(this.maintenanceService.id, this.maintenanceService.oneTimeServiceData)
+      .subscribe(
+      response => this.handleUpdatedSuccess(response),
+      error => this.handleError(error)
+      );
+  }
 
-    private goHome(): void {
-        this.router.navigate(['/admin-dashboard/services']);
-    }
+  private goHome(): void {
+    this.router.navigate(['/admin-dashboard/services']);
+  }
 
 }

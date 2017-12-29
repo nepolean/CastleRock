@@ -11,7 +11,7 @@ export class RealMaintenanceServiceService {
     'Accept': 'application/json',
     'Access-Control-Allow-Origin': 'http://localhost'
   });
-  private servicesUrl = '/api/v1/admin/service/asset';
+  private servicesUrl = '/api/v1/admin/services';
   constructor(private http: Http) { }
 
   getMaintenanceServices(filters?: any): Observable<Response> {
@@ -19,7 +19,7 @@ export class RealMaintenanceServiceService {
     if (filters) {
       params.set('page', filters.page);
     }
-    return this.http.get(this.servicesUrl, {
+    return this.http.get(this.servicesUrl + '/all', {
       search: params
     });
   }

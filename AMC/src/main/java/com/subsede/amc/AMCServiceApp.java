@@ -1,5 +1,6 @@
 package com.subsede.amc;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -31,7 +33,9 @@ import com.subsede.amc.repository.AssetRepository;
 import com.subsede.user.config.MVCConfig;
 import com.subsede.user.config.SecurityConfig;
 import com.subsede.user.model.Customer;
+import com.subsede.user.model.user.Role;
 import com.subsede.user.model.user.User;
+import com.subsede.user.repository.user.RoleRepository;
 import com.subsede.user.repository.user.UserRepository;
 
 @SpringBootApplication
@@ -69,17 +73,30 @@ public class AMCServiceApp implements CommandLineRunner {
 
   private static final org.slf4j.Logger logger = LoggerFactory.getLogger(AMCServiceApp.class);
 
-  private UserRepository<User> userRepository;
-
+  @Autowired
+  private UserRepository<User> uRepository;
+  
+  @Autowired
+  private UserRepository<Customer> cRepository;  
+  
+  @Autowired
   private AssetRepository assetRepository;
-
+  
+  @Autowired
   private PackageRepository packageRepository;
 
+  @Autowired
   private ServiceRepository serviceRepository;
+  
+  @Autowired
+  private RoleRepository rRepository;
+  
+  @Autowired
+  private PasswordEncoder passwordEncoder;
 
   @Autowired
   public void setUserRepository(UserRepository<User> userRepository) {
-    this.userRepository = userRepository;
+    this.uRepository = userRepository;
   }
 
   @Autowired
@@ -114,14 +131,15 @@ public class AMCServiceApp implements CommandLineRunner {
     System.setProperty("ENVIRONMENT", "TEST");
     createFewUsers();
     createAsset();
-    createPackage();
+    //createPackage();
+    createSystemUsers();
     // createAgency();
   }
 
   private void createPackage() {
     List<Service> services = ServiceTestHelper.createFewServices();
     logger.info("before saved service with id {}", services);
-    services = this.serviceRepository.save(services);
+    services = (List<Service>) this.serviceRepository.save(services);
     logger.info("saved service with id {}", services.get(0).getId());
     AMCPackage pkg = new AMCPackage(Category.ASSET, "GOOD PACKAGE", "Package");
     pkg.addService(services.get(0));
@@ -136,7 +154,7 @@ public class AMCServiceApp implements CommandLineRunner {
   }
 
   private void createAsset() {
-    Customer user = (Customer) userRepository.findByEmail("user2");
+    Customer user = (Customer) uRepository.findByEmail("user2");
     logger.info("{}", user);
     if (user == null)
       return;
@@ -151,18 +169,18 @@ public class AMCServiceApp implements CommandLineRunner {
   }
 
   private void createFewUsers() {
-    User user = userRepository.findByEmail("user");
+    User user = uRepository.findByEmail("user");
     if (null == user) {
       User dummyUser = new User("Dummy", "User");
       dummyUser.setFirstName("Dummy");
       dummyUser.setLastName("Dummy");
       dummyUser.setEmail("user");
       dummyUser.setMobileNo("99999999");
-      System.out.println("User service " + userRepository);
-      userRepository.insert(dummyUser);
+      System.out.println("User service " + uRepository);
+      uRepository.insert(dummyUser);
       System.out.println("Dummy User Saved");
     }
-    Customer cust = (Customer) userRepository.findByEmail("user2");
+    Customer cust = (Customer) uRepository.findByEmail("user2");
     System.out.println("Customer 2" + cust);
     if (null == user) {
       Customer dummyUser = new Customer("Dummy2", "User", null);
@@ -170,11 +188,11 @@ public class AMCServiceApp implements CommandLineRunner {
       dummyUser.setLastName("Dummy2");
       dummyUser.setEmail("user2");
       dummyUser.setMobileNo("99999999");
-      System.out.println("User service " + userRepository);
-      userRepository.save(dummyUser);
+      System.out.println("User service " + uRepository);
+      uRepository.save(dummyUser);
       System.out.println("Dummy Customer Saved");
     }
-    Technician technician = (Technician) userRepository.findByEmail("tech1");
+    Technician technician = (Technician) uRepository.findByEmail("tech1");
     logger.info("{}", technician);
     if (null == technician) {
       Technician newTechnician = new Technician("Dummy2", "User", "dummy@email.com", "999999", null, null, null, null);
@@ -182,10 +200,80 @@ public class AMCServiceApp implements CommandLineRunner {
       newTechnician.setLastName("Electrician");
       newTechnician.setEmail("tech1");
       newTechnician.setMobileNo("99999999");
-      System.out.println("User service " + userRepository);
-      userRepository.save(newTechnician);
+      System.out.println("User service " + uRepository);
+      uRepository.save(newTechnician);
       System.out.println("Dummy Technician Saved");
     }
+  }
+  
+  public void createSystemUsers(String... args) throws Exception {
+
+    cRepository.deleteAll();
+    uRepository.deleteAll();
+    rRepository.deleteAll();
+
+    List<Role> roleList = new LinkedList<>();
+    roleList.add(new Role("USER"));
+    roleList.add(new Role("USER_ADMIN"));
+    roleList.add(new Role("ADMIN"));
+    roleList.add(new Role("TECHNICIAN"));
+    roleList.add(new Role("AGENCY"));
+    roleList.add(new Role("SUPPORT"));
+    roleList.add(new Role("CUSTOMER"));
+    rRepository.save(roleList);
+
+    List<User> userList = new LinkedList<>();
+
+    String encodedPassword = passwordEncoder.encode("password");
+    User user = new User("user1234", encodedPassword);
+    user.setEmail("user@gmail.com");
+    user.setFirstName("Arun");
+    user.setMiddleName("Kumar");
+    user.setLastName("Yathiraj");
+    user.setAccountLocked(false);
+    user.addRole(rRepository.findByName("USER"));
+    userList.add(user);
+    
+    user = new User("admin1234", encodedPassword);
+    user.setEmail("admin@gmail.com");
+    user.setFirstName("Arun");
+    user.setMiddleName("Kumar");
+    user.setLastName("Yathiraj");
+    user.setAccountLocked(false);
+    user.addRole(rRepository.findByName("ADMIN"));
+    userList.add(user);
+    uRepository.save(userList);
+
+    List<Customer> customerList = new LinkedList<>();
+    Customer customer = new Customer("arunkytg", encodedPassword, "Manyata");
+    customer.setEmail("arunkytg@gmail.com");
+    user.setFirstName("Arun");
+    user.setMiddleName("Kumar");
+    user.setLastName("Yathiraj");
+    customer.addRole(rRepository.findByName("CUSTOMER"));
+    customerList.add(customer);
+
+    customer = new Customer("yathiraj", encodedPassword, "Manyata");
+    customer.setEmail("yathiraj@gmail.com");
+    user.setFirstName("Yathiraj");
+    user.setLastName("Rangasthala");
+    customer.addRole(rRepository.findByName("ADMIN"));
+    customerList.add(customer);
+    cRepository.save(customerList);
+
+    // fetch all customers
+    System.out.println("Customers found with findAll():");
+    System.out.println("-------------------------------");
+    for (User c : cRepository.findAll()) {
+      System.out.println(c);
+    }
+    System.out.println();
+
+    // fetch an individual customer
+    System.out.println("Customer found with findByUsername('arun'):");
+    System.out.println("--------------------------------");
+    System.out.println(uRepository.findByUsername("arun"));
+
   }
   
   @Bean

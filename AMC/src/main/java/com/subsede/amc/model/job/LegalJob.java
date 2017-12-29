@@ -9,7 +9,12 @@ public class LegalJob extends AbstractJob {
 
   private List<String> documents;
 
-  public LegalJob(String name, List<String> documents, ServiceType serviceType, String sourceType, String sourceId,
+  public LegalJob(
+      String name, 
+      List<String> documents, 
+      List<String> serviceType, 
+      String sourceType, 
+      String sourceId,
       User customer) {
     super(name, serviceType, sourceType, sourceId, customer);
     this.documents = documents;

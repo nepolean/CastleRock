@@ -28,10 +28,15 @@ export class MaintenanceServiceFieldsDirective {
   private onCategorySelection(categoryName): void {
     console.log("category selected", categoryName);
     if (categoryName == "ASSET") {
+      this.maintenanceService.type = 'AssetService';
       this.amenityTypes = this.category.getAmenities(categoryName);
+
       console.log("amenties ", this.amenityTypes);
-    } else
+    } else { 
       this.onAmenitySelection(categoryName, null);
+      this.maintenanceService.type = 'GenericService'
+    }
+      
   }
 
   onAmenitySelection(categoryName: string, amenityNames: string[]) {
@@ -44,11 +49,15 @@ export class MaintenanceServiceFieldsDirective {
   private dateRange: Object = {};
 
   constructor(private FormValidationMessageService: FormValidationMessageService) {
+        console.log("maintenance service created ", this.maintenanceService);
   }
 
   ngOnInit(): void {
     this.getTaxes();
+    //if (this.maintenanceService)
+    //  this.onCategorySelection(this.maintenanceService.category);
   }
+
   getTaxes() {
     var newTax = new Tax();
     newTax.id = '1';

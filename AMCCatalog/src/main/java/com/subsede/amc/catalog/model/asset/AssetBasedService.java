@@ -43,8 +43,10 @@ public class AssetBasedService extends BaseService implements Serializable {
 
   // Map<Rating, List<ServiceData>> pricing;
 
-  AssetBasedService() {
+
+  public AssetBasedService() {
     super();
+    this.type = "Asset";
     this.setCategory(Category.ASSET);
   }
 

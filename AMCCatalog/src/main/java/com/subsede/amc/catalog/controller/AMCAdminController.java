@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -43,6 +44,7 @@ import com.subsede.amc.catalog.model.asset.RatingBasedSubscriptionData;
 import com.subsede.amc.catalog.repository.AmenityRepository;
 import com.subsede.amc.catalog.repository.CouponRepository;
 import com.subsede.amc.catalog.repository.PackageRepository;
+import com.subsede.amc.catalog.repository.ServiceQueryRepository;
 import com.subsede.amc.catalog.repository.ServiceRepository;
 import com.subsede.amc.catalog.repository.TaxRepository;
 import com.subsede.amc.catalog.service.GenericFCRUDService;
@@ -60,7 +62,7 @@ public class AMCAdminController {
   private TaxRepository taxRepo;
 
   private AmenityRepository amenityRepo;
-  private ServiceRepository serviceRepo;
+  private ServiceQueryRepository serviceRepo;
 
   private PackageRepository<ISubscriptionPackage> packageRepo;
 
@@ -85,7 +87,7 @@ public class AMCAdminController {
   }
 
   @Autowired
-  public void setServiceRespository(ServiceRepository serviceRepo) {
+  public void setServiceRespository(ServiceQueryRepository serviceRepo) {
     this.serviceRepo = serviceRepo;
   }
 
@@ -165,12 +167,20 @@ public class AMCAdminController {
   /******************* Service 
    * @return *****************************/
   
-  @GetMapping(path="/service/categories")
+  @GetMapping(path="/services/categories")
   public ResponseEntity<Category[]> getCategories() {
     return ResponseEntity.ok(Category.values());
   }
+  
+  @PutMapping(path="/services/{id}")
+  public ResponseEntity<BaseService> updateService(@PathVariable String id, @RequestBody @Validated BaseService service) {
+    logger.info("Updating the service with id {}", id);
+    BaseService svc = (BaseService) this.getServiceObject(id);
+    svc = this.serviceRepo.save(service);
+    return ResponseEntity.ok(svc);
+  }
 
-  @PostMapping(path = "/service/asset")
+  @PostMapping(path = "/services")
   public ResponseEntity<AssetBasedService> createNewAssetService(
       @RequestBody @Validated AssetBasedService baseService) {
     logger.info("Create new service with details {}", baseService);
@@ -178,15 +188,15 @@ public class AMCAdminController {
     return new ResponseEntity<AssetBasedService>(newService, HttpStatus.OK);
   }
 
-  @PostMapping(path = "/service/general")
+/*  @PostMapping(path = "/service/general")
   public ResponseEntity<GeneralService> createNewGeneralService(
       @RequestBody @Validated GeneralService baseService) {
     logger.info("Create new service with details {}, category {}", baseService, baseService.getCategory());
     GeneralService newService = this.serviceRepo.save(baseService);
     return new ResponseEntity<GeneralService>(newService, HttpStatus.OK);
   }
-
-  @PostMapping(path = "/service/{id}/general/subscription")
+*/
+  @PostMapping(path = "/services/{id}/general/subscription")
   public ResponseEntity<Service> setSubscriptionData(
       @PathVariable @Validated String id,
       @RequestBody @Validated SubscriptionData ratingBasedMetadata) {
@@ -194,7 +204,7 @@ public class AMCAdminController {
     return updateServiceData(id, ratingBasedMetadata);
   }
 
-  @PostMapping(path = "/service/{id}/asset/subscription")
+  @PostMapping(path = "/services/{id}/asset/subscription")
   public ResponseEntity<Service> setAssetSubscriptionData(
       @PathVariable @Validated String id,
       @RequestBody @Validated RatingBasedSubscriptionData ratingBasedMetadata) {
@@ -207,11 +217,11 @@ public class AMCAdminController {
     if (logger.isDebugEnabled())
       logger.debug("Subscription Metadata \n {}", ratingBasedMetadata);
     assetService.setSubscriptionData(ratingBasedMetadata);
-    Service newService = this.serviceRepo.save(assetService);
+    Service newService = this.serviceRepo.save((BaseService)assetService);
     return new ResponseEntity<Service>(newService, HttpStatus.OK);
   }
 
-  @PostMapping(path = "/service/{id}/general/onetime")
+  @PostMapping(path = "/services/{id}/general/onetime")
   public ResponseEntity<Service> setOneTimeData(
       @PathVariable @Validated String id,
       @RequestBody @Validated OneTimeData oneTimeData) {
@@ -219,7 +229,7 @@ public class AMCAdminController {
     return updateOneTimeData(id, oneTimeData);
   }
 
-  @PostMapping(path = "/service/{id}/asset/onetime")
+  @PostMapping(path = "/services/{id}/asset/onetime")
   public ResponseEntity<Service> setAssetOneTimeData(
       @PathVariable @Validated String id,
       @RequestBody @Validated OneTimeMetadata ratingBasedMetadata) {
@@ -232,35 +242,35 @@ public class AMCAdminController {
     if (logger.isDebugEnabled())
       logger.debug("Onetime Metadata \n {}", oneTimeData);
     assetService.setOneTimeData(oneTimeData);
-    Service newService = this.serviceRepo.save(assetService);
+    Service newService = this.serviceRepo.save((BaseService)assetService);
     return new ResponseEntity<Service>(newService, HttpStatus.OK);
   }
 
-  @PostMapping(path = "/service/{id}/enable")
+  @PostMapping(path = "/services/{id}/enable")
   public ResponseEntity<String> enableServices(@PathVariable @Validated String serviceId) {
     logger.info("Enable service ({})", serviceId);
     Service service = this.serviceRepo.findOne(serviceId);
     ((BaseService) service).setActive(true);
-    this.serviceRepo.save(service);
+    this.serviceRepo.save((BaseService)service);
     return new ResponseEntity<String>("Successfully enabled all the services.", HttpStatus.OK);
   }
 
-  @PostMapping(path = "/service/{id}/disable")
+  @PostMapping(path = "/services/{id}/disable")
   public ResponseEntity<String> disableServices(@PathVariable String serviceId) {
     logger.info("Disable service {}", serviceId);
     Service service = this.serviceRepo.findOne(serviceId);
     ((BaseService) service).setActive(false);
-    this.serviceRepo.save(service);
+    this.serviceRepo.save((BaseService)service);
     return new ResponseEntity<String>("Successfully disabled all the services.", HttpStatus.OK);
   }
 
-  @GetMapping(path = "/services")
-  public ResponseEntity<Page<Service>> getServices(Pageable pageable) {
-    logger.info("Requested for services for page : {}", pageable.getPageNumber());
-    Page<Service> services = this.serviceRepo.findAll(pageable);
+  @GetMapping(path = "/services/all")
+  public ResponseEntity<Page<BaseService>> getServices(Pageable pageable) {
+    logger.info("Requested services with page : {}", pageable.getPageNumber());
+    Page<BaseService> services = this.serviceRepo.findAll(pageable);
     if (logger.isDebugEnabled())
       logger.debug("Services loaded from DB -> {}", services);
-    return new ResponseEntity<Page<Service>>(services, HttpStatus.OK);
+    return new ResponseEntity<>(services, HttpStatus.OK);
   }
 
   @GetMapping(path = "/services/{id}")

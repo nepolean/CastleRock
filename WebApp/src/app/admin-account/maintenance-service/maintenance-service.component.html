@@ -57,7 +57,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr *ngFor="let maintenanceService of maintenanceServices" (click)="selectMaintenanceServices(maintenanceService)"
+						<tr *ngFor="let maintenanceService of maintenanceServices" (click)="selectMaintenanceService(maintenanceService)"
 							[class.selected]="maintenanceService === selectedMaintenanceService">
 							<th scope="row">
 								<a routerLink="/admin-dashboard/services/view/{{maintenanceService.id}}" title="View service">{{maintenanceService.name}}</a>

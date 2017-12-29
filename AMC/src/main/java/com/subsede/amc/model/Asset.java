@@ -1,5 +1,8 @@
 package com.subsede.amc.model;
 
+import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.PROPERTY;
+import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -19,7 +22,7 @@ import com.subsede.amc.catalog.model.asset.AssetType;
 import com.subsede.user.model.Customer;
 
 
-@JsonTypeInfo(use = com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME, include = com.fasterxml.jackson.annotation.JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonTypeInfo(use = NAME, include = PROPERTY, property = "type")
 @JsonSubTypes({
     @JsonSubTypes.Type(value = Apartment.class, name = "Apartment"),
     @JsonSubTypes.Type(value = Flat.class, name = "Flat")
