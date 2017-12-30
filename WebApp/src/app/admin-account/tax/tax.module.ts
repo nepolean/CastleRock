@@ -12,7 +12,7 @@ import { TaxActionModalsDirective } from './tax-action-modals-directive.componen
 import { TaxPaginatorComponent } from './tax-paginator.component';
 import { TaxEditComponent } from './tax-edit.component';
 import { TaxAddComponent } from './tax-add.component';
-import { TaxService } from './mock-tax.service';
+import { TaxService } from './tax.service';
 
 @NgModule({
   imports: [

@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,10 +30,10 @@ import com.subsede.amc.catalog.model.AMCPackage;
 import com.subsede.amc.catalog.model.BaseService;
 import com.subsede.amc.catalog.model.Category;
 import com.subsede.amc.catalog.model.Coupon;
-import com.subsede.amc.catalog.model.GeneralService;
 import com.subsede.amc.catalog.model.ISubscriptionPackage;
 import com.subsede.amc.catalog.model.OneTimeData;
 import com.subsede.amc.catalog.model.OneTimeMetadata;
+import com.subsede.amc.catalog.model.Rating;
 import com.subsede.amc.catalog.model.Service;
 import com.subsede.amc.catalog.model.SubscriptionData;
 import com.subsede.amc.catalog.model.SubscriptionMetadata;
@@ -45,7 +46,6 @@ import com.subsede.amc.catalog.repository.AmenityRepository;
 import com.subsede.amc.catalog.repository.CouponRepository;
 import com.subsede.amc.catalog.repository.PackageRepository;
 import com.subsede.amc.catalog.repository.ServiceQueryRepository;
-import com.subsede.amc.catalog.repository.ServiceRepository;
 import com.subsede.amc.catalog.repository.TaxRepository;
 import com.subsede.amc.catalog.service.GenericFCRUDService;
 
@@ -187,6 +187,14 @@ public class AMCAdminController {
     AssetBasedService newService = this.serviceRepo.save(baseService);
     return new ResponseEntity<AssetBasedService>(newService, HttpStatus.OK);
   }
+  
+  @DeleteMapping(path="/services/{id}")
+  public ResponseEntity<BaseService> deleteService(@PathVariable String id) {
+    logger.info("Delete service requested for service {}", id);
+    BaseService service = (BaseService) this.getServiceObject(id);
+    service.markForDeletion();
+    return ResponseEntity.ok(this.serviceRepo.save(service));
+  }
 
 /*  @PostMapping(path = "/service/general")
   public ResponseEntity<GeneralService> createNewGeneralService(
@@ -210,6 +218,21 @@ public class AMCAdminController {
       @RequestBody @Validated RatingBasedSubscriptionData ratingBasedMetadata) {
     logger.info("Set subscription data for the asset based service {}", id);
     return this.updateServiceData(id, ratingBasedMetadata);
+  }
+  
+  @PostMapping(path="/services/{id}/subscription")
+  public ResponseEntity<Service> setSubscriptionData(
+      @PathVariable String id, 
+      @RequestBody @Validated List<SubscriptionData> subscriptionData) {
+    logger.info("Setting subscription data for service {}", id);
+    BaseService service = (BaseService) this.getServiceObject(id);
+    RatingBasedSubscriptionData ratingBasedData = new RatingBasedSubscriptionData();
+    for(SubscriptionData subscription : subscriptionData) {
+      ratingBasedData.updateSubscriptionMetadata(Rating.valueOf(subscription.getName()), subscription);
+    }
+    service.setSubscriptionData(ratingBasedData);
+    this.serviceRepo.save(service);
+    return ResponseEntity.ok(service);
   }
 
   private ResponseEntity<Service> updateServiceData(String id, SubscriptionMetadata ratingBasedMetadata) {
@@ -247,18 +270,18 @@ public class AMCAdminController {
   }
 
   @PostMapping(path = "/services/{id}/enable")
-  public ResponseEntity<String> enableServices(@PathVariable @Validated String serviceId) {
-    logger.info("Enable service ({})", serviceId);
-    Service service = this.serviceRepo.findOne(serviceId);
+  public ResponseEntity<String> enableServices(@PathVariable @Validated String id) {
+    logger.info("Enable service ({})", id);
+    Service service = this.serviceRepo.findOne(id);
     ((BaseService) service).setActive(true);
     this.serviceRepo.save((BaseService)service);
     return new ResponseEntity<String>("Successfully enabled all the services.", HttpStatus.OK);
   }
 
   @PostMapping(path = "/services/{id}/disable")
-  public ResponseEntity<String> disableServices(@PathVariable String serviceId) {
-    logger.info("Disable service {}", serviceId);
-    Service service = this.serviceRepo.findOne(serviceId);
+  public ResponseEntity<String> disableServices(@PathVariable String id) {
+    logger.info("Disable service {}", id);
+    Service service = this.serviceRepo.findOne(id);
     ((BaseService) service).setActive(false);
     this.serviceRepo.save((BaseService)service);
     return new ResponseEntity<String>("Successfully disabled all the services.", HttpStatus.OK);
@@ -275,7 +298,10 @@ public class AMCAdminController {
 
   @GetMapping(path = "/services/{id}")
   public ResponseEntity<Service> getService(@PathVariable String id) {
-    Service service = getServiceObject(id);
+    logger.info("Get service with id {}", id);
+    BaseService service = (BaseService) getServiceObject(id);
+    logger.info("Loaded object is {} ", service);
+    logger.info("Tax object is {} ", service.getTax());
     return new ResponseEntity<Service>(service, HttpStatus.OK);
   }
 

@@ -5,6 +5,8 @@ import { MaintenanceService } from './maintenance-service';
 import { IMyOptions, IMyDateRangeModel } from 'mydaterangepicker';
 import { Category } from 'app/admin-account/maintenance-service/category';
 import { Tax } from 'app/admin-account/tax/tax';
+import { TaxService } from 'app/admin-account/tax/tax.service';
+import { SimpleChange } from '@angular/core/src/change_detection/change_detection_util';
 
 @Component({
   moduleId: module.id,
@@ -30,13 +32,12 @@ export class MaintenanceServiceFieldsDirective {
     if (categoryName == "ASSET") {
       this.maintenanceService.type = 'AssetService';
       this.amenityTypes = this.category.getAmenities(categoryName);
-
       console.log("amenties ", this.amenityTypes);
-    } else { 
+    } else {
       this.onAmenitySelection(categoryName, null);
       this.maintenanceService.type = 'GenericService'
     }
-      
+
   }
 
   onAmenitySelection(categoryName: string, amenityNames: string[]) {
@@ -48,23 +49,46 @@ export class MaintenanceServiceFieldsDirective {
   private myDateRangePickerOptions: IMyOptions = {};
   private dateRange: Object = {};
 
-  constructor(private FormValidationMessageService: FormValidationMessageService) {
-        console.log("maintenance service created ", this.maintenanceService);
+  constructor(
+    private FormValidationMessageService: FormValidationMessageService,
+    private taxService: TaxService) {
+
   }
 
   ngOnInit(): void {
+    console.log("In field directive ngOnInit service ", this.maintenanceService);
     this.getTaxes();
-    //if (this.maintenanceService)
-    //  this.onCategorySelection(this.maintenanceService.category);
+    console.log("maintenance service created ", this.editMode);
+    console.log("onInit original maintenance object ", this.maintenanceService);
+    if (this.editMode) {
+    }
   }
 
+  ngOnChanges(changes: SimpleChange): void {
+    console.log("I am in fields directive after changes ", this.maintenanceService);
+    if (this.maintenanceService.category) {
+      this.onCategorySelection(this.maintenanceService.category);
+      this.onAmenitySelection(
+        this.maintenanceService.category,
+        this.maintenanceService.amenities)
+    }
+  }
+
+
   getTaxes() {
-    var newTax = new Tax();
-    newTax.id = '1';
-    newTax.type = 'GST';
-    newTax.percentage = 5;
-    this.taxes.push(newTax);
+    this.taxService.getTaxes(
+    ).subscribe(
+      response => this.assignTax(response),
+      error => console.error('Error fetching tax info ', error)
+      );
+    //this.maintenanceService.tax = new Tax();
     //TODO need to implement api here
+  }
+
+  assignTax(response) {
+    this.taxes = response.json().content as Tax[]
+    if (!this.editMode)
+      this.maintenanceService.tax = this.taxes[0];
   }
 
   /* ngOnInit(): void {

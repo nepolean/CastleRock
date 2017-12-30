@@ -12,7 +12,7 @@ export class SubscriptionPlan {
   public visitCount: number;
   public subscriptionPrice: number;
   public discountPct: number;
-  public discount: number;
+  //public discount: number;
   constructor() {}
 
 }

@@ -6,7 +6,7 @@ import { TaxAbstractFormComponent } from './tax-abstract-form.component';
 import { TaxActionButtonsDirective } from './tax-action-buttons-directive.component';
 import { TaxActionModalsDirective } from './tax-action-modals-directive.component';
 import { Tax } from './tax';
-import { TaxService } from './mock-tax.service';
+import { TaxService } from './tax.service';
 import 'rxjs/add/operator/switchMap';
 
 @Component({

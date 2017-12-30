@@ -4,7 +4,7 @@ import { ActivatedRoute, Router, Params } from '@angular/router';
 import { FormValidationMessageService } from '../../common/page-utils/form/form-validation-message.service';
 import { TaxAbstractFormComponent } from './tax-abstract-form.component';
 import { Tax } from './tax';
-import { TaxService } from './mock-tax.service';
+import { TaxService } from './tax.service';
 import { TaxFieldsDirective } from './tax-fields-directive.component';
 import 'rxjs/add/operator/switchMap';
 

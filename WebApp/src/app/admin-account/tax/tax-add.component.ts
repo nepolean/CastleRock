@@ -4,7 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormValidationMessageService } from '../../common/page-utils/form/form-validation-message.service';
 import { AbstractFormComponent } from '../../common/page-utils/form/abstract-form.component';
 import { Tax } from './tax';
-import { TaxService } from './mock-tax.service';
+import { TaxService } from './tax.service';
 import { TaxFieldsDirective } from './tax-fields-directive.component';
 
 @Component({
@@ -43,7 +43,7 @@ export class TaxAddComponent extends AbstractFormComponent {
         super.handleSuccess(successResponse);
         const response = successResponse.json();
         if (routeToViewTax) {
-            this.router.navigate(['/admin-dashboard/taxes/view', 11]);
+            this.router.navigate(['/admin-dashboard/taxes/view', response.id]);
         } else {
             this.response.message = response.id + ' saved successfully';
         }

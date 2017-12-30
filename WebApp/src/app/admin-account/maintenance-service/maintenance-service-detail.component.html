@@ -37,11 +37,11 @@
 			</div>
 		</div>
 
-		<!-- MaintenanceService Name -->
+		<!-- MaintenanceService Tax -->
 		<div class="form-group row">
 			<label for="type" class="col-sm-2 control-label">TaxId</label>
 			<div class="col-sm-5">
-				{{maintenanceService.tax.name}}@ {{maintenance.tax.percentage}}%
+				{{maintenanceService.tax.name}}@ {{maintenanceService.tax.percentage}}%
 			</div>
 		</div>
 
@@ -127,5 +127,5 @@
 </div>
 
 <maintenance-service-action-modals 
-	[maintenanceService]="maintenanceService" (deleteMaintenanceService)="deleteMaintenanceService($event)"
+	[maintenanceService]="maintenanceService" (deleteMaintenanceService)="deleteMaintenanceService($event)" (activateMaintenanceService)="activateMaintenanceService($event)"
 ></maintenance-service-action-modals>

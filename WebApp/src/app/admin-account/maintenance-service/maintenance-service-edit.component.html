@@ -166,7 +166,7 @@
 														</tr>
 													</thead>
 													<tbody>
-														<tr *ngFor="let subscriptionPlan of maintenanceService.subscriptionServiceData.subscriptionData" (click)="selectSubscriptionPlan(subscriptionPlan)"
+														<tr *ngFor="let subscriptionPlan of subscriptionPlanAsArray()" (click)="selectSubscriptionPlan(subscriptionPlan)"
 															[class.selected]="subscriptionPlan === selectedSubscriptionPlan">
 															<th scope="row">
 																{{subscriptionPlan.name}}
@@ -193,7 +193,7 @@
 											</div>
 											<div class="form-group" style="text-align: center">
 												<div>
-													<button type="button" class="btn btn-danger" (click)="saveSubscriptionPlans">
+													<button type="button" class="btn btn-danger" (click)="saveSubscriptionPlan();">
 														<i class="fa fa-save" style="padding-right: 5px"></i>Save Subscription Plans
 													</button>
 													<a routerLink="/admin-dashboard/services" class="btn btn-danger" title="Cancel">
@@ -357,11 +357,13 @@
 				<!-- Name -->
 				<div class="form-group row has-success has-error has-feedback">
 
-					<label for="name" class="col-sm-2 control-label">Name *</label>
+					<label for="name" class="col-sm-2 control-label">Rating *</label>
 					<div class="col-sm-5">
-						<input type="text" class="form-control" id="name" name="name"
+						<select class="form-control" id="name" name="name"
 							class="form-control" placeholder="Subscription Plan Name" required maxlength="31"
 							[(ngModel)]="selectedSubscriptionPlan.name" #name="ngModel">
+							<option *ngFor="let rating of ratings" [value]="rating">{{rating}}</option>
+						</select>	
 
 						<div *ngIf="name.errors && (name.dirty || name.touched)">
 							<span [hidden]="name.valid || name.pristine"
@@ -424,7 +426,7 @@
 
 				<!-- Discount Percentage -->
 				<div class="form-group row has-success has-error has-feedback">
-					<label for="discountPct" class="col-sm-2 control-label">Percentage</label>
+					<label for="discountPct" class="col-sm-2 control-label">Discount %</label>
 					<div class="col-sm-5">
 						<input type="number" class="form-control" id="discountPct" name="discountPct"
 							class="form-control" placeholder="0.00" required min="0" max="100" step="0.1"
@@ -468,14 +470,16 @@
 	  <form role="form" #subscriptionPlanAddForm="ngForm" (ngSubmit)="addSubscriptionPlan()">
       	<div class="modal-body">
 			<fieldset>
-				<!-- Name -->
+				<!-- Rating -->
 				<div class="form-group row has-success has-error has-feedback">
 
-					<label for="name" class="col-sm-2 control-label">Name *</label>
+					<label for="name" class="col-sm-2 control-label">Rating *</label>
 					<div class="col-sm-5">
-						<input type="text" class="form-control" id="name" name="name"
+						<select class="form-control" id="name" name="name"
 							class="form-control" placeholder="Subscription Plan Name" required maxlength="31"
 							[(ngModel)]="subscriptionPlan.name" #name="ngModel">
+							<option *ngFor="let rating of ratings" [value]="rating">{{rating}}</option>
+						</select>
 
 						<div *ngIf="name.errors && (name.dirty || name.touched)">
 							<span [hidden]="name.valid || name.pristine"
@@ -538,7 +542,7 @@
 
 				<!-- Discount Percentage -->
 				<div class="form-group row has-success has-error has-feedback">
-					<label for="discountPct" class="col-sm-2 control-label">Percentage</label>
+					<label for="discountPct" class="col-sm-2 control-label">Discount %</label>
 					<div class="col-sm-5">
 						<input type="number" class="form-control" id="discountPct" name="discountPct"
 							class="form-control" placeholder="0.00" required min="0" max="100" step="0.1"

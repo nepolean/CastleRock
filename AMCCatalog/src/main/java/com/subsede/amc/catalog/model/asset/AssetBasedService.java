@@ -46,7 +46,7 @@ public class AssetBasedService extends BaseService implements Serializable {
 
   public AssetBasedService() {
     super();
-    this.type = "Asset";
+    this.type = "AssetService";
     this.setCategory(Category.ASSET);
   }
 

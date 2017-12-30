@@ -48,7 +48,7 @@
   <div class="col-md-6 col-sm-6 col-xs-12">
     <select type="text" class="form-control" id="tax" name="tax" class="form-control" placeholder="Provide Tax Id" required maxlength="31"
       [(ngModel)]="maintenanceService.tax" #name="ngModel">
-      <option *ngFor="let tax of taxes" value="tax.id"> {{tax.type}}@ {{tax.percentage}}% </option>
+      <option *ngFor="let tax of taxes" [ngValue]="maintenanceService.tax"> {{tax.type}}@ {{tax.percentage}}% </option>
     </select>
 
     <div *ngIf="name.errors && (name.dirty || name.touched)">

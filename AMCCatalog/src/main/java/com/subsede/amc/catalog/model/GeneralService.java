@@ -10,6 +10,7 @@ public class GeneralService extends BaseService {
       String description,
       List<String> serviceType) {
     super(category, name, description, serviceType);
+    this.type = "GenericService";
   }
 
   @Override

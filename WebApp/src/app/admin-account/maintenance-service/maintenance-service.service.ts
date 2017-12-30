@@ -38,8 +38,15 @@ export class RealMaintenanceServiceService {
   }
 
   deleteMaintenanceService(id: string): Observable<Response> {
+    console.log('in delete maintenance service', id);
     const url = `${this.servicesUrl}/${id}`;
     return this.http.delete(url, {headers: this.headers});
+  }
+
+  activateMaintenanceService(id: string): Observable<Response> {
+    console.log('in activate maintenance service', id);
+    const url = `${this.servicesUrl}/${id}/enable`
+    return this.http.post(url, {headers: this.headers});
   }
 
   createMaintenanceService(maintenanceService: MaintenanceService): Observable<Response> {
@@ -60,7 +67,7 @@ export class RealMaintenanceServiceService {
   }
 
   updateSubscriptionPlan(maintenanceServiceId: string, subscriptionPlan: any): Observable<Response> {
-    const url = `${this.servicesUrl}/api/v1/admin/service/${maintenanceServiceId}/asset/subscription`;
+    const url = `${this.servicesUrl}/${maintenanceServiceId}/subscription`;
     return this.http
       .post(url, JSON.stringify(subscriptionPlan), {headers: this.headers});
   }

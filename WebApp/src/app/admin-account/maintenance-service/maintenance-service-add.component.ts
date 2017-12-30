@@ -43,7 +43,7 @@ export class MaintenanceServiceAddComponent extends AbstractFormComponent {
         super.handleSuccess(successResponse);
         const response = successResponse.json();
         if (routeToViewMaintenanceService) {
-            this.router.navigate(['/admin-dashboard/services/view', 11]);
+            this.router.navigate(['/admin-dashboard/services/view', response.id]);
         } else {
             this.response.message = response.id + ' saved successfully';
         }

@@ -1,6 +1,7 @@
 package com.subsede.amc.catalog.model.asset;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -26,8 +27,8 @@ public class RatingBasedSubscriptionData extends SubscriptionMetadata implements
   /* holds pricing & other service specific details */
   Map<Rating, SubscriptionData> subscriptionData;
 
-  RatingBasedSubscriptionData() {
-
+  public RatingBasedSubscriptionData() {
+    subscriptionData = new HashMap<>();
   }
 
   public RatingBasedSubscriptionData(Map<Rating, SubscriptionData> data) {
@@ -36,8 +37,8 @@ public class RatingBasedSubscriptionData extends SubscriptionMetadata implements
   }
 
   public void updateSubscriptionMetadata(Rating rating, SubscriptionData data) {
-    rating = Objects.requireNonNull(rating, "Rating cannot be null");
-    data = Objects.requireNonNull(data, "SubscriptionData cannot be null");
+    rating = Objects.requireNonNull(rating, "Rating should not be null");
+    data = Objects.requireNonNull(data, "SubscriptionData should not be null");
     this.subscriptionData.put(rating, data);
   }
 

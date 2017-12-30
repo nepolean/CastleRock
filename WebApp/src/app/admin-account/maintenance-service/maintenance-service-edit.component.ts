@@ -24,6 +24,8 @@ export class MaintenanceServiceEditComponent extends MaintenanceServiceAbstractF
   private selectedOneTimePlan: OneTimePlan = new OneTimePlan();
   private oneTimePlan: OneTimePlan = new OneTimePlan();
   private editMode: boolean = true;
+  private ratings: string[] = ['ONE','TWO','THREE','FOUR','FIVE'];
+  private ratingSelected: string = 'ONE';
 
   constructor(
     protected router: Router,
@@ -34,6 +36,7 @@ export class MaintenanceServiceEditComponent extends MaintenanceServiceAbstractF
   }
 
   ngOnInit(): void {
+    console.log("In edit ngOnInit service ", this.maintenanceService);
     this.route.params
       .switchMap((params: Params) => this.maintenanceServiceService.getMaintenanceService(params['id']))
       .subscribe(
@@ -45,7 +48,6 @@ export class MaintenanceServiceEditComponent extends MaintenanceServiceAbstractF
   public handleSuccess(successResponse: any): void {
     this.maintenanceService = successResponse.json() as MaintenanceService;
     console.log('Maintenance Service', this.maintenanceService);
-    console.log(this.maintenanceService.subscriptionServiceData);
     if (this.maintenanceService.subscriptionServiceData == null) {
       this.maintenanceService.subscriptionServiceData = {};
       this.maintenanceService.subscriptionServiceData.subscriptionData = [];
@@ -76,7 +78,26 @@ export class MaintenanceServiceEditComponent extends MaintenanceServiceAbstractF
   }
 
   private editSubscriptionPlan(): void {
-    this.selectedSubscriptionPlan.discount = this.selectedSubscriptionPlan.subscriptionPrice * this.selectedSubscriptionPlan.discountPct / 100;
+   // this.selectedSubscriptionPlan.discount = this.selectedSubscriptionPlan.subscriptionPrice * this.selectedSubscriptionPlan.discountPct / 100;
+  }
+
+  private subscriptionPlanAsArray(): SubscriptionPlan[] {
+    console.log('getSubscriptionDetailsAsArray', this.maintenanceService.subscriptionServiceData.serviceData);
+    console.log('isMap ', (this.maintenanceService.subscriptionServiceData.serviceData instanceof Map));
+    if(this.maintenanceService.subscriptionServiceData.serviceData instanceof Map) {
+      let plans = new Array<SubscriptionPlan>();
+      this.maintenanceService.subscriptionServiceData.serviceData.elements().forEach(element => {
+        let plan = new SubscriptionPlan();
+        plan.name = element.name;
+        plan.visitCount = element.visitCount;
+        plan.subscriptionPrice = element.subscriptionPrice;
+        plan.discountPct = element.discountPct;
+        plans.push(plan);
+        return plans;
+
+      });;
+    }
+    return this.maintenanceService.subscriptionServiceData.serviceData;
   }
 
   private addSubscriptionPlan(): void {
@@ -85,13 +106,15 @@ export class MaintenanceServiceEditComponent extends MaintenanceServiceAbstractF
     newSubscriptionPlan.visitCount = this.subscriptionPlan.visitCount;
     newSubscriptionPlan.subscriptionPrice = this.subscriptionPlan.subscriptionPrice;
     newSubscriptionPlan.discountPct = this.subscriptionPlan.discountPct;
-    newSubscriptionPlan.discount = newSubscriptionPlan.subscriptionPrice * newSubscriptionPlan.discountPct / 100;
+    this.ratings.splice(this.ratings.indexOf(this.subscriptionPlan.name),1);
+    //newSubscriptionPlan.discount = newSubscriptionPlan.subscriptionPrice * newSubscriptionPlan.discountPct / 100;
     this.maintenanceService.subscriptionServiceData.subscriptionData.push(newSubscriptionPlan);
     console.log('after adding subscription plan', this.maintenanceService);
   }
 
   private deleteSubscriptionPlan(subscriptionPlan: any): void {
-    this.maintenanceService.subscriptionServiceData.subscriptionData.splice(this.maintenanceService.subscriptionServiceData.subscriptionData.indexOf(this.selectedSubscriptionPlan), 1);
+    this.maintenanceService.subscriptionServiceData.subscriptionData.delete(this.ratingSelected);
+    this.ratings.push(this.ratingSelected);
   }
 
   private saveSubscriptionPlan(): void {
@@ -100,7 +123,7 @@ export class MaintenanceServiceEditComponent extends MaintenanceServiceAbstractF
 
   private updateSubscriptionPlan(): void {
     this.setLoadingState();
-    this.maintenanceServiceService.updateSubscriptionPlan(this.maintenanceService.id, this.maintenanceService.subscriptionServiceData)
+    this.maintenanceServiceService.updateSubscriptionPlan(this.maintenanceService.id, this.maintenanceService.subscriptionServiceData.subscriptionData)
       .subscribe(
       response => this.handleUpdatedSuccess(response),
       error => this.handleError(error)

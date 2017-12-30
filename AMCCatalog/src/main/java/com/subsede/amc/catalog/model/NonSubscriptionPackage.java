@@ -80,7 +80,7 @@ public class NonSubscriptionPackage extends BasePackages implements INonSubscrip
     if (Objects.nonNull(variants)) {
       IPackageVariant variant = this.variants.get(variantName);
       double amt = variant.getPrice();
-      double taxPct = this.service.getTax().isPresent() ? this.service.getTax().get().getPercentage() : 0;
+      double taxPct = this.service.getTax() != null ? this.service.getTax().getPercentage() : 0;
       price = new Price(amt, this.getDiscountPct(), taxPct);
     }
     return Optional.of(price);

@@ -12,11 +12,18 @@ export class MaintenanceServiceActionModalsDirective {
 
     @Input() maintenanceService: MaintenanceService;
     @Output() deleteMaintenanceService: EventEmitter<MaintenanceService> = new EventEmitter();
+    @Output() activateMaintenanceService: EventEmitter<MaintenanceService> = new EventEmitter();
 
     constructor(private maintenanceServiceService: MaintenanceServiceService) {}
 
     private delete(): void {
+      console.log('deleting the service..');
       this.deleteMaintenanceService.emit(this.maintenanceService);
+    }
+
+    private activate(): void {
+      console.log('activating the service...');
+      this.activateMaintenanceService.emit(this.maintenanceService);
     }
 
 }

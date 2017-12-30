@@ -6,7 +6,7 @@ import { TaxAbstractFormComponent } from './tax-abstract-form.component';
 import { Tax } from './tax';
 import { Paginator } from '../../common/page-utils/paginator/paginator';
 import { TaxPaginatorComponent } from './tax-paginator.component';
-import { TaxService } from './mock-tax.service';
+import { TaxService } from './tax.service';
 import { TaxFieldsDirective } from './tax-fields-directive.component';
 import 'rxjs/add/operator/switchMap';
 

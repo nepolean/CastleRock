@@ -8,6 +8,7 @@ import { MaintenanceServiceActionModalsDirective } from './maintenance-service-a
 import { MaintenanceService } from './maintenance-service';
 import { RealMaintenanceServiceService } from './maintenance-service.service';
 import 'rxjs/add/operator/switchMap';
+import { Tax } from 'app/admin-account/tax/tax';
 
 @Component({
   moduleId: module.id,
@@ -27,6 +28,7 @@ export class MaintenanceServiceDetailComponent extends MaintenanceServiceAbstrac
     }
 
     ngOnInit(): void {
+        this.maintenanceService.tax = new Tax();
         this.route.params
             .switchMap((params: Params) => this.maintenanceServiceService.getMaintenanceService(params['id']))
             .subscribe(
@@ -37,5 +39,7 @@ export class MaintenanceServiceDetailComponent extends MaintenanceServiceAbstrac
 
     public handleSuccess(successResponse: any): void {
         this.maintenanceService = successResponse.json() as MaintenanceService;
+        console.log('In detailed service ', this.maintenanceService);
+        console.log('In detailed service tax', this.maintenanceService.tax);
     }
 }

@@ -16,6 +16,8 @@ import { MaintenanceServiceEditComponent } from './maintenance-service-edit.comp
 import { MaintenanceServiceAddComponent } from './maintenance-service-add.component';
 import { MaintenanceServiceService } from './mock-maintenance-service.service';
 import { RealMaintenanceServiceService } from 'app/admin-account/maintenance-service/maintenance-service.service';
+import { TaxService } from 'app/admin-account/tax/tax.service'
+import { TaxModule } from 'app/admin-account/tax/tax.module';
 
 @NgModule({
   imports: [
@@ -24,7 +26,8 @@ import { RealMaintenanceServiceService } from 'app/admin-account/maintenance-ser
     AppCommonModule,
     MaintenanceServiceRoutingModule,
     MyDatePickerModule,
-    MyDateRangePickerModule
+    MyDateRangePickerModule,
+    TaxModule
   ],
   declarations: [
     MaintenanceServiceComponent,

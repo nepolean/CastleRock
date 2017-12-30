@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 import javax.validation.constraints.NotNull;
 
@@ -45,7 +44,7 @@ public class BaseService extends BaseMasterEntity implements Service {
   @NotNull(message = "Skills should not be null.")
   List<String> skills;
   
-  @DBRef
+  @DBRef (lazy = false)
   Tax tax;
 
   private boolean canSubscribe;
@@ -260,8 +259,8 @@ public class BaseService extends BaseMasterEntity implements Service {
   }
   
   @Override
-  public Optional<Tax> getTax() {
-    return Optional.ofNullable(this.tax);
+  public Tax getTax() {
+    return this.tax;
   }
 
   public static void main(String[] args) {

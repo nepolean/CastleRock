@@ -11,8 +11,8 @@ import org.hibernate.validator.constraints.Range;
 
 public class SubscriptionData extends SubscriptionMetadata {
 
-  @SuppressWarnings("unused")
-  private static final long serialVersionUID = 1L;
+  private String name;
+
   @Min(value = 1, message = "The visit count must be at least 1.")
   private int visitCount;
   @Range
@@ -83,6 +83,14 @@ public class SubscriptionData extends SubscriptionMetadata {
       errorHolder.add("Disoucnt percent cannot be > 100.");
     int currentSize = errorHolder.size();
     return currentSize > originalSize;
+  }
+
+  public String getName() {
+    return name;
+  }
+  
+  public void setName(String name) {
+    this.name = name;
   }
 
 }

@@ -30,6 +30,7 @@ export class MaintenanceServiceAbstractFormComponent extends AbstractFormCompone
 
     protected deleteMaintenanceService(maintenanceService: MaintenanceService): void {
         this.setLoadingState();
+        console.log('in abstract form delete maintenance..');
         this.maintenanceServiceService.deleteMaintenanceService(maintenanceService.id)
         .subscribe(
             response => this.handleDeletedSuccess(response),
@@ -37,9 +38,25 @@ export class MaintenanceServiceAbstractFormComponent extends AbstractFormCompone
         );
     }
 
+    protected activateMaintenanceService(maintenanceService: MaintenanceService): void {
+        this.setLoadingState();
+        console.log('in abstract form activate maintenance..');
+        this.maintenanceServiceService.activateMaintenanceService(maintenanceService.id)
+        .subscribe(
+            response => this.handleActivatedSuccess(response),
+            error => this.handleError(error)
+        );
+    }
+
     protected handleDeletedSuccess(successResponse: any): void {
         super.handleSuccess(successResponse);
         this.response.message = 'MaintenanceService deleted successfully';
+        this.router.navigate(['/admin-dashboard/services']);
+    }
+
+    protected handleActivatedSuccess(successResponse: any): void {
+        super.handleSuccess(successResponse);
+        this.response.message = 'MaintenanceService activated successfully';
         this.router.navigate(['/admin-dashboard/services']);
     }
 

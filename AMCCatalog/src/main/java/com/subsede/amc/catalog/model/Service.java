@@ -29,6 +29,6 @@ public interface Service extends Product {
   
   public abstract SubscriptionData fetchSubscriptionData(UserInput<String, Object> input);
 
-  public abstract Optional<Tax> getTax();
+  public abstract Tax getTax();
 
 }

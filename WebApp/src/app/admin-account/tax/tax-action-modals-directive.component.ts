@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Tax } from './tax';
-import { TaxService } from './mock-tax.service';
+import { TaxService } from './tax.service';
 
 @Component({
   moduleId: module.id,

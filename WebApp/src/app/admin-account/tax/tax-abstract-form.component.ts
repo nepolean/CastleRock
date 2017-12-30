@@ -4,7 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormValidationMessageService } from '../../common/page-utils/form/form-validation-message.service';
 import { AbstractFormComponent } from '../../common/page-utils/form/abstract-form.component';
 import { Tax } from './tax';
-import { TaxService } from './mock-tax.service';
+import { TaxService } from './tax.service';
 
 @Component({
   moduleId: module.id,
