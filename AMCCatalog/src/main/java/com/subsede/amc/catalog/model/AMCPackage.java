@@ -1,10 +1,7 @@
 // There is a major change introduced today (30-APR-2017). Basically, got rid of PackageScheme.
 package com.subsede.amc.catalog.model;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +11,7 @@ import org.springframework.data.annotation.Transient;
 public class AMCPackage extends BasePackages implements ISubscriptionPackage {
 
   @Transient
-  private final static Logger logger = LoggerFactory.getLogger(AMCPackage.class);
+  final static Logger logger = LoggerFactory.getLogger(AMCPackage.class);
 
   private TenureBasedDiscount tenureBasedDisc;
 
@@ -24,62 +21,11 @@ public class AMCPackage extends BasePackages implements ISubscriptionPackage {
 
   public AMCPackage(Category category, String name, String description) {
     super(category, name, description);
-    TYPE = "SubscriptionPackage";
+    type = this.getClass().getName();
     isActive = false;
   }
 
-  public void addServices(List<Service> services) {
-    if (logger.isDebugEnabled())
-      logger.debug("Add services to package");
-    services = Objects.requireNonNull(services, "No services data provided.");
-    StringBuilder failedToAdd = new StringBuilder();
-    services.forEach(service -> {
-      try {
-        this.addService(service);
-      } catch (IllegalArgumentException ex) {
-        failedToAdd.append(service.getName() + ", reason:" + ex.getMessage() + "\n");
-      } catch (NullPointerException ex) {
-        logger.warn("Ignoring null service");
-      }
-    });
-    failedToAdd.trimToSize();
-    if (failedToAdd.length() > 0)
-      throw new IllegalArgumentException("The following services have failed to add. \n" + failedToAdd.toString());
-  }
-
-  public void setServices(Set<Service> services) {
-    this.services = services;
-  }
-
-  public Set<Service> getServices() {
-    return this.services;
-  }
-
-  /**
-   * public List<String> getServiceInfo() {
-   * if (this.serviceInfo == null)
-   * return null;
-   * List<String> ids = new ArrayList<String>(this.serviceInfo.size());
-   * for (ServiceInfo svc : this.serviceInfo)
-   * ids.add(svc.getServiceId());
-   * return ids;
-   * }
-   * 
-   * public void setServiceInfo(List<ServiceInfo> serviceInfo) {
-   * this.serviceInfo = serviceInfo;
-   * }
-   */
-
-  public void addService(Service service) {
-    if (logger.isInfoEnabled())
-      logger.info("Adding a service to the package {}", service, name);
-    service = validate(service);
-    if (this.services == null)
-      this.services = new HashSet<Service>();
-    this.services.add(service);
-  }
-
-  private Service validate(Service service) {
+  protected boolean validate(Service service) {
     service = Objects.requireNonNull(service, "Null value passed for service");
     if (!service.canSubscribe()) {
       String msg = String.format("The service, {}, does not support subscription model ", service.getName());
@@ -88,13 +34,13 @@ public class AMCPackage extends BasePackages implements ISubscriptionPackage {
       throw new IllegalArgumentException(msg);
     }
     if (!service.getCategory().equals(this.category)) {
-      String msg = String.format("The category does not match. Expected category {}, provided {}", this.category,
+      String msg = String.format("The category does not match. Expected {}, provided {}", this.category,
           service.getCategory());
       if (logger.isErrorEnabled())
         logger.error(msg);
       throw new IllegalArgumentException(msg);
     }
-    return service;
+    return true;
   }
 
   public SubscriptionData getActualPrice(UserInput<String, Object> input) {

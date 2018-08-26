@@ -1,6 +1,8 @@
 package com.subsede.amc.catalog.controller;
 
 import java.security.Principal;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,10 +29,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.subsede.amc.catalog.model.AMCPackage;
+import com.subsede.amc.catalog.model.BasePackages;
 import com.subsede.amc.catalog.model.BaseService;
 import com.subsede.amc.catalog.model.Category;
 import com.subsede.amc.catalog.model.Coupon;
 import com.subsede.amc.catalog.model.ISubscriptionPackage;
+import com.subsede.amc.catalog.model.NonSubscriptionPackage;
 import com.subsede.amc.catalog.model.OneTimeData;
 import com.subsede.amc.catalog.model.OneTimeMetadata;
 import com.subsede.amc.catalog.model.Rating;
@@ -49,6 +53,7 @@ import com.subsede.amc.catalog.repository.PackageRepository;
 import com.subsede.amc.catalog.repository.ServiceQueryRepository;
 import com.subsede.amc.catalog.repository.TaxRepository;
 import com.subsede.amc.catalog.service.GenericFCRUDService;
+import com.subsede.util.controller.exception.EntityNotFoundException;
 
 @RestController
 @RequestMapping(path = "/api/v1/admin")
@@ -65,7 +70,7 @@ public class AMCAdminController {
   private AmenityRepository amenityRepo;
   private ServiceQueryRepository serviceRepo;
 
-  private PackageRepository<ISubscriptionPackage> packageRepo;
+  private PackageRepository<BasePackages> packageRepo;
 
   @Autowired
   public void setGenericFCRUDService(GenericFCRUDService crudService) {
@@ -93,7 +98,7 @@ public class AMCAdminController {
   }
 
   @Autowired
-  public void setPackageRespository(PackageRepository<ISubscriptionPackage> packageRepo) {
+  public void setPackageRespository(PackageRepository<BasePackages> packageRepo) {
     this.packageRepo = packageRepo;
   }
 
@@ -310,6 +315,61 @@ public class AMCAdminController {
       logger.debug("Services loaded from DB -> {}", services);
     return new ResponseEntity<>(services, HttpStatus.OK);
   }
+  
+  @GetMapping(path = "/services/enabled")
+  public ResponseEntity<Page<BaseService>> getEnabledServices(Pageable pageable) {
+    logger.info("Requested services with page : {}", pageable.getPageNumber());
+    Page<BaseService> services = this.serviceRepo.findByIsActive(true, pageable);
+    if (logger.isDebugEnabled())
+      logger.debug("Services loaded from DB -> {}", services);
+    return new ResponseEntity<>(services, HttpStatus.OK);
+  }
+  
+  
+  @GetMapping(path = "/services/disabled")
+  public ResponseEntity<Page<BaseService>> getDisbledServices(Pageable pageable) {
+    logger.info("Requested services with page : {}", pageable.getPageNumber());
+    Page<BaseService> services = this.serviceRepo.findByIsActive(false, pageable);
+    if (logger.isDebugEnabled())
+      logger.debug("Services loaded from DB -> {}", services);
+    return new ResponseEntity<>(services, HttpStatus.OK);
+  }
+  
+  @GetMapping(path = "/services/category/{cat}")
+  public ResponseEntity<Page<BaseService>> fetchByCategory(@PathVariable String cat, Pageable pageable) {
+    logger.info("Requested services with page : {}", pageable.getPageNumber());
+    Page<BaseService> services = this.serviceRepo.findByCategory(cat, pageable);
+    if (logger.isDebugEnabled())
+      logger.debug("Services loaded from DB -> {}", services);
+    return new ResponseEntity<>(services, HttpStatus.OK);
+  }
+  
+  @GetMapping(path = "/services/category/{cat}/enabled")
+  public ResponseEntity<Page<BaseService>> fetchEnabledServicesByCategory(@PathVariable String cat, Pageable pageable) {
+    logger.info("Requested services with page : {}", pageable.getPageNumber());
+    Page<BaseService> services = this.serviceRepo.findByCategoryAndIsActive(cat, true, pageable);
+    if (logger.isDebugEnabled())
+      logger.debug("Services loaded from DB -> {}", services);
+    return new ResponseEntity<>(services, HttpStatus.OK);
+  }
+  
+  @GetMapping(path = "/services/category/{cat}/enabled/subscription")
+  public ResponseEntity<Page<BaseService>> fetchEnabledSubscriptionServicesByCategory(@PathVariable String cat, Pageable pageable) {
+    logger.info("Requested services with page : {}", pageable.getPageNumber());
+    Page<BaseService> services = this.serviceRepo.findByCategoryAndIsActiveAndCanSubscribe(cat, true, true, pageable);
+    if (logger.isDebugEnabled())
+      logger.debug("Services loaded from DB -> {}", services);
+    return new ResponseEntity<>(services, HttpStatus.OK);
+  }
+
+  @GetMapping(path = "/services/category/{cat}/enabled/nonsubscription")
+  public ResponseEntity<Page<BaseService>> fetchEnabledNonSubscriptionServicesByCategory(@PathVariable String cat, Pageable pageable) {
+    logger.info("Requested services with page : {}", pageable.getPageNumber());
+    Page<BaseService> services = this.serviceRepo.findByCategoryAndIsActiveAndCanRequestOneTime(cat, true, true, pageable);
+    if (logger.isDebugEnabled())
+      logger.debug("Services loaded from DB -> {}", services);
+    return new ResponseEntity<>(services, HttpStatus.OK);
+  }
 
   @GetMapping(path = "/services/{id}")
   public ResponseEntity<Service> getService(@PathVariable String id) {
@@ -329,26 +389,71 @@ public class AMCAdminController {
   /******************* package *****************************/
 
   @RequestMapping(path = "/package", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Page<ISubscriptionPackage>> getPackages(Pageable page) {
+  public ResponseEntity<Page<?>> getPackages(Pageable page) {
     logger.info("Get packages");
-    Page<ISubscriptionPackage> pkgs = this.packageRepo.findAll(page);
+    Page<?> pkgs = this.packageRepo.findAll(page);
+    return new ResponseEntity<>(pkgs, HttpStatus.OK);
+  }
+  
+  @RequestMapping(path = "/package/subscription", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Page<?>> getSubscriptionPackages(Pageable page) {
+    logger.info("Get packages");
+    Page<?> pkgs = this.packageRepo.findByType(AMCPackage.class.getName(), page);
+    return new ResponseEntity<>(pkgs, HttpStatus.OK);
+  }
+  
+  @RequestMapping(path = "/package/nonsubscription", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Page<?>> getNonSubscriptionPackages(Pageable page) {
+    logger.info("Get packages");
+    Page<?> pkgs = this.packageRepo.findByType(NonSubscriptionPackage.class.getName(), page);
     return new ResponseEntity<>(pkgs, HttpStatus.OK);
   }
 
   @RequestMapping(path = "/package/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<ISubscriptionPackage> getPackage(@PathVariable String id) {
+  public ResponseEntity<BasePackages> getPackage(@PathVariable String id) {
     logger.info("Get package with id {}", id);
-    ISubscriptionPackage pkg = this.packageRepo.findOne(id);
+    BasePackages pkg = this.packageRepo.findOne(id);
     pkg = Objects.requireNonNull(pkg, "Package with id " + id + " not found.");
     return new ResponseEntity<>(pkg, HttpStatus.OK);
   }
 
-  @RequestMapping(path = "/package", method = { RequestMethod.POST,
+  @RequestMapping(path = "/package/subsription", method = { RequestMethod.POST,
       RequestMethod.PUT }, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<AMCPackage> createPackage(@RequestBody @Validated AMCPackage pkg) {
     logger.info("Create new package for category {}", pkg.getCategory());
     AMCPackage newPkg = this.packageRepo.save(pkg);
     return new ResponseEntity<AMCPackage>(newPkg, HttpStatus.OK);
+  }
+  
+  @RequestMapping(path = "/package/{id}/service", method = { RequestMethod.POST,
+      RequestMethod.PUT }, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<BasePackages> addServicesToPkg(@PathVariable String id, @RequestBody @Validated List<String> serviceIds) {
+    logger.info("Add services to package {}", id);
+    BasePackages newPkg = this.fetchPackage(id);
+    Iterable<BaseService> services = this.serviceRepo.findAll(serviceIds);
+    ensureValid(serviceIds, services);
+    for (BaseService svc : services) {
+        newPkg.addService(svc);
+    }
+    newPkg = this.packageRepo.save(newPkg);
+    return new ResponseEntity<BasePackages>(newPkg, HttpStatus.OK);
+  }
+
+  private void ensureValid(List<String> serviceIds, Iterable<BaseService> services) {
+    List<String> invalidServices = new LinkedList<>();
+    Collections.copy(invalidServices, serviceIds);
+    for (BaseService svc : services) {
+      invalidServices.remove(svc.getId());
+    }
+    if (invalidServices.size() > 0)
+      throw new IllegalArgumentException(String.format("Following services are not available {}.", invalidServices.toArray()));
+  }
+
+  private BasePackages fetchPackage(String id) {
+    BasePackages pkg = (BasePackages) this.packageRepo.findOne(id);
+    if (pkg == null)
+      throw new EntityNotFoundException(id, "AMCPackage");
+    return pkg;
   }
 
   @RequestMapping(path = "/package/{id}", method = {
@@ -357,18 +462,21 @@ public class AMCAdminController {
       @PathVariable @Validated String id,
       @RequestBody @Validated TenureBasedDiscount discount) {
     logger.info("Set discount for the package with id {}", id);
-    ISubscriptionPackage pkg = this.packageRepo.findOne(id);
+    BasePackages pkg = this.packageRepo.findOne(id);
     pkg = Objects.requireNonNull(pkg, "Package with id " + id + " not found.");
-    pkg.setTenureBasedDisc(discount);
-    pkg = this.packageRepo.save(pkg);
-    return new ResponseEntity<>(pkg, HttpStatus.OK);
+    if (!(pkg instanceof ISubscriptionPackage))
+      throw new IllegalArgumentException("Given package is not of subscription type");
+    AMCPackage subsPkg = (AMCPackage) pkg;
+    subsPkg.setTenureBasedDisc(discount);
+    pkg = this.packageRepo.save(subsPkg);
+    return new ResponseEntity<>(subsPkg, HttpStatus.OK);
   }
 
   @RequestMapping(path = "/package/enable", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<String> enablePackages(@RequestBody @Validated List<String> packages) {
     logger.info("Enable packages ({})", packages.size());
-    Iterable<ISubscriptionPackage> allPackages = this.packageRepo.findAll(packages);
-    for (ISubscriptionPackage eachPkg : allPackages)
+    Iterable<BasePackages> allPackages = this.packageRepo.findAll(packages);
+    for (BasePackages eachPkg : allPackages)
       eachPkg.setActive(true);
     this.packageRepo.save(allPackages);
     return new ResponseEntity<String>("Successfully enabled all the packages.", HttpStatus.OK);
@@ -377,8 +485,8 @@ public class AMCAdminController {
   @RequestMapping(path = "/package/disable", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<String> disablePackages(@RequestBody @Validated List<String> packages) {
     logger.info("Disable packages ({})", packages.size());
-    Iterable<ISubscriptionPackage> allPackages = this.packageRepo.findAll(packages);
-    for (ISubscriptionPackage eachPkg : allPackages)
+    Iterable<BasePackages> allPackages = this.packageRepo.findAll(packages);
+    for (BasePackages eachPkg : allPackages)
       eachPkg.setActive(false);
     this.packageRepo.save(allPackages);
     return new ResponseEntity<String>("Successfully disabled all the packages.", HttpStatus.OK);

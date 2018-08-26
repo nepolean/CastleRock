@@ -26,7 +26,7 @@ public class NonSubscriptionPackage extends BasePackages implements INonSubscrip
   
   public NonSubscriptionPackage(Category category, String name, String description) {
     super(category, name, description);
-    TYPE = "NonSubscriptionPacakge";
+    type = this.getClass().getName();
     isActive = false;
   }
   
@@ -145,4 +145,22 @@ public class NonSubscriptionPackage extends BasePackages implements INonSubscrip
     }
     
   }
+
+  @Override
+  protected boolean validate(Service service) {
+    service = Objects.requireNonNull(service, "Null value passed for service");
+    if (!service.canRequestOneTime()) {
+      String msg = String.format("The service, {}, does not support packaging model ", service.getName());
+      if (logger.isErrorEnabled())
+        logger.error(msg);
+      throw new IllegalArgumentException(msg);
+    }
+    if (!service.getCategory().equals(this.category)) {
+      String msg = String.format("The category does not match. Expected {}, provided {}", this.category,
+          service.getCategory());
+      if (logger.isErrorEnabled())
+        logger.error(msg);
+      throw new IllegalArgumentException(msg);
+    }
+    return true;  }
 }

@@ -32,4 +32,8 @@ public interface PackageRepository<T extends Product>
   @Query("{'isActive': true, 'isDeleted':false, '_id': {$in: ?0}}")
   public abstract List<ISubscriptionPackage> findValidProducts(String[] selectedPackages);
 
+  //public abstract Page<?> findByClass(String name, Pageable page);
+
+  public abstract Page<?> findByType(String name, Pageable page);
+
 }
