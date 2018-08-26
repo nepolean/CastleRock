@@ -41,6 +41,7 @@ import com.subsede.amc.catalog.model.Tax;
 import com.subsede.amc.catalog.model.TenureBasedDiscount;
 import com.subsede.amc.catalog.model.asset.Amenity;
 import com.subsede.amc.catalog.model.asset.AssetBasedService;
+import com.subsede.amc.catalog.model.asset.RatingBasedOneTimeData;
 import com.subsede.amc.catalog.model.asset.RatingBasedSubscriptionData;
 import com.subsede.amc.catalog.repository.AmenityRepository;
 import com.subsede.amc.catalog.repository.CouponRepository;
@@ -255,11 +256,25 @@ public class AMCAdminController {
   @PostMapping(path = "/services/{id}/asset/onetime")
   public ResponseEntity<Service> setAssetOneTimeData(
       @PathVariable @Validated String id,
-      @RequestBody @Validated OneTimeMetadata ratingBasedMetadata) {
+      @RequestBody @Validated RatingBasedOneTimeData ratingBasedMetadata) {
     logger.info("Set OneTime data for asset based service {}", id);
     return this.updateOneTimeData(id, ratingBasedMetadata);
   }
 
+  @PostMapping(path = "/services/{id}/onetime")
+  public ResponseEntity<Service> setAssetOneTimeData(
+      @PathVariable @Validated String id,
+      @RequestBody @Validated List<OneTimeData> ratingBasedMetadata) {
+    logger.info("Set OneTime data for asset based service {}", id);
+
+    RatingBasedOneTimeData oneTimeData = new RatingBasedOneTimeData();
+    for (OneTimeData data : ratingBasedMetadata) {
+      logger.info("One time data {}", data);
+      oneTimeData.updateSubscriptionMetadata(Rating.valueOf(data.getName()), data);
+    }
+    return this.updateOneTimeData(id, oneTimeData);
+  }
+  
   private ResponseEntity<Service> updateOneTimeData(String id, OneTimeMetadata oneTimeData) {
     Service assetService = getServiceObject(id);
     if (logger.isDebugEnabled())

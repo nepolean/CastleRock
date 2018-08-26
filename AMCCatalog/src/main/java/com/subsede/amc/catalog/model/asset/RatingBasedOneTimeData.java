@@ -1,6 +1,9 @@
 package com.subsede.amc.catalog.model.asset;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -67,11 +70,15 @@ public class RatingBasedOneTimeData extends OneTimeMetadata implements Serializa
   public void updateSubscriptionMetadata(Rating rating, OneTimeData data) {
     data = Objects.requireNonNull(data, "The data cannot be null");
     rating = Objects.requireNonNull(rating, "The rating cannot be null");
+    if (this.oneTimeData == null)
+      this.oneTimeData = new HashMap<>();
     this.oneTimeData.put(rating, data);
   }
 
-  public Map<Rating, OneTimeData> getOneTimeData() {
-    return this.oneTimeData;
+  public Collection<OneTimeData> getOneTimeData() {
+    if (this.oneTimeData == null)
+      return Collections.emptyList();
+    return this.oneTimeData.values();
   }
 
   public void setOneTimeData(Map<Rating, OneTimeData> oneTimeData) {

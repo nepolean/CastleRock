@@ -1,6 +1,7 @@
 package com.subsede.amc.catalog.model.asset;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -72,8 +73,8 @@ public class RatingBasedSubscriptionData extends SubscriptionMetadata implements
     return sd;
   }
 
-  public Map<Rating, SubscriptionData> getSubscriptionData() {
-    return this.subscriptionData;
+  public Collection<SubscriptionData> getSubscriptionData() {
+    return this.subscriptionData.values();
   }
 
   public void setSubscriptionData(Map<Rating, SubscriptionData> subscriptionData) {

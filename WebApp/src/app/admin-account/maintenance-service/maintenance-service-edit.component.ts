@@ -51,6 +51,10 @@ export class MaintenanceServiceEditComponent extends MaintenanceServiceAbstractF
     if (this.maintenanceService.subscriptionServiceData == null) {
       this.maintenanceService.subscriptionServiceData = {};
       this.maintenanceService.subscriptionServiceData.subscriptionData = [];
+    } 
+    if (this.maintenanceService.oneTimeServiceData == null) {
+      this.maintenanceService.oneTimeServiceData = {};
+      this.maintenanceService.oneTimeServiceData.oneTimeData = [];
     }
   }
 
@@ -82,11 +86,11 @@ export class MaintenanceServiceEditComponent extends MaintenanceServiceAbstractF
   }
 
   private subscriptionPlanAsArray(): SubscriptionPlan[] {
-    console.log('getSubscriptionDetailsAsArray', this.maintenanceService.subscriptionServiceData.serviceData);
-    console.log('isMap ', (this.maintenanceService.subscriptionServiceData.serviceData instanceof Map));
-    if(this.maintenanceService.subscriptionServiceData.serviceData instanceof Map) {
+    //console.log('getSubscriptionDetailsAsArray subscripion data', this.maintenanceService.subscriptionServiceData.subscriptionData);
+    //console.log('isMap ', (this.maintenanceService.subscriptionServiceData.subscriptionData instanceof Map));
+    if(this.maintenanceService.subscriptionServiceData.subscriptionData instanceof Map) {
       let plans = new Array<SubscriptionPlan>();
-      this.maintenanceService.subscriptionServiceData.serviceData.elements().forEach(element => {
+      this.maintenanceService.subscriptionServiceData.subscriptionData.elements().forEach(element => {
         let plan = new SubscriptionPlan();
         plan.name = element.name;
         plan.visitCount = element.visitCount;
@@ -97,7 +101,7 @@ export class MaintenanceServiceEditComponent extends MaintenanceServiceAbstractF
 
       });;
     }
-    return this.maintenanceService.subscriptionServiceData.serviceData;
+    return this.maintenanceService.subscriptionServiceData.subscriptionData;
   }
 
   private addSubscriptionPlan(): void {
@@ -142,10 +146,12 @@ export class MaintenanceServiceEditComponent extends MaintenanceServiceAbstractF
     newOneTimePlan.name = this.oneTimePlan.name;
     newOneTimePlan.price = this.oneTimePlan.price;
     this.maintenanceService.oneTimeServiceData.oneTimeData.push(newOneTimePlan);
+    //this.ratings.splice(this.ratings.indexOf(this.oneTimePlan.name),1);
   }
 
   private deleteOneTimePlan(oneTimePlan: any): void {
     this.maintenanceService.oneTimeServiceData.oneTimeData.splice(this.maintenanceService.oneTimeServiceData.oneTimeData.indexOf(this.selectedOneTimePlan), 1);
+    //this.ratings.push(this.selectedOneTimePlan.name);
   }
 
   private saveOneTimePlan(): void {
@@ -154,7 +160,8 @@ export class MaintenanceServiceEditComponent extends MaintenanceServiceAbstractF
 
   private updateOneTimePlan(): void {
     this.setLoadingState();
-    this.maintenanceServiceService.updateOneTimePlan(this.maintenanceService.id, this.maintenanceService.oneTimeServiceData)
+    console.log(this.maintenanceService.oneTimeServiceData.oneTimeData);
+    this.maintenanceServiceService.updateOneTimePlan(this.maintenanceService.id, this.maintenanceService.oneTimeServiceData.oneTimeData)
       .subscribe(
       response => this.handleUpdatedSuccess(response),
       error => this.handleError(error)

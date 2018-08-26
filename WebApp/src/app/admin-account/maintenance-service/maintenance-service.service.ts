@@ -61,7 +61,7 @@ export class RealMaintenanceServiceService {
   }
 
   updateOneTimePlan(maintenanceServiceId: string, oneTimePlan: any): Observable<Response> {
-    const url = `${this.servicesUrl}/api/v1/admin/service/${maintenanceServiceId}/asset/onetime`;
+    const url = `${this.servicesUrl}/${maintenanceServiceId}/onetime`;
     return this.http
       .post(url, JSON.stringify(oneTimePlan), {headers: this.headers});
   }

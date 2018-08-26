@@ -299,7 +299,7 @@
 											</div>
 											<div class="form-group" style="text-align: center">
 												<div>
-													<button type="button" class="btn btn-danger" (click)="saveOneTimePlans">
+													<button type="button" class="btn btn-danger" (click)="saveOneTimePlan()">
 														<i class="fa fa-save" style="padding-right: 5px"></i>Save One Time Plan
 													</button>
 													<a routerLink="/admin-dashboard/services" class="btn btn-danger" title="Cancel">
@@ -686,14 +686,16 @@
 	  <form role="form" #oneTimePlanAddForm="ngForm" (ngSubmit)="addOneTimePlan()">
       	<div class="modal-body">
 			<fieldset>
-				<!-- Name -->
+				<!-- Rating -->
 				<div class="form-group row has-success has-error has-feedback">
 
-					<label for="name" class="col-sm-2 control-label">Name *</label>
+					<label for="name" class="col-sm-2 control-label">Rating *</label>
 					<div class="col-sm-5">
-						<input type="text" class="form-control" id="name" name="name"
-							class="form-control" placeholder="Plan Name" required maxlength="31"
+						<select class="form-control" id="name" name="name"
+							class="form-control" placeholder="Subscription Plan Name" required maxlength="31"
 							[(ngModel)]="oneTimePlan.name" #name="ngModel">
+							<option *ngFor="let rating of ratings" [value]="rating">{{rating}}</option>
+						</select>
 
 						<div *ngIf="name.errors && (name.dirty || name.touched)">
 							<span [hidden]="name.valid || name.pristine"
@@ -701,8 +703,8 @@
 							</span>
 							<div class="form-control-error-message">
 								({{
-									name.errors.required ? FormValidationMessageService.getRequiredMessage("Plan Name")
-									:name.errors.maxlength ? FormValidationMessageService.getMaxLengthMessage("Plan Name",31)
+									name.errors.required ? FormValidationMessageService.getRequiredMessage("Subscription Plan Name")
+									:name.errors.maxlength ? FormValidationMessageService.getMaxLengthMessage("Subscription Plan Name",31)
 									:""
 								}})
 							</div>

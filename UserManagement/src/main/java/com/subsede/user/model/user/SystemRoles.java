@@ -13,5 +13,7 @@ public interface SystemRoles {
   public static final String ROLE_CUSTOMER = "ROLE_CUSTOMER";
   
   public static final String ROLE_CUSTOMER_USER = "ROLE_CUSTOMER_USER";
+  
+  public static final String ROLE_SUPPORT_EXECUTIVE = "ROLE_SUPPORT_EXECUTIVE";
 
 }
